@@ -202,12 +202,16 @@ def check_manifest(docs, report):
         d = docs.get(r["doc_id"])
         if d is None:
             continue
+        # contract: value must be an exact substring of the body
+        if r["value"] not in d["body"]:
+            report.fail(f"{r['doc_id']}: manifest value '{r['value']}' is not a verbatim substring of body")
+            continue
         # word-boundary match so "5 days" does not match inside "15 days"
         pattern = r"(?<![\w.,])" + re.escape(r["value"]) + r"(?![\w])"
         if not re.search(pattern, d["body"]):
-            report.fail(f"{r['doc_id']}: manifest value '{r['value']}' not found in body")
+            report.fail(f"{r['doc_id']}: manifest value '{r['value']}' only occurs inside a larger token")
     if report.failures == before:
-        report.ok(f"{len(rows)} rows, every value found in its document")
+        report.ok(f"{len(rows)} rows, every value found verbatim in its document")
 
 
 def report_word_counts(docs):

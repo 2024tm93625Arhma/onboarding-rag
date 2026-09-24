@@ -1,6 +1,6 @@
 doc_id,title,department,version,status,superseded_by,applies_if,differing_fact,value,governs
-hr-leave-policy-v1,Annual Leave Policy,HR,1,superseded,hr-leave-policy-v2,join_date < 2025-04-01,Leave carry-forward cap,12 days,employees who joined before 1 April 2025
-hr-leave-policy-v2,Annual Leave Policy,HR,2,current,,join_date >= 2025-04-01,Leave carry-forward cap,5 days,employees who joined on or after 1 April 2025
+hr-leave-policy-v1,Annual Leave Policy,HR,1,superseded,hr-leave-policy-v2,join_date < 2025-04-01,Leave carry-forward cap,12 unused leave days,employees who joined before 1 April 2025
+hr-leave-policy-v2,Annual Leave Policy,HR,2,current,,join_date >= 2025-04-01,Leave carry-forward cap,5 unused leave days,employees who joined on or after 1 April 2025
 hr-expense-claims-v1,Expense Claims Policy,HR,1,superseded,hr-expense-claims-v2,[],Claim submission deadline,60 calendar days,nobody (fully replaced by v2)
 hr-expense-claims-v2,Expense Claims Policy,HR,2,current,,[],Claim submission deadline,30 calendar days,all employees
 hr-probation-policy-v1,Probation Policy,HR,1,superseded,hr-probation-policy-v2,join_date < 2026-07-01,Probation period length,6 months,employees who joined before 1 July 2026
