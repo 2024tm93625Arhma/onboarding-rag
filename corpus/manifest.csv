@@ -1,123 +1,141 @@
-doc_id,title,department,version,status,superseded_by,applies_if,differing_fact,value,governs,correct_doc_id
-hr-leave-policy-v1,Annual Leave Policy,HR,1,superseded,hr-leave-policy-v2,join_date < 2025-04-01,Leave carry-forward cap,12 unused leave days,employees who joined before 1 April 2025,
-hr-leave-policy-v2,Annual Leave Policy,HR,2,current,,join_date >= 2025-04-01,Leave carry-forward cap,5 unused leave days,employees who joined on or after 1 April 2025,
-hr-expense-claims-v1,Expense Claims Policy,HR,1,superseded,hr-expense-claims-v2,[],Claim submission deadline,60 calendar days,nobody (fully replaced by v2),
-hr-expense-claims-v2,Expense Claims Policy,HR,2,current,,[],Claim submission deadline,30 calendar days,all employees,
-hr-probation-policy-v1,Probation Policy,HR,1,superseded,hr-probation-policy-v2,join_date < 2026-07-01,Probation period length,6 months,employees who joined before 1 July 2026,
-hr-probation-policy-v2,Probation Policy,HR,2,current,,join_date >= 2026-07-01,Probation period length,3 months,employees who joined on or after 1 July 2026,
-hr-referral-bonus-v1,Employee Referral Bonus Policy,HR,1,superseded,hr-referral-bonus-v2,[],Referral bonus amount,"INR 50,000",nobody (fully replaced by v2),
-hr-referral-bonus-v2,Employee Referral Bonus Policy,HR,2,current,,[],Referral bonus amount,"INR 75,000",all employees,
-hr-wfh-policy-v1,Work From Home Policy,HR,1,superseded,hr-wfh-policy-v2,join_date < 2025-01-01,Maximum WFH days per week,3 days,employees (incl. contractors and interns) who joined before 1 January 2025,
-hr-wfh-policy-v2,Work From Home Policy,HR,2,current,,join_date >= 2025-01-01,Maximum WFH days per week,2 days,employees (incl. contractors and interns) who joined on or after 1 January 2025,
-it-laptop-request-v1,Laptop Request and Refresh Policy,IT,1,superseded,it-laptop-request-v2,join_date < 2024-10-01 AND department == Engineering,Laptop refresh cycle,4-year,Engineering employees who joined before 1 October 2024,
-it-laptop-request-v2,Laptop Request and Refresh Policy,IT,2,current,,join_date >= 2024-10-01 AND department == Engineering,Laptop refresh cycle,3-year,Engineering employees who joined on or after 1 October 2024,
-it-vpn-access-v1,VPN Access Policy,IT,1,superseded,it-vpn-access-v2,[],VPN idle session timeout,60 minutes,nobody (fully replaced by v2),
-it-vpn-access-v2,VPN Access Policy,IT,2,current,,[],VPN idle session timeout,30 minutes,all employees,
-it-password-rules-v1,Password Rules,IT,1,superseded,it-password-rules-v2,[],Minimum password length,12 characters,nobody (fully replaced by v2),
-it-password-rules-v2,Password Rules,IT,2,current,,[],Minimum password length,14 characters,all employees,
-it-software-install-v1,Software Installation Policy,IT,1,superseded,it-software-install-v2,[],Fulfilment time for approved software requests,5 business days,nobody (fully replaced by v2),
-it-software-install-v2,Software Installation Policy,IT,2,current,,[],Fulfilment time for approved software requests,3 business days,all employees,
-it-asset-return-v1,IT Asset Return Policy,IT,1,superseded,it-asset-return-v2,[],Asset return deadline after last working day,7 working days,nobody (fully replaced by v2),
-it-asset-return-v2,IT Asset Return Policy,IT,2,current,,[],Asset return deadline after last working day,3 working days,all employees,
-fac-desk-booking-v1,Desk Booking Policy,Facilities,1,superseded,fac-desk-booking-v2,[],Advance desk booking window,7 days,nobody (fully replaced by v2),
-fac-desk-booking-v2,Desk Booking Policy,Facilities,2,current,,[],Advance desk booking window,14 days,all employees,
-fac-parking-v1,Office Parking Policy,Facilities,1,superseded,fac-parking-v2,location == Bengaluru AND join_date < 2025-06-01,Monthly parking permit fee,"INR 1,000",Bengaluru office employees who joined before 1 June 2025,
-fac-parking-v2,Office Parking Policy,Facilities,2,current,,location == Bengaluru AND join_date >= 2025-06-01,Monthly parking permit fee,"INR 1,500",Bengaluru office employees who joined on or after 1 June 2025,
-fac-visitor-pass-v1,Visitor Pass Policy,Facilities,1,superseded,fac-visitor-pass-v2,[],Visitor pre-registration lead time,24 hours,nobody (fully replaced by v2),
-fac-visitor-pass-v2,Visitor Pass Policy,Facilities,2,current,,[],Visitor pre-registration lead time,48 hours,all employees,
-fin-travel-booking-v1,Business Travel Booking Policy,Finance,1,superseded,fin-travel-booking-v2,[],Minimum advance booking for domestic flights,14 days,nobody (fully replaced by v2),
-fin-travel-booking-v2,Business Travel Booking Policy,Finance,2,current,,[],Minimum advance booking for domestic flights,21 days,all employees,
-fin-reimbursement-limits-v1,Reimbursement Limits Policy,Finance,1,superseded,fin-reimbursement-limits-v2,[],Daily meal allowance on domestic travel,"INR 1,500",nobody (fully replaced by v2),
-fin-reimbursement-limits-v2,Reimbursement Limits Policy,Finance,2,current,,[],Daily meal allowance on domestic travel,"INR 2,000",all employees,
-hr-helpdesk-contacts,HR Helpdesk Contacts,HR,,current,,[],,,,
-hr-first-day-checklist,First Day Checklist,HR,,current,,[],,,,
-hr-payslip-download-howto,How to Download Your Payslip,HR,,current,,[],,,,
-hr-emergency-contact-howto,How to Update Your Emergency Contact,HR,,current,,[],,,,
-hr-onboarding-faq,New Joiner FAQ,HR,,current,,[],,,,
-hr-people-operations-team,People Operations Team,HR,,current,,[],,,,
-hr-bank-details-howto,How to Change Your Salary Bank Account,HR,,current,,[],,,,
-hr-leave-request-howto,How to Apply for Leave,HR,,current,,[],,,,
-hr-exit-clearance-checklist,Exit Clearance Checklist,HR,,current,,[],,,,
-hr-background-verification-sop,Background Verification SOP,HR,,current,,[],,,,
-hr-manager-onboarding-checklist,Manager Checklist for New Joiners,HR,,current,,[],,,,
-hr-employment-letter-howto,How to Request an Employment Letter,HR,,current,,[],,,,
-hr-new-joiner-onboarding-sop,New Joiner Onboarding SOP,HR,,current,,[],,,,
-hr-benefits-faq,Employee Benefits FAQ,HR,,current,,[],,,,
-hr-grievance-handling-sop,Grievance Handling SOP,HR,,current,,[],,,,
-hr-performance-review-guide,Performance Review Guide,HR,,current,,[],,,,
-it-service-desk-contacts,IT Service Desk Contacts,IT,,current,,[],,,,
-it-wifi-setup-howto,How to Connect to Office Wi-Fi,IT,,current,,[],,,,
-it-printer-setup-howto,How to Set Up Office Printing,IT,,current,,[],,,,
-it-mfa-reset-howto,How to Reset Multi-Factor Authentication,IT,,current,,[],,,,
-it-laptop-first-login-howto,First Login on Your Company Laptop,IT,,current,,[],,,,
-it-email-calendar-setup,Setting Up Email and Calendar,IT,,current,,[],,,,
-it-password-manager-howto,How to Use the Company Password Manager,IT,,current,,[],,,,
-it-vpn-troubleshooting-faq,VPN Troubleshooting FAQ,IT,,current,,[],,,,
-it-video-conferencing-howto,How to Use Video Conferencing,IT,,current,,[],,,,
-it-software-catalogue-howto,How to Install Software from the Catalogue,IT,,current,,[],,,,
-it-mobile-device-enrolment-howto,How to Use Work Apps on Your Phone,IT,,current,,[],,,,
-it-glossary,IT Glossary,IT,,current,,[],,,,
-it-escalation-matrix,IT Incident Escalation Matrix,IT,,current,,[],,,,
-it-troubleshooting-faq,IT Troubleshooting FAQ,IT,,current,,[],,,,
-it-new-joiner-setup-guide,New Joiner IT Setup Guide,IT,,current,,[],,,,
-it-remote-working-guide,Remote Working Technology Guide,IT,,current,,[],,,,
-fac-helpdesk-contacts,Facilities Help Desk Contacts,Facilities,,current,,[],,,,
-fac-locker-request-howto,How to Request a Locker,Facilities,,current,,[],,,,
-fac-end-of-day-checklist,End of Day Office Checklist,Facilities,,current,,[],,,,
-fac-desk-booking-howto,How to Book a Desk,Facilities,,current,,[],,,,
-fac-meeting-room-howto,How to Book a Meeting Room,Facilities,,current,,[],,,,
-fac-id-badge-faq,ID Badge and Office Access FAQ,Facilities,,current,,[],,,,
-fac-visitor-hosting-checklist,Checklist for Hosting a Visitor,Facilities,,current,,[],,,,
-fac-maintenance-request-howto,How to Report a Maintenance Issue,Facilities,,current,,[],,,,
-fac-parking-faq,Parking and Commuting FAQ,Facilities,,current,,[],,,,
-fac-bengaluru-office-guide,Bengaluru Office Floor Guide,Facilities,,current,,[],,,,
-fac-escalation-contacts,Facilities Escalation Contacts,Facilities,,current,,[],,,,
-fac-workplace-faq,Workplace and Office Facilities FAQ,Facilities,,current,,[],,,,
-fin-travel-desk-faq,Travel Desk FAQ,Finance,,current,,[],Minimum advance booking for domestic flights,14 days,,fin-travel-booking-v2
-it-security-basics-faq,Security Basics FAQ for New Joiners,IT,,current,,[],Minimum password length,12 characters,,it-password-rules-v2
-fac-reception-faq,Reception Desk FAQ,Facilities,,current,,[],Visitor pre-registration lead time,24 hours,,fac-visitor-pass-v2
-it-platform-team-wiki,Platform Team Wiki - Remote Access Notes,IT,,current,,[],VPN idle session timeout,60 minutes,,it-vpn-access-v2
-hr-talent-acquisition-wiki,Talent Acquisition Team Wiki - Referrals,HR,,current,,[],Referral bonus amount,"INR 50,000",,hr-referral-bonus-v2
-fin-accounts-payable-wiki,Accounts Payable Team Wiki - Employee Claims,Finance,,current,,[],Claim submission deadline,60 calendar days,,hr-expense-claims-v2
-it-service-desk-kt-transcript,Service Desk KT Session - Software Requests,IT,,current,,[],Fulfilment time for approved software requests,5 business days,,it-software-install-v2
-it-offboarding-kt-transcript,End User Services KT Session - Leaver Equipment,IT,,current,,[],Asset return deadline after last working day,7 working days,,it-asset-return-v2
-hr-engineering-onboarding-checklist,Engineering New Joiner Checklist,HR,,current,,[],Probation period length,6 months,,hr-probation-policy-v2
-fac-new-starter-office-checklist,New Starter Office Checklist,Facilities,,current,,[],Advance desk booking window,7 days,,fac-desk-booking-v2
-hr-manager-crib-sheet,Manager Crib Sheet - New Team Members,HR,,current,,[],Maximum WFH days per week,3 days,,hr-wfh-policy-v2
-fin-manager-expense-crib-sheet,Manager Crib Sheet - Approving Team Expenses,Finance,,current,,[],Daily meal allowance on domestic travel,"INR 1,500",,fin-reimbursement-limits-v2
-fin-receipt-upload-howto,How to Attach a Receipt to an Expense Claim,Finance,,current,,[],,,,
-fin-invoice-status-howto,How to Check a Supplier Invoice's Payment Status,Finance,,current,,[],,,,
-fin-cost-centre-howto,How to Find Your Cost Centre,Finance,,current,,[],,,,
-fin-payroll-calendar-2026,Payroll Calendar 2026,Finance,,current,,[],,,,
-fin-expense-claim-howto,How to Submit an Expense Claim,Finance,,current,,[],,,,
-fin-corporate-card-howto,How to Get and Use a Corporate Card,Finance,,current,,[],,,,
-fin-purchase-order-howto,How to Raise a Purchase Order,Finance,,current,,[],,,,
-fin-vendor-onboarding-checklist,Checklist for Onboarding a New Vendor,Finance,,current,,[],,,,
-fin-invoice-faq,Supplier Invoice FAQ,Finance,,current,,[],,,,
-fin-procure-to-pay-guide,Procure-to-Pay Guide,Finance,,current,,[],,,,
-fin-vendor-onboarding-sop,Vendor Onboarding SOP,Finance,,current,,[],,,,
-fin-payroll-faq,Payroll FAQ,Finance,,current,,[],,,,
-eng-branching-strategy,Branching Strategy,Engineering,,current,,[],,,,
-eng-ci-pipeline-faq,CI Pipeline FAQ,Engineering,,current,,[],,,,
-eng-code-review-process,Code Review Process,Engineering,,current,,[],,,,
-eng-code-review-reviewer-guide,Code Review Guide for Reviewers,Engineering,,current,,[],,,,
-eng-deployment-runbook,Production Deployment Runbook,Engineering,,current,,[],,,,
-eng-glossary,Engineering Glossary,Engineering,,current,,[],,,,
-eng-hotfix-branch-howto,How to Create a Hotfix Branch,Engineering,,current,,[],,,,
-eng-local-environment-setup,Local Development Environment Setup,Engineering,,current,,[],,,,
-eng-on-call-handbook,On-Call Handbook,Engineering,,current,,[],,,,
-eng-on-call-rota-q4-2026,"Platform On-Call Rota, Q4 2026",Engineering,,current,,[],,,,
-eng-repo-access-howto,How to Get Access to Code Repositories,Engineering,,current,,[],,,,
-eng-rollback-runbook,Production Rollback Runbook,Engineering,,current,,[],,,,
-legal-e-signature-howto,How to Send a Document for E-Signature,Legal,,current,,[],,,,
-legal-nda-request-howto,How to Request an NDA,Legal,,current,,[],,,,
-legal-coi-declaration-howto,How to Declare a Conflict of Interest,Legal,,current,,[],,,,
-legal-nda-process,Non-Disclosure Agreement Process,Legal,,current,,[],,,,
-legal-ip-assignment-faq,Intellectual Property Assignment FAQ,Legal,,current,,[],,,,
-legal-contract-review-workflow,Contract Review Workflow,Legal,,current,,[],,,,
-legal-data-protection-basics,Data Protection Basics,Legal,,current,,[],,,,
-legal-records-retention-faq,Records Retention FAQ,Legal,,current,,[],,,,
-legal-e-signature-faq,E-Signature FAQ,Legal,,current,,[],,,,
-legal-conflict-of-interest-guide,Conflict of Interest Guide,Legal,,current,,[],,,,
-legal-records-retention-schedule,Records Retention Schedule,Legal,,current,,[],,,,
-legal-personal-data-handling-guide,Personal Data Handling Guide,Legal,,current,,[],,,,
+doc_id,title,department,version,status,superseded_by,applies_if,differing_fact,value,governs,correct_doc_id,sensitivity
+hr-leave-policy-v1,Annual Leave Policy,HR,1,superseded,hr-leave-policy-v2,join_date < 2025-04-01,Leave carry-forward cap,12 unused leave days,employees who joined before 1 April 2025,,internal
+hr-leave-policy-v2,Annual Leave Policy,HR,2,current,,join_date >= 2025-04-01,Leave carry-forward cap,5 unused leave days,employees who joined on or after 1 April 2025,,internal
+hr-expense-claims-v1,Expense Claims Policy,HR,1,superseded,hr-expense-claims-v2,[],Claim submission deadline,60 calendar days,nobody (fully replaced by v2),,internal
+hr-expense-claims-v2,Expense Claims Policy,HR,2,current,,[],Claim submission deadline,30 calendar days,all employees,,internal
+hr-probation-policy-v1,Probation Policy,HR,1,superseded,hr-probation-policy-v2,join_date < 2026-07-01,Probation period length,6 months,employees who joined before 1 July 2026,,internal
+hr-probation-policy-v2,Probation Policy,HR,2,current,,join_date >= 2026-07-01,Probation period length,3 months,employees who joined on or after 1 July 2026,,internal
+hr-referral-bonus-v1,Employee Referral Bonus Policy,HR,1,superseded,hr-referral-bonus-v2,[],Referral bonus amount,"INR 50,000",nobody (fully replaced by v2),,internal
+hr-referral-bonus-v2,Employee Referral Bonus Policy,HR,2,current,,[],Referral bonus amount,"INR 75,000",all employees,,internal
+hr-wfh-policy-v1,Work From Home Policy,HR,1,superseded,hr-wfh-policy-v2,join_date < 2025-01-01,Maximum WFH days per week,3 days,employees (incl. contractors and interns) who joined before 1 January 2025,,internal
+hr-wfh-policy-v2,Work From Home Policy,HR,2,current,,join_date >= 2025-01-01,Maximum WFH days per week,2 days,employees (incl. contractors and interns) who joined on or after 1 January 2025,,internal
+it-laptop-request-v1,Laptop Request and Refresh Policy,IT,1,superseded,it-laptop-request-v2,join_date < 2024-10-01 AND department == Engineering,Laptop refresh cycle,4-year,Engineering employees who joined before 1 October 2024,,internal
+it-laptop-request-v2,Laptop Request and Refresh Policy,IT,2,current,,join_date >= 2024-10-01 AND department == Engineering,Laptop refresh cycle,3-year,Engineering employees who joined on or after 1 October 2024,,internal
+it-vpn-access-v1,VPN Access Policy,IT,1,superseded,it-vpn-access-v2,[],VPN idle session timeout,60 minutes,nobody (fully replaced by v2),,internal
+it-vpn-access-v2,VPN Access Policy,IT,2,current,,[],VPN idle session timeout,30 minutes,all employees,,internal
+it-password-rules-v1,Password Rules,IT,1,superseded,it-password-rules-v2,[],Minimum password length,12 characters,nobody (fully replaced by v2),,internal
+it-password-rules-v2,Password Rules,IT,2,current,,[],Minimum password length,14 characters,all employees,,internal
+it-software-install-v1,Software Installation Policy,IT,1,superseded,it-software-install-v2,[],Fulfilment time for approved software requests,5 business days,nobody (fully replaced by v2),,internal
+it-software-install-v2,Software Installation Policy,IT,2,current,,[],Fulfilment time for approved software requests,3 business days,all employees,,internal
+it-asset-return-v1,IT Asset Return Policy,IT,1,superseded,it-asset-return-v2,[],Asset return deadline after last working day,7 working days,nobody (fully replaced by v2),,internal
+it-asset-return-v2,IT Asset Return Policy,IT,2,current,,[],Asset return deadline after last working day,3 working days,all employees,,internal
+fac-desk-booking-v1,Desk Booking Policy,Facilities,1,superseded,fac-desk-booking-v2,[],Advance desk booking window,7 days,nobody (fully replaced by v2),,internal
+fac-desk-booking-v2,Desk Booking Policy,Facilities,2,current,,[],Advance desk booking window,14 days,all employees,,internal
+fac-parking-v1,Office Parking Policy,Facilities,1,superseded,fac-parking-v2,location == Bengaluru AND join_date < 2025-06-01,Monthly parking permit fee,"INR 1,000",Bengaluru office employees who joined before 1 June 2025,,internal
+fac-parking-v2,Office Parking Policy,Facilities,2,current,,location == Bengaluru AND join_date >= 2025-06-01,Monthly parking permit fee,"INR 1,500",Bengaluru office employees who joined on or after 1 June 2025,,internal
+fac-visitor-pass-v1,Visitor Pass Policy,Facilities,1,superseded,fac-visitor-pass-v2,[],Visitor pre-registration lead time,24 hours,nobody (fully replaced by v2),,internal
+fac-visitor-pass-v2,Visitor Pass Policy,Facilities,2,current,,[],Visitor pre-registration lead time,48 hours,all employees,,internal
+fin-travel-booking-v1,Business Travel Booking Policy,Finance,1,superseded,fin-travel-booking-v2,[],Minimum advance booking for domestic flights,14 days,nobody (fully replaced by v2),,internal
+fin-travel-booking-v2,Business Travel Booking Policy,Finance,2,current,,[],Minimum advance booking for domestic flights,21 days,all employees,,internal
+fin-reimbursement-limits-v1,Reimbursement Limits Policy,Finance,1,superseded,fin-reimbursement-limits-v2,[],Daily meal allowance on domestic travel,"INR 1,500",nobody (fully replaced by v2),,internal
+fin-reimbursement-limits-v2,Reimbursement Limits Policy,Finance,2,current,,[],Daily meal allowance on domestic travel,"INR 2,000",all employees,,internal
+hr-helpdesk-contacts,HR Helpdesk Contacts,HR,,current,,[],,,,,internal
+hr-first-day-checklist,First Day Checklist,HR,,current,,[],,,,,internal
+hr-payslip-download-howto,How to Download Your Payslip,HR,,current,,[],,,,,internal
+hr-emergency-contact-howto,How to Update Your Emergency Contact,HR,,current,,[],,,,,internal
+hr-onboarding-faq,New Joiner FAQ,HR,,current,,[],,,,,internal
+hr-people-operations-team,People Operations Team,HR,,current,,[],,,,,internal
+hr-bank-details-howto,How to Change Your Salary Bank Account,HR,,current,,[],,,,,internal
+hr-leave-request-howto,How to Apply for Leave,HR,,current,,[],,,,,internal
+hr-exit-clearance-checklist,Exit Clearance Checklist,HR,,current,,[],,,,,internal
+hr-background-verification-sop,Background Verification SOP,HR,,current,,[],,,,,internal
+hr-manager-onboarding-checklist,Manager Checklist for New Joiners,HR,,current,,[],,,,,internal
+hr-employment-letter-howto,How to Request an Employment Letter,HR,,current,,[],,,,,internal
+hr-new-joiner-onboarding-sop,New Joiner Onboarding SOP,HR,,current,,[],,,,,internal
+hr-benefits-faq,Employee Benefits FAQ,HR,,current,,[],,,,,internal
+hr-grievance-handling-sop,Grievance Handling SOP,HR,,current,,[],,,,,internal
+hr-performance-review-guide,Performance Review Guide,HR,,current,,[],,,,,internal
+it-service-desk-contacts,IT Service Desk Contacts,IT,,current,,[],,,,,internal
+it-wifi-setup-howto,How to Connect to Office Wi-Fi,IT,,current,,[],,,,,internal
+it-printer-setup-howto,How to Set Up Office Printing,IT,,current,,[],,,,,internal
+it-mfa-reset-howto,How to Reset Multi-Factor Authentication,IT,,current,,[],,,,,internal
+it-laptop-first-login-howto,First Login on Your Company Laptop,IT,,current,,[],,,,,internal
+it-email-calendar-setup,Setting Up Email and Calendar,IT,,current,,[],,,,,internal
+it-password-manager-howto,How to Use the Company Password Manager,IT,,current,,[],,,,,internal
+it-vpn-troubleshooting-faq,VPN Troubleshooting FAQ,IT,,current,,[],,,,,internal
+it-video-conferencing-howto,How to Use Video Conferencing,IT,,current,,[],,,,,internal
+it-software-catalogue-howto,How to Install Software from the Catalogue,IT,,current,,[],,,,,internal
+it-mobile-device-enrolment-howto,How to Use Work Apps on Your Phone,IT,,current,,[],,,,,internal
+it-glossary,IT Glossary,IT,,current,,[],,,,,internal
+it-escalation-matrix,IT Incident Escalation Matrix,IT,,current,,[],,,,,internal
+it-troubleshooting-faq,IT Troubleshooting FAQ,IT,,current,,[],,,,,internal
+it-new-joiner-setup-guide,New Joiner IT Setup Guide,IT,,current,,[],,,,,internal
+it-remote-working-guide,Remote Working Technology Guide,IT,,current,,[],,,,,internal
+fac-helpdesk-contacts,Facilities Help Desk Contacts,Facilities,,current,,[],,,,,internal
+fac-locker-request-howto,How to Request a Locker,Facilities,,current,,[],,,,,internal
+fac-end-of-day-checklist,End of Day Office Checklist,Facilities,,current,,[],,,,,internal
+fac-desk-booking-howto,How to Book a Desk,Facilities,,current,,[],,,,,internal
+fac-meeting-room-howto,How to Book a Meeting Room,Facilities,,current,,[],,,,,internal
+fac-id-badge-faq,ID Badge and Office Access FAQ,Facilities,,current,,[],,,,,internal
+fac-visitor-hosting-checklist,Checklist for Hosting a Visitor,Facilities,,current,,[],,,,,internal
+fac-maintenance-request-howto,How to Report a Maintenance Issue,Facilities,,current,,[],,,,,internal
+fac-parking-faq,Parking and Commuting FAQ,Facilities,,current,,[],,,,,internal
+fac-bengaluru-office-guide,Bengaluru Office Floor Guide,Facilities,,current,,[],,,,,internal
+fac-escalation-contacts,Facilities Escalation Contacts,Facilities,,current,,[],,,,,internal
+fac-workplace-faq,Workplace and Office Facilities FAQ,Facilities,,current,,[],,,,,internal
+fin-travel-desk-faq,Travel Desk FAQ,Finance,,current,,[],Minimum advance booking for domestic flights,14 days,,fin-travel-booking-v2,internal
+it-security-basics-faq,Security Basics FAQ for New Joiners,IT,,current,,[],Minimum password length,12 characters,,it-password-rules-v2,internal
+fac-reception-faq,Reception Desk FAQ,Facilities,,current,,[],Visitor pre-registration lead time,24 hours,,fac-visitor-pass-v2,internal
+it-platform-team-wiki,Platform Team Wiki - Remote Access Notes,IT,,current,,[],VPN idle session timeout,60 minutes,,it-vpn-access-v2,internal
+hr-talent-acquisition-wiki,Talent Acquisition Team Wiki - Referrals,HR,,current,,[],Referral bonus amount,"INR 50,000",,hr-referral-bonus-v2,internal
+fin-accounts-payable-wiki,Accounts Payable Team Wiki - Employee Claims,Finance,,current,,[],Claim submission deadline,60 calendar days,,hr-expense-claims-v2,internal
+it-service-desk-kt-transcript,Service Desk KT Session - Software Requests,IT,,current,,[],Fulfilment time for approved software requests,5 business days,,it-software-install-v2,internal
+it-offboarding-kt-transcript,End User Services KT Session - Leaver Equipment,IT,,current,,[],Asset return deadline after last working day,7 working days,,it-asset-return-v2,internal
+hr-engineering-onboarding-checklist,Engineering New Joiner Checklist,HR,,current,,[],Probation period length,6 months,,hr-probation-policy-v2,internal
+fac-new-starter-office-checklist,New Starter Office Checklist,Facilities,,current,,[],Advance desk booking window,7 days,,fac-desk-booking-v2,internal
+hr-manager-crib-sheet,Manager Crib Sheet - New Team Members,HR,,current,,[],Maximum WFH days per week,3 days,,hr-wfh-policy-v2,internal
+fin-manager-expense-crib-sheet,Manager Crib Sheet - Approving Team Expenses,Finance,,current,,[],Daily meal allowance on domestic travel,"INR 1,500",,fin-reimbursement-limits-v2,internal
+fin-receipt-upload-howto,How to Attach a Receipt to an Expense Claim,Finance,,current,,[],,,,,internal
+fin-invoice-status-howto,How to Check a Supplier Invoice's Payment Status,Finance,,current,,[],,,,,internal
+fin-cost-centre-howto,How to Find Your Cost Centre,Finance,,current,,[],,,,,internal
+fin-payroll-calendar-2026,Payroll Calendar 2026,Finance,,current,,[],,,,,internal
+fin-expense-claim-howto,How to Submit an Expense Claim,Finance,,current,,[],,,,,internal
+fin-corporate-card-howto,How to Get and Use a Corporate Card,Finance,,current,,[],,,,,internal
+fin-purchase-order-howto,How to Raise a Purchase Order,Finance,,current,,[],,,,,internal
+fin-vendor-onboarding-checklist,Checklist for Onboarding a New Vendor,Finance,,current,,[],,,,,internal
+fin-invoice-faq,Supplier Invoice FAQ,Finance,,current,,[],,,,,internal
+fin-procure-to-pay-guide,Procure-to-Pay Guide,Finance,,current,,[],,,,,internal
+fin-vendor-onboarding-sop,Vendor Onboarding SOP,Finance,,current,,[],,,,,internal
+fin-payroll-faq,Payroll FAQ,Finance,,current,,[],,,,,internal
+eng-branching-strategy,Branching Strategy,Engineering,,current,,[],,,,,internal
+eng-ci-pipeline-faq,CI Pipeline FAQ,Engineering,,current,,[],,,,,internal
+eng-code-review-process,Code Review Process,Engineering,,current,,[],,,,,internal
+eng-code-review-reviewer-guide,Code Review Guide for Reviewers,Engineering,,current,,[],,,,,internal
+eng-deployment-runbook,Production Deployment Runbook,Engineering,,current,,[],,,,,internal
+eng-glossary,Engineering Glossary,Engineering,,current,,[],,,,,internal
+eng-hotfix-branch-howto,How to Create a Hotfix Branch,Engineering,,current,,[],,,,,internal
+eng-local-environment-setup,Local Development Environment Setup,Engineering,,current,,[],,,,,internal
+eng-on-call-handbook,On-Call Handbook,Engineering,,current,,[],,,,,internal
+eng-on-call-rota-q4-2026,"Platform On-Call Rota, Q4 2026",Engineering,,current,,[],,,,,internal
+eng-repo-access-howto,How to Get Access to Code Repositories,Engineering,,current,,[],,,,,internal
+eng-rollback-runbook,Production Rollback Runbook,Engineering,,current,,[],,,,,internal
+legal-e-signature-howto,How to Send a Document for E-Signature,Legal,,current,,[],,,,,internal
+legal-nda-request-howto,How to Request an NDA,Legal,,current,,[],,,,,internal
+legal-coi-declaration-howto,How to Declare a Conflict of Interest,Legal,,current,,[],,,,,internal
+legal-nda-process,Non-Disclosure Agreement Process,Legal,,current,,[],,,,,internal
+legal-ip-assignment-faq,Intellectual Property Assignment FAQ,Legal,,current,,[],,,,,internal
+legal-contract-review-workflow,Contract Review Workflow,Legal,,current,,[],,,,,internal
+legal-data-protection-basics,Data Protection Basics,Legal,,current,,[],,,,,internal
+legal-records-retention-faq,Records Retention FAQ,Legal,,current,,[],,,,,internal
+legal-e-signature-faq,E-Signature FAQ,Legal,,current,,[],,,,,internal
+legal-conflict-of-interest-guide,Conflict of Interest Guide,Legal,,current,,[],,,,,internal
+legal-records-retention-schedule,Records Retention Schedule,Legal,,current,,[],,,,,internal
+legal-personal-data-handling-guide,Personal Data Handling Guide,Legal,,current,,[],,,,,internal
+hr-salary-bands-2026,Salary Bands by Grade 2026-27,HR,,current,,[],,,,,restricted
+hr-performance-calibration-guidelines,Performance Calibration Guidelines for Managers,HR,,current,,[],,,,,confidential
+hr-redundancy-process,Redundancy Process,HR,,current,,[],,,,,restricted
+eng-security-incident-runbook,Security Incident Runbook,Engineering,,current,,[],,,,,confidential
+legal-vendor-contract-terms,Standard Vendor Contract Terms,Legal,,current,,[],,,,,confidential
+legal-vendor-negotiation-fallbacks,Vendor Negotiation Fallbacks,Legal,,current,,[],,,,,confidential
+hr-exit-interview-summary-h1-2026,Exit Interview Summary H1 2026,HR,,current,,[],,,,,confidential
+hr-compensation-review-cycle-2026,Compensation Review Cycle 2026,HR,,current,,[],,,,,confidential
+hr-compensation-review-key-dates,Compensation Review 2026: Key Dates,HR,,current,,[],,,,,confidential
+hr-disciplinary-procedure,Disciplinary Procedure for Managers,HR,,current,,[],,,,,confidential
+eng-pentest-findings-2026-q2,Penetration Test Findings Q2 2026,Engineering,,current,,[],,,,,restricted
+eng-pentest-retest-tracker,Penetration Test Retest Tracker,Engineering,,current,,[],,,,,confidential
+eng-key-rotation-runbook,Key and Secret Rotation Runbook,Engineering,,current,,[],,,,,restricted
+fin-departmental-budget-plan-fy2026-27,Departmental Budget Plan FY 2026-27,Finance,,current,,[],,,,,restricted
+fin-budget-freeze-notice-h2,Budget Freeze Notice H2 FY 2026-27,Finance,,current,,[],,,,,restricted
+fin-cloud-vendor-commercial-terms,Cloud Vendor Commercial Terms,Finance,,current,,[],,,,,confidential
+legal-ma-due-diligence-checklist,M&A Due Diligence Checklist: Project Kestrel,Legal,,current,,[],,,,,restricted
+legal-kestrel-data-room-access,Project Kestrel Data Room Access,Legal,,current,,[],,,,,restricted
