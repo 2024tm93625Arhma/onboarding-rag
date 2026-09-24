@@ -1,6 +1,7 @@
 ---
 doc_id: hr-expense-claims-v2
 title: Expense Claims Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2025-10-01
 status: current

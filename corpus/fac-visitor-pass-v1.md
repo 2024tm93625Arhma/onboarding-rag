@@ -1,6 +1,7 @@
 ---
 doc_id: fac-visitor-pass-v1
 title: Visitor Pass Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2022-10-01
 status: superseded

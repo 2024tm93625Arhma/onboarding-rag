@@ -1,6 +1,7 @@
 ---
 doc_id: it-password-rules-v1
 title: Password Rules
+doc_kind: policy_version
 version: 1
 effective_date: 2022-01-01
 status: superseded

@@ -1,6 +1,7 @@
 ---
 doc_id: it-asset-return-v1
 title: IT Asset Return Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2022-06-01
 status: superseded

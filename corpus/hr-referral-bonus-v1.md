@@ -1,6 +1,7 @@
 ---
 doc_id: hr-referral-bonus-v1
 title: Employee Referral Bonus Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2023-01-01
 status: superseded

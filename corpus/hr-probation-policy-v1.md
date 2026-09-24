@@ -1,6 +1,7 @@
 ---
 doc_id: hr-probation-policy-v1
 title: Probation Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2022-07-01
 status: superseded

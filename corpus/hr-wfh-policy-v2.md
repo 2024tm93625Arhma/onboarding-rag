@@ -1,6 +1,7 @@
 ---
 doc_id: hr-wfh-policy-v2
 title: Work From Home Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2025-01-01
 status: current

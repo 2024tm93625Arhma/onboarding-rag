@@ -1,6 +1,7 @@
 ---
 doc_id: it-laptop-request-v2
 title: Laptop Request and Refresh Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2024-10-01
 status: current

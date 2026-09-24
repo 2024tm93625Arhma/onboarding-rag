@@ -1,6 +1,7 @@
 ---
 doc_id: it-software-install-v1
 title: Software Installation Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2023-03-01
 status: superseded

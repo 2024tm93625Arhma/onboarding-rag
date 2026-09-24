@@ -1,6 +1,7 @@
 ---
 doc_id: fin-reimbursement-limits-v1
 title: Reimbursement Limits Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2023-04-01
 status: superseded

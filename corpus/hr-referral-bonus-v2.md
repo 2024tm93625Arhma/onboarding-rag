@@ -1,6 +1,7 @@
 ---
 doc_id: hr-referral-bonus-v2
 title: Employee Referral Bonus Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2025-07-01
 status: current

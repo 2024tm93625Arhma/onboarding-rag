@@ -1,6 +1,7 @@
 ---
 doc_id: it-software-install-v2
 title: Software Installation Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2026-02-01
 status: current

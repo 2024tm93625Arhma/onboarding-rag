@@ -1,6 +1,7 @@
 ---
 doc_id: it-password-rules-v2
 title: Password Rules
+doc_kind: policy_version
 version: 2
 effective_date: 2025-09-01
 status: current

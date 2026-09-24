@@ -1,6 +1,7 @@
 ---
 doc_id: hr-wfh-policy-v1
 title: Work From Home Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2022-04-01
 status: superseded

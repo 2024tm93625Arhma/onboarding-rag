@@ -1,6 +1,7 @@
 ---
 doc_id: hr-leave-policy-v2
 title: Annual Leave Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2025-04-01
 status: current

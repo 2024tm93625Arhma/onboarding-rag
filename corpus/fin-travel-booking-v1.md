@@ -1,6 +1,7 @@
 ---
 doc_id: fin-travel-booking-v1
 title: Business Travel Booking Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2023-02-01
 status: superseded

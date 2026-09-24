@@ -41,7 +41,8 @@ Each document starts with a YAML frontmatter block:
 |---|---|---|
 | `doc_id` | string | Unique ID. Must match the filename, e.g. `hr-leave-policy-v1`. |
 | `title` | string | Policy title, shared by both versions. |
-| `version` | int | `1` or `2`. Must match the `-vN` suffix of `doc_id`. |
+| `doc_kind` | string | `policy_version` for a document that is one half of a v1/v2 pair, `standalone` for everything else. A standalone document must have `version: null`, `status: current`, `superseded_by: null`, and no `-vN` suffix in its `doc_id`. |
+| `version` | int or null | For `policy_version`: `1` or `2`, matching the `-vN` suffix of `doc_id`. For `standalone`: `null`. |
 | `effective_date` | date | Date this version took effect. |
 | `status` | string | `current` or `superseded`. |
 | `superseded_by` | string or null | `doc_id` of the newer version. Set if and only if `status` is `superseded`. |
@@ -56,6 +57,7 @@ Example:
 ```yaml
 doc_id: hr-leave-policy-v1
 title: Annual Leave Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2023-01-01
 status: superseded
@@ -82,12 +84,15 @@ document body, so it can be used as a ground-truth answer string.
 
 1. **Frontmatter:** every required field is present and has the right type.
    `doc_id` matches the filename, `version` matches the suffix, and `status`
-   is consistent with `superseded_by`. `applies_if` conditions use known
+   is consistent with `superseded_by`. `doc_kind` is `policy_version` or
+   `standalone`, and standalone documents follow the rules in the schema
+   table above. `applies_if` conditions use known
    fields and operators, and `join_date` values are real dates.
-2. **Pairing:** every `superseded_by` target exists, every v1 has a v2, each
+2. **Pairing** (`policy_version` documents only): every `superseded_by`
+   target exists and is a `policy_version` document, every v1 has a v2, each
    v2 is superseded by exactly one v1, and the two share a base name.
-3. **Pair body diffs:** v1 and v2 bodies differ by at most 3 lines. The check
-   ignores the `(v1)`/`(v2)` heading tag and v2 lines announcing that it
+3. **Pair body diffs** (`policy_version` pairs only): v1 and v2 bodies
+   differ by at most 3 lines. The check ignores the `(v1)`/`(v2)` heading tag and v2 lines announcing that it
    replaces v1.
 4. **Effective dates:** no v2 has an `effective_date` after 2026-09-01.
 5. **Manifest:** every document appears in the manifest and every manifest

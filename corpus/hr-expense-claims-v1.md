@@ -1,6 +1,7 @@
 ---
 doc_id: hr-expense-claims-v1
 title: Expense Claims Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2023-04-01
 status: superseded

@@ -1,6 +1,7 @@
 ---
 doc_id: fin-reimbursement-limits-v2
 title: Reimbursement Limits Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2026-04-01
 status: current

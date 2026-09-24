@@ -1,6 +1,7 @@
 ---
 doc_id: it-laptop-request-v1
 title: Laptop Request and Refresh Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2022-01-01
 status: superseded

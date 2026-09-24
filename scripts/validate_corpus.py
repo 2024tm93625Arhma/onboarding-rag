@@ -25,7 +25,8 @@ MAX_PAIR_DIFF_LINES = 3
 REQUIRED = {
     "doc_id": str,
     "title": str,
-    "version": int,
+    "doc_kind": str,
+    "version": (int, type(None)),
     "effective_date": dt.date,
     "status": str,
     "superseded_by": (str, type(None)),
@@ -36,6 +37,10 @@ REQUIRED = {
     "owner": str,
 }
 STATUSES = {"current", "superseded"}
+POLICY_VERSION = "policy_version"  # one half of a v1/v2 pair
+STANDALONE = "standalone"  # not versioned; never superseded
+DOC_KINDS = {POLICY_VERSION, STANDALONE}
+VERSION_SUFFIX = re.compile(r"-v\d+$")
 COND_FIELDS = {"join_date", "department", "employment_type", "location"}
 COND_OPS = {"==", "!=", "<", "<=", ">", ">="}
 
@@ -94,8 +99,23 @@ def check_frontmatter(docs, report):
             report.fail(f"{stem}: status superseded but superseded_by is empty")
         if meta.get("status") == "current" and meta.get("superseded_by"):
             report.fail(f"{stem}: status current but superseded_by is set")
-        if not stem.endswith(f"-v{meta.get('version')}"):
-            report.fail(f"{stem}: version {meta.get('version')} does not match doc_id suffix")
+        kind = meta.get("doc_kind")
+        if kind not in DOC_KINDS:
+            report.fail(f"{stem}: doc_kind '{kind}' not in {sorted(DOC_KINDS)}")
+        elif kind == POLICY_VERSION:
+            if meta.get("version") is None:
+                report.fail(f"{stem}: policy_version document has version null")
+            elif not stem.endswith(f"-v{meta.get('version')}"):
+                report.fail(f"{stem}: version {meta.get('version')} does not match doc_id suffix")
+        else:  # standalone
+            if meta.get("version") is not None:
+                report.fail(f"{stem}: standalone document must have version null")
+            if meta.get("status") != "current":
+                report.fail(f"{stem}: standalone document must have status current")
+            if meta.get("superseded_by") is not None:
+                report.fail(f"{stem}: standalone document must have superseded_by null")
+            if VERSION_SUFFIX.search(stem):
+                report.fail(f"{stem}: standalone doc_id must not have a -vN suffix")
         for i, c in enumerate(meta.get("applies_if") or []):
             where = f"{stem}: applies_if[{i}]"
             if not isinstance(c, dict) or set(c) != {"field", "op", "value"}:
@@ -112,21 +132,28 @@ def check_frontmatter(docs, report):
 
 
 def check_pairs(docs, report):
-    """Returns [(v1_stem, v2_stem)] for pairs that are structurally valid."""
-    report.section("Supersession links and pairing")
+    """Returns [(v1_stem, v2_stem)] for pairs that are structurally valid.
+
+    Only doc_kind: policy_version documents take part in pairing.
+    """
+    report.section("Supersession links and pairing (policy_version only)")
     before = report.failures
+    versioned = {s: d for s, d in docs.items() if d["meta"].get("doc_kind") == POLICY_VERSION}
     pairs = []
     pointed_to = {}
-    for stem, d in docs.items():
+    for stem, d in versioned.items():
         target = d["meta"].get("superseded_by")
         if not target:
             continue
         if target not in docs:
             report.fail(f"{stem}: superseded_by '{target}' does not exist")
             continue
+        if target not in versioned:
+            report.fail(f"{stem}: superseded_by '{target}' is not a policy_version document")
+            continue
         pointed_to.setdefault(target, []).append(stem)
 
-    for stem, d in docs.items():
+    for stem, d in versioned.items():
         version = d["meta"].get("version")
         if version == 1 and not d["meta"].get("superseded_by"):
             report.fail(f"{stem}: v1 with no v2 (orphan)")
@@ -145,7 +172,8 @@ def check_pairs(docs, report):
         if version not in (1, 2):
             report.fail(f"{stem}: version {version} (only 1 and 2 are expected)")
     if report.failures == before:
-        report.ok(f"{len(pairs)} pairs, no orphans")
+        standalone = len(docs) - len(versioned)
+        report.ok(f"{len(pairs)} pairs, no orphans ({standalone} standalone documents skipped)")
     return pairs
 
 

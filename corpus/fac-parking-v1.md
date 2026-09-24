@@ -1,6 +1,7 @@
 ---
 doc_id: fac-parking-v1
 title: Office Parking Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2023-01-01
 status: superseded

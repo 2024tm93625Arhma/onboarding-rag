@@ -1,6 +1,7 @@
 ---
 doc_id: fac-desk-booking-v1
 title: Desk Booking Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2022-04-01
 status: superseded

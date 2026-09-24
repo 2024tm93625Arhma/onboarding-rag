@@ -1,6 +1,7 @@
 ---
 doc_id: it-asset-return-v2
 title: IT Asset Return Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2025-12-01
 status: current

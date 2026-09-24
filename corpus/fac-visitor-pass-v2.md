@@ -1,6 +1,7 @@
 ---
 doc_id: fac-visitor-pass-v2
 title: Visitor Pass Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2025-05-01
 status: current

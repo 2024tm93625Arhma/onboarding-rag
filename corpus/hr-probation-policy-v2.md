@@ -1,6 +1,7 @@
 ---
 doc_id: hr-probation-policy-v2
 title: Probation Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2026-07-01
 status: current

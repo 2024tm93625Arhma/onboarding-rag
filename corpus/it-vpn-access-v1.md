@@ -1,6 +1,7 @@
 ---
 doc_id: it-vpn-access-v1
 title: VPN Access Policy
+doc_kind: policy_version
 version: 1
 effective_date: 2022-09-01
 status: superseded

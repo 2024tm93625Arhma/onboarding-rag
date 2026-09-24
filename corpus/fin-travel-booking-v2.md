@@ -1,6 +1,7 @@
 ---
 doc_id: fin-travel-booking-v2
 title: Business Travel Booking Policy
+doc_kind: policy_version
 version: 2
 effective_date: 2026-03-01
 status: current
