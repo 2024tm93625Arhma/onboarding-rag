@@ -1,0 +1,56 @@
+[
+  {
+    "user_id": "u001",
+    "name": "Priya Raghavan",
+    "department": "Engineering",
+    "grade": "G6",
+    "location": "Bengaluru",
+    "employment_type": "full_time",
+    "join_date": "2023-03-15"
+  },
+  {
+    "user_id": "u002",
+    "name": "Arjun Mehta",
+    "department": "Engineering",
+    "grade": "G1",
+    "location": "Bengaluru",
+    "employment_type": "full_time",
+    "join_date": "2026-08-03"
+  },
+  {
+    "user_id": "u003",
+    "name": "Karthik Iyer",
+    "department": "Engineering",
+    "grade": "G3",
+    "location": "Pune",
+    "employment_type": "contractor",
+    "join_date": "2024-11-18"
+  },
+  {
+    "user_id": "u004",
+    "name": "Neha Kulkarni",
+    "department": "Finance",
+    "grade": "G4",
+    "location": "Bengaluru",
+    "employment_type": "full_time",
+    "join_date": "2025-02-10"
+  },
+  {
+    "user_id": "u005",
+    "name": "Sameer Qureshi",
+    "department": "HR",
+    "grade": "G7",
+    "location": "Hyderabad",
+    "employment_type": "full_time",
+    "join_date": "2025-06-01"
+  },
+  {
+    "user_id": "u006",
+    "name": "Divya Nair",
+    "department": "Legal",
+    "grade": "G2",
+    "location": "Bengaluru",
+    "employment_type": "full_time",
+    "join_date": "2026-07-01"
+  }
+]
