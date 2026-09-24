@@ -8,7 +8,7 @@ status: current
 superseded_by: null
 applies_if:
   - {field: join_date, op: ">=", value: 2025-01-01}
-conflicts_with: []
+conflicts_with: [hr-manager-crib-sheet]
 sensitivity: internal
 department_scope: [all]
 owner: HR - People Operations

@@ -7,7 +7,7 @@ effective_date: 2025-05-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [fac-reception-faq]
 sensitivity: internal
 department_scope: [all]
 owner: Facilities - Security

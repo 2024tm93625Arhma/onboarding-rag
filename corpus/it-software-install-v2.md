@@ -7,7 +7,7 @@ effective_date: 2026-02-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [it-service-desk-kt-transcript]
 sensitivity: internal
 department_scope: [all]
 owner: IT - End User Services

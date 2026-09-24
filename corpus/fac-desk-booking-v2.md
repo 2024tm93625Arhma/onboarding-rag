@@ -7,7 +7,7 @@ effective_date: 2025-08-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [fac-new-starter-office-checklist]
 sensitivity: internal
 department_scope: [all]
 owner: Facilities - Workplace Services

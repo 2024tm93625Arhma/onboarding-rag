@@ -11,6 +11,10 @@ topic keyword for that fact, in the sentence itself or in the heading above it.
 The keyword check keeps unrelated numbers such as "3 days" in a leave how-to
 from being reported as the WFH allowance.
 
+Documents with a non-empty conflicts_with are skipped: they contradict a policy
+on purpose (stale restatements kept as test cases), and the conflict is
+already declared in their frontmatter.
+
 Usage: python scripts/check_conflicts.py [corpus_dir]
 Exits 1 if any match is found, 0 if clean.
 """
@@ -129,16 +133,22 @@ def load_facts(corpus):
 
 
 def load_standalone(corpus):
-    docs = {}
+    """Return ({doc_id: body} to check, [doc_ids skipped because conflicts_with is set])."""
+    docs, declared = {}, []
     for path in sorted(corpus.glob("*.md")):
         text = path.read_text(encoding="utf-8")
         m = re.match(r"^---\n(.*?)\n---\n(.*)$", text, re.S)
         if not m:
             continue
         meta = yaml.safe_load(m.group(1)) or {}
-        if meta.get("doc_kind") == "standalone":
-            docs[meta.get("doc_id", path.stem)] = m.group(2)
-    return docs
+        if meta.get("doc_kind") != "standalone":
+            continue
+        doc_id = meta.get("doc_id", path.stem)
+        if meta.get("conflicts_with"):
+            declared.append(doc_id)
+        else:
+            docs[doc_id] = m.group(2)
+    return docs, declared
 
 
 def segments(body):
@@ -178,8 +188,9 @@ def sentences(text):
 def main():
     corpus = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else DEFAULT_CORPUS
     facts = load_facts(corpus)
-    docs = load_standalone(corpus)
-    print(f"Checking {len(docs)} standalone documents against {len(facts)} versioned facts\n")
+    docs, declared = load_standalone(corpus)
+    print(f"Checking {len(docs)} standalone documents against {len(facts)} versioned facts")
+    print(f"Skipping {len(declared)} with a declared conflict (conflicts_with set)\n")
 
     hits = 0
     for doc_id, body in docs.items():

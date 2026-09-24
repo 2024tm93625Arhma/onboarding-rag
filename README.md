@@ -47,7 +47,7 @@ Each document starts with a YAML frontmatter block:
 | `status` | string | `current` or `superseded`. |
 | `superseded_by` | string or null | `doc_id` of the newer version. Set if and only if `status` is `superseded`. |
 | `applies_if` | list | Conditions for who this version governs. Empty means no condition. Each item is `{field, op, value}`. `field` is one of `join_date`, `department`, `employment_type` or `location`. `op` is one of `== != < <= > >=`. |
-| `conflicts_with` | list | IDs of documents this one conflicts with. Currently empty in every document. |
+| `conflicts_with` | list | IDs of documents this one conflicts with. Set in both directions: a standalone document that restates a superseded value lists the current version, and that version lists it back. Empty otherwise. |
 | `sensitivity` | string | Access classification. Currently `internal` for every document. |
 | `department_scope` | list | Departments the policy is aimed at, e.g. `[all]` or `[Engineering]`. |
 | `owner` | string | Owning team, e.g. `HR - People Operations`. |

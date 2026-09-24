@@ -7,7 +7,7 @@ effective_date: 2025-09-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [it-security-basics-faq]
 sensitivity: internal
 department_scope: [all]
 owner: IT - Identity and Access

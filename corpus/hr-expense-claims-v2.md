@@ -7,7 +7,7 @@ effective_date: 2025-10-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [fin-accounts-payable-wiki]
 sensitivity: internal
 department_scope: [all]
 owner: HR - People Operations

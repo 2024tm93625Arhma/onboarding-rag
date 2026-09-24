@@ -7,7 +7,7 @@ effective_date: 2026-03-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [fin-travel-desk-faq]
 sensitivity: internal
 department_scope: [all]
 owner: Finance - Travel Desk

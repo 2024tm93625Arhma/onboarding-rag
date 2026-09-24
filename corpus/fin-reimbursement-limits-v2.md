@@ -7,7 +7,7 @@ effective_date: 2026-04-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [fin-manager-expense-crib-sheet]
 sensitivity: internal
 department_scope: [all]
 owner: Finance - Controllership

@@ -8,7 +8,7 @@ status: current
 superseded_by: null
 applies_if:
   - {field: join_date, op: ">=", value: 2026-07-01}
-conflicts_with: []
+conflicts_with: [hr-engineering-onboarding-checklist]
 sensitivity: internal
 department_scope: [all]
 owner: HR - People Operations

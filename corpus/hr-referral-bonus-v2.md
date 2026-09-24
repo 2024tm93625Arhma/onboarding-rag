@@ -7,7 +7,7 @@ effective_date: 2025-07-01
 status: current
 superseded_by: null
 applies_if: []
-conflicts_with: []
+conflicts_with: [hr-talent-acquisition-wiki]
 sensitivity: internal
 department_scope: [all]
 owner: HR - Talent Acquisition
