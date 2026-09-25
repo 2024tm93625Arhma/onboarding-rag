@@ -1,0 +1,66 @@
+{
+  "superseded_by": {
+    "fac-desk-booking-v1": "fac-desk-booking-v2",
+    "fac-parking-v1": "fac-parking-v2",
+    "fac-visitor-pass-v1": "fac-visitor-pass-v2",
+    "fin-reimbursement-limits-v1": "fin-reimbursement-limits-v2",
+    "fin-travel-booking-v1": "fin-travel-booking-v2",
+    "hr-expense-claims-v1": "hr-expense-claims-v2",
+    "hr-leave-policy-v1": "hr-leave-policy-v2",
+    "hr-probation-policy-v1": "hr-probation-policy-v2",
+    "hr-referral-bonus-v1": "hr-referral-bonus-v2",
+    "hr-wfh-policy-v1": "hr-wfh-policy-v2",
+    "it-asset-return-v1": "it-asset-return-v2",
+    "it-laptop-request-v1": "it-laptop-request-v2",
+    "it-password-rules-v1": "it-password-rules-v2",
+    "it-software-install-v1": "it-software-install-v2",
+    "it-vpn-access-v1": "it-vpn-access-v2"
+  },
+  "supersedes": {
+    "fac-desk-booking-v2": [
+      "fac-desk-booking-v1"
+    ],
+    "fac-parking-v2": [
+      "fac-parking-v1"
+    ],
+    "fac-visitor-pass-v2": [
+      "fac-visitor-pass-v1"
+    ],
+    "fin-reimbursement-limits-v2": [
+      "fin-reimbursement-limits-v1"
+    ],
+    "fin-travel-booking-v2": [
+      "fin-travel-booking-v1"
+    ],
+    "hr-expense-claims-v2": [
+      "hr-expense-claims-v1"
+    ],
+    "hr-leave-policy-v2": [
+      "hr-leave-policy-v1"
+    ],
+    "hr-probation-policy-v2": [
+      "hr-probation-policy-v1"
+    ],
+    "hr-referral-bonus-v2": [
+      "hr-referral-bonus-v1"
+    ],
+    "hr-wfh-policy-v2": [
+      "hr-wfh-policy-v1"
+    ],
+    "it-asset-return-v2": [
+      "it-asset-return-v1"
+    ],
+    "it-laptop-request-v2": [
+      "it-laptop-request-v1"
+    ],
+    "it-password-rules-v2": [
+      "it-password-rules-v1"
+    ],
+    "it-software-install-v2": [
+      "it-software-install-v1"
+    ],
+    "it-vpn-access-v2": [
+      "it-vpn-access-v1"
+    ]
+  }
+}

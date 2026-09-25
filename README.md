@@ -17,8 +17,12 @@ account, so that an employee gets the policy that actually applies to them.
 ```
 corpus/                      synthetic documents + manifest.csv
 data/user_profiles.json      test employee profiles
+data/chunks.jsonl            section-level chunks (written by src/ingest.py)
+data/supersession.json       supersession lookup (written by src/ingest.py)
+src/ingest.py                chunks the corpus and builds the supersession lookup
 scripts/validate_corpus.py   consistency checks for the corpus
 scripts/check_conflicts.py   checks standalone docs do not restate policy values
+scripts/check_chunks.py      checks chunks against the manifest; fills gold_chunk_id
 test_setup.py                smoke test for the retrieval libraries
 requirements.txt             Python dependencies
 ```
@@ -119,6 +123,7 @@ owner: HR - People Operations
 | `governs` | Versioned documents: plain-English description of who this version applies to. |
 | `correct_doc_id` | Conflicting documents: the current policy version that holds the correct value. |
 | `stale` | `true` for the 8 stale documents, `false` for everything else. |
+| `gold_chunk_id` | Rows with a `value`: the `chunk_id` of the one chunk of this document whose `chunk_body` contains the value. Empty otherwise. Generated, not hand-edited: `python scripts/check_chunks.py --write-gold` fills it in, and a plain run fails if it no longer matches the current chunking. |
 
 ### User profiles
 
@@ -172,6 +177,26 @@ declared. It exits with code 1 if it finds a match:
 python scripts/check_conflicts.py
 ```
 
+## Evaluation design decisions
+
+**Correctness is scored by chunk identity, not by string match.** A retrieved
+result counts as correct only if it is the expected gold chunk
+(`gold_chunk_id`), or, for document-level metrics, if its `parent_doc_id` is
+the expected document. Finding the `value` string somewhere in the retrieved
+text does **not** count.
+
+Why: many values are ambiguous across the corpus. Conflicting documents
+repeat v1 values on purpose, and short values such as `3 days`, `7 days` or
+`INR 1,500` appear in unrelated documents (`scripts/check_chunks.py` lists
+these overlaps). A string-match scorer would give credit for retrieving a
+superseded version, a conflicting crib sheet or an unrelated page that
+happens to contain the same string. Those are exactly the failures this
+project sets out to measure.
+
+The `value` column is still used to check the ground truth itself (it must
+appear verbatim in its document, and in exactly one of its chunks). It is
+not used as the correctness criterion when scoring retrieval.
+
 ## Setup
 
 The project has been used with Python 3.13.
@@ -202,9 +227,12 @@ Early stage. What exists so far:
 - The 148-document corpus (versioned, ordinary, conflicting, restricted and
   stale), its manifest, and 6 user profiles.
 - A validator and a conflict checker, both passing on the current corpus.
+- Section-level chunking (`src/ingest.py`) and a supersession lookup, with
+  `gold_chunk_id` in the manifest for every row that has a value (42 rows),
+  checked by `scripts/check_chunks.py`.
 - A smoke test confirming that BM25 and sentence-transformers are installed
   and working.
 
-Not built yet: indexing the corpus, a retrieval pipeline (baseline or
+Not built yet: embedding and indexing the chunks, a retrieval pipeline (baseline or
 version-aware), evaluation queries, and evaluation results. chromadb, pandas
 and scikit-learn are installed but not used by any code yet.
