@@ -19,7 +19,10 @@ corpus/                      synthetic documents + manifest.csv
 data/user_profiles.json      test employee profiles
 data/chunks.jsonl            section-level chunks (written by src/ingest.py)
 data/supersession.json       supersession lookup (written by src/ingest.py)
+data/chroma/                 persistent vector index (written by src/index_chunks.py; not in git)
 src/ingest.py                chunks the corpus and builds the supersession lookup
+src/index_chunks.py          embeds chunks and builds the ChromaDB collection
+scripts/smoke_test_index.py  sample query against the index, with and without a status filter
 scripts/validate_corpus.py   consistency checks for the corpus
 scripts/check_conflicts.py   checks standalone docs do not restate policy values
 scripts/check_chunks.py      checks chunks against the manifest; fills gold_chunk_id
@@ -197,6 +200,19 @@ The `value` column is still used to check the ground truth itself (it must
 appear verbatim in its document, and in exactly one of its chunks). It is
 not used as the correctness criterion when scoring retrieval.
 
+**Neither similarity nor status can pick between the versions of a
+conditional pair.** On the query "how many leave days can I carry forward",
+the current and superseded versions of the Annual Leave Policy were
+retrieved at cosine distances of 0.197 and 0.200, a separation of about
+0.003. The two chunks are word-for-word identical apart from the version tag
+and the carry-forward limit (5 days in v2, 12 in v1), so semantic similarity
+gives no reliable basis for choosing between them. Filtering on
+`status = current` removes the superseded version, but then employees who
+joined before 1 April 2025 get the wrong limit, because v1 still governs
+them. The right chunk has to be chosen by checking each chunk's `applies_if`
+conditions against the user's profile, not by similarity or status.
+(Reproduce with `python scripts/smoke_test_index.py`.)
+
 ## Setup
 
 The project has been used with Python 3.13.
@@ -232,7 +248,12 @@ Early stage. What exists so far:
   checked by `scripts/check_chunks.py`.
 - A smoke test confirming that BM25 and sentence-transformers are installed
   and working.
+- A persistent ChromaDB index of all 991 chunks (`src/index_chunks.py`),
+  embedded with `all-MiniLM-L6-v2` from `chunk_text`, with the full chunk
+  metadata attached. List fields (`applies_if`, `conflicts_with`,
+  `department_scope`) are stored as JSON strings, and null fields are
+  omitted. Re-running the script rebuilds the collection.
 
-Not built yet: embedding and indexing the chunks, a retrieval pipeline (baseline or
-version-aware), evaluation queries, and evaluation results. chromadb, pandas
-and scikit-learn are installed but not used by any code yet.
+Not built yet: a retrieval pipeline (baseline or version-aware), evaluation
+queries, and evaluation results. pandas and scikit-learn are installed but
+not used by any code yet.
