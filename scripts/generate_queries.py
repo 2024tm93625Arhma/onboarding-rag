@@ -168,7 +168,7 @@ for i, q in enumerate(UNANS):
     add('unanswerable', q, ['u001','u002','u004','u006'][i % 4], '', '', 'abstain',
         'not covered anywhere in the corpus')
 
-out = '/tmp/claude-0/-home-claude/c2796322-7e27-565a-8d5b-7813a6c733f1/scratchpad/queries_candidate.csv'
+out = 'data/queries_candidate.csv'
 cols = ['query_id','category','question','asking_user_id','gold_answer','gold_doc_id',
         'gold_chunk_id','must_not_use_doc_id','expected_behaviour','verified','note']
 with open(out,'w',newline='',encoding='utf-8') as f:
