@@ -31,6 +31,23 @@ scoped_search(query, profile, k, base) is not a baseline: it runs a base
 retriever SCOPE_DEPTH deep, drops chunks the profile may not see
 (provenance.in_scope) and returns the top k of what remains.
 
+provenance_rank(query, profile, k) is the provenance-aware ranker. It scores
+each chunk of scoped_search's SCOPE_DEPTH pool with
+
+    score(q, d, u) = ALPHA*rel(q,d) + BETA*A(d,u) + GAMMA*F(d,t) - DELTA*C(d,D)
+
+- rel: the hybrid RRF score, min-max normalised across the scoped pool.
+- A:   authority for this user. 1.0 if d applies to u and no other version in
+       d's policy family both applies to u and has a later effective_date; 0.3
+       if d applies but such a later version exists; 0.0 if d does not apply.
+       Family membership is taken from the whole corpus, not the pool, so a
+       later version counts even when none of its chunks were retrieved.
+       Standalone docs are families of one and so get 1.0 when they apply.
+- F:   freshness, exp(-age_in_years / FRESHNESS_SCALE) with age measured from
+       effective_date to REFERENCE_DATE.
+- C:   conflict penalty. Not implemented yet; DELTA is 0.
+Each result carries "rel", "authority" and "freshness" alongside "score".
+
 Models, the BM25 index and the chunk table load on first use and are cached
 for the life of the process. Heavy imports (sentence-transformers, chromadb,
 index_chunks) are deferred so that BM25 works without them.
@@ -39,8 +56,10 @@ Usage: python src/retrievers.py ["query"]
 """
 
 import json
+import math
 import re
 import sys
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
 
@@ -48,13 +67,25 @@ ROOT = Path(__file__).resolve().parent.parent
 CHUNKS_IN = ROOT / "data" / "chunks.jsonl"
 sys.path.insert(0, str(ROOT / "src"))
 
-from provenance import in_scope, policy_family  # noqa: E402
+from provenance import applies_to, in_scope, policy_family  # noqa: E402
 
 CROSS_ENCODER_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 RRF_K = 60
 FUSION_DEPTH = 100  # how deep each list goes into RRF
 RERANK_POOL = 20    # hybrid candidates passed to the cross-encoder / recency prior
 SCOPE_DEPTH = 100   # base-retriever depth scoped_search filters before truncating
+
+# provenance_rank weights and constants
+ALPHA = 1.0   # relevance
+BETA = 0.6    # authority
+GAMMA = 0.2   # freshness
+DELTA = 0.0   # conflict penalty (conflict detection not implemented yet)
+AUTHORITY_CURRENT = 1.0     # applies, and no later applicable version in the family
+AUTHORITY_SUPERSEDED = 0.3  # applies, but a later applicable version exists
+AUTHORITY_NOT_APPLICABLE = 0.0
+FRESHNESS_SCALE = 5.0       # years; F = exp(-age / FRESHNESS_SCALE)
+REFERENCE_DATE = date(2026, 9, 1)
+DAYS_PER_YEAR = 365.25
 
 TOKEN = re.compile(r"\w+")
 
@@ -80,6 +111,19 @@ def _chunks():
 @lru_cache(maxsize=1)
 def _chunks_by_id():
     return {c["chunk_id"]: c for c in _chunks()}
+
+
+@lru_cache(maxsize=1)
+def _family_versions():
+    """family -> one representative chunk per doc_id in that family.
+
+    applies_if and effective_date are document-level, so any chunk of a doc
+    stands in for the whole doc.
+    """
+    families = {}
+    for c in _chunks():
+        families.setdefault(policy_family(c), {}).setdefault(c["metadata"]["doc_id"], c)
+    return {fam: list(docs.values()) for fam, docs in families.items()}
 
 
 @lru_cache(maxsize=1)
@@ -167,6 +211,46 @@ def scoped_search(query, profile, k, base=hybrid_search):
     # Note that rerank and recency_prior cap their own pool at RERANK_POOL.
     pool = base(query, max(k, SCOPE_DEPTH))
     return [hit for hit in pool if in_scope(hit, profile)][:k]
+
+
+def authority(chunk, profile):
+    if not applies_to(chunk, profile):
+        return AUTHORITY_NOT_APPLICABLE
+    meta = chunk["metadata"]
+    eff = date.fromisoformat(meta["effective_date"])
+    for other in _family_versions()[policy_family(chunk)]:
+        other_meta = other["metadata"]
+        if other_meta["doc_id"] == meta["doc_id"]:
+            continue
+        if (date.fromisoformat(other_meta["effective_date"]) > eff
+                and applies_to(other, profile)):
+            return AUTHORITY_SUPERSEDED
+    return AUTHORITY_CURRENT
+
+
+def freshness(chunk, ref=REFERENCE_DATE):
+    age_days = (ref - date.fromisoformat(chunk["metadata"]["effective_date"])).days
+    return math.exp(-(age_days / DAYS_PER_YEAR) / FRESHNESS_SCALE)
+
+
+def provenance_rank(query, profile, k):
+    pool = scoped_search(query, profile, SCOPE_DEPTH)
+    if not pool:
+        return []
+    raw = [hit["score"] for hit in pool]
+    lo, hi = min(raw), max(raw)
+    span = hi - lo
+    scored = []
+    for hit in pool:
+        # A pool whose hybrid scores are all equal carries no relevance signal.
+        rel = (hit["score"] - lo) / span if span > 0 else 1.0
+        a = authority(hit, profile)
+        f = freshness(hit)
+        score = ALPHA * rel + BETA * a + GAMMA * f  # - DELTA * C, once C exists
+        scored.append({**hit, "score": score, "rel": rel, "authority": a, "freshness": f})
+    # Ties broken by chunk_id so the order is deterministic.
+    scored.sort(key=lambda h: (-h["score"], h["chunk_id"]))
+    return scored[:k]
 
 
 RETRIEVERS = {
