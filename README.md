@@ -22,6 +22,12 @@ data/supersession.json       supersession lookup (written by src/ingest.py)
 data/chroma/                 persistent vector index (written by src/index_chunks.py; not in git)
 src/ingest.py                chunks the corpus and builds the supersession lookup
 src/index_chunks.py          embeds chunks and builds the ChromaDB collection
+src/provenance.py            applicability, access scope and policy-family helpers
+src/retrievers.py            five baselines, scoped_search and provenance_rank
+src/evaluate.py              runs every retriever over the query set; writes data/results/
+data/queries.csv             108 annotated evaluation queries
+data/results/                evaluation output (baselines, method, per-category)
+tests/test_leakage.py        scoped_search never returns a leakage probe's restricted doc
 scripts/smoke_test_index.py  sample query against the index, with and without a status filter
 scripts/validate_corpus.py   consistency checks for the corpus
 scripts/check_conflicts.py   checks standalone docs do not restate policy values
@@ -236,9 +242,99 @@ python test_setup.py
 This scores a few toy sentences with BM25 and with the `all-MiniLM-L6-v2`
 sentence-transformers model. The model (~90 MB) downloads on first run.
 
+## Results
+
+All numbers below come from `data/results/` and are reproduced with:
+
+```
+python src/evaluate.py
+```
+
+The script runs every retriever over the 108 queries in `data/queries.csv`
+(version_conflict 20, user_dependent 19, cross_doc_conflict 12, ordinary 25,
+stale 8, leakage_probe 12, unanswerable 12), with each query answered for
+its `asking_user_id`. Recall@5 and MRR are scored on the 84 queries that have
+a gold chunk. The 24 leakage-probe and unanswerable queries have no gold
+chunk, so they are counted only in the two validity rates.
+
+- **IER (invalid-evidence rate):** share of queries whose top-1 chunk is
+  invalid for the asking user. A chunk is invalid if its `applies_if` does
+  not hold for the user, if it comes from the query's `must_not_use_doc_id`,
+  or if it is out of the user's scope.
+- **SVR (scope-violation rate):** share of queries with any out-of-scope
+  chunk in the top 5.
+
+### Overall
+
+| Retriever | Recall@5 | MRR | IER | SVR |
+|---|---|---|---|---|
+| BM25 | 0.750 | 0.486 | 21.3% | 21.3% |
+| Dense | **0.929** | **0.743** | 30.6% | 23.1% |
+| Hybrid (RRF) | 0.821 | 0.610 | 26.9% | 22.2% |
+| Cross-encoder rerank | 0.869 | 0.697 | 33.3% | 25.9% |
+| Recency prior | 0.762 | 0.661 | 21.3% | 22.2% |
+| Scoped search (hybrid + scope filter) | 0.786 | 0.580 | 13.0% | **0.0%** |
+| **Provenance rank (proposed)** | 0.786 | 0.691 | **0.0%** | **0.0%** |
+
+The first five rows are baselines. None of them reads `applies_if`, `status`
+or the user profile. Scoped search and provenance rank both use hybrid as
+their base retriever.
+
+### Findings
+
+**Retrieval quality and evidence validity move in opposite directions.**
+Dense has the best Recall@5 (0.929) and the reranker the second best
+(0.869), yet they have the two worst IERs (30.6% and 33.3%). BM25 has the
+worst recall (0.750) and the lowest IER (21.3%, tied with the recency prior).
+The stronger retrievers are better at finding the right policy family, and
+that makes them equally good at surfacing the wrong version of it.
+
+**"Prefer the newest" fails on grandfathered employees.** The recency prior
+reaches IER 0% on version_conflict queries, where v2 replaces v1 for
+everyone. On user_dependent queries its Recall@5 drops to 0.526, the worst of
+any retriever in any category. For those queries, v1 still governs part of
+the workforce, for example employees who joined before a cut-off date, and
+the recency prior pushes v1 down for them.
+
+**BM25 is systematically biased toward the superseded version.** The two
+versions of a pair are near-identical text, so BM25 often scores them
+exactly the same. On the smoke-test query "how many leave days can I carry
+forward", both leave-policy chunks score 22.881. `bm25_search` sorts by score
+with a stable sort, so tied chunks keep their order in `data/chunks.jsonl`,
+and there v1 comes before v2. Across the 39 version_conflict and
+user_dependent queries, both versions appeared in BM25's top 100 for 38.
+They tied exactly in 31 of those, and v1 ranked above v2 in all 31.
+
+**Dense finds the family but not the version.** On user_dependent queries,
+dense reaches Recall@5 1.000 with IER 42.1%. It retrieves the right policy
+family every time, but for nearly half the users its top-1 chunk is the
+version that does not apply to them. The reranker has the same IER on this
+category, with lower recall.
+
+**Every baseline leaks restricted content.** On the 12 leakage probes, all
+five baselines put a chunk the user may not see in the top 5 (SVR 100%).
+The scope filter alone brings this to 0%. `python tests/test_leakage.py`
+checks it per query.
+
+**The proposed method has no invalid or out-of-scope evidence.** Provenance
+rank reaches IER 0% and SVR 0% in every query category. Against hybrid, its
+base retriever, that costs 3.6 points of Recall@5 (0.786 vs 0.821). The
+scope filter accounts for all of that loss: scoped search has the same
+Recall@5. Authority and freshness re-ranking then raise MRR from 0.580 to
+0.691.
+
+**Freshness works against stale queries.** The freshness term F(d,t) decays
+with document age. For the 8 stale queries, though, the gold answer *is* the
+old document, which has no replacement. MRR on stale queries falls from
+0.875 (scoped search) to 0.750 (provenance rank). In q065 and q070 the stale
+gold document drops from rank 1 to rank 2 behind a newer, less relevant
+page, and setting GAMMA to 0 restores rank 1. For these queries the
+expected behaviour is `answer_conditionally`, meaning answer from the old
+page and flag its age, not to demote it.
+
 ## Status
 
-Early stage. What exists so far:
+What exists so far:
 
 - The 148-document corpus (versioned, ordinary, conflicting, restricted and
   stale), its manifest, and 6 user profiles.
@@ -253,7 +349,16 @@ Early stage. What exists so far:
   metadata attached. List fields (`applies_if`, `conflicts_with`,
   `department_scope`) are stored as JSON strings, and null fields are
   omitted. Re-running the script rebuilds the collection.
+- An annotated set of 108 evaluation queries (`data/queries.csv`), all
+  verified.
+- Five baseline retrievers (BM25, dense, hybrid RRF, cross-encoder rerank,
+  recency prior) and the proposed method (`src/retrievers.py`): a scope
+  filter followed by provenance-aware scoring with relevance, authority and
+  freshness.
+- An evaluation harness (`src/evaluate.py`) and its results (see Results).
 
-Not built yet: a retrieval pipeline (baseline or version-aware), evaluation
-queries, and evaluation results. pandas and scikit-learn are installed but
-not used by any code yet.
+Not built yet: the conflict penalty C(d,D) (DELTA is currently 0), the
+answer modes (answer / answer_conditionally / abstain), ablations of the
+scoring terms, and a variant of the method that uses dense as its base
+retriever. pandas and scikit-learn are installed but not used by any code
+yet.

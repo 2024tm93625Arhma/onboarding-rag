@@ -11,6 +11,9 @@
                  the chunk sets one. Grades run G1 (lowest) to G7.
 - policy_family: doc_id with the "-vN" suffix removed, so hr-leave-policy-v1 and
                  hr-leave-policy-v2 both map to hr-leave-policy.
+- in_conflict:   do two chunks declare a conflict with each other? They must
+                 come from different policy families and each doc's
+                 conflicts_with must list the other's doc_id.
 
 applies_to decides which version of a policy is right for the user; in_scope
 decides whether the user may see the document. A chunk can be in scope and
@@ -90,3 +93,11 @@ def in_scope(chunk, profile):
 
 def policy_family(chunk):
     return VERSION_SUFFIX.sub("", chunk["metadata"]["doc_id"])
+
+
+def in_conflict(a, b):
+    if policy_family(a) == policy_family(b):
+        return False
+    ma, mb = a["metadata"], b["metadata"]
+    return (mb["doc_id"] in (ma.get("conflicts_with") or [])
+            and ma["doc_id"] in (mb.get("conflicts_with") or []))

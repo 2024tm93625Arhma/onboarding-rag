@@ -1,6 +1,6 @@
 # Handover
 
-Last updated: 2026-09-25
+Last updated: 2026-10-16
 
 ## Done
 
@@ -17,12 +17,44 @@ Last updated: 2026-09-25
   the versions, and a status filter gives the wrong answer to pre-1 April 2025
   joiners, so version choice has to come from `applies_if` checked against the
   user profile. (Written up in the README under evaluation design.)
+- **Annotated query set.** `data/queries.csv` has 108 verified queries in
+  seven categories. 84 have a gold chunk; the 24 leakage-probe and
+  unanswerable queries are expected to abstain.
+- **Baselines.** `src/retrievers.py` has BM25, dense, hybrid RRF,
+  cross-encoder rerank and a recency prior. None of them reads the user
+  profile.
+- **Proposed method.** `scoped_search` filters out chunks the user may not
+  see (`provenance.in_scope`), and `provenance_rank` scores the scoped pool
+  with `ALPHA*rel + BETA*A + GAMMA*F`, where A is authority for the user and
+  F is freshness.
+- **Evaluation.** `python src/evaluate.py` writes `data/results/`. Provenance
+  rank: Recall@5 0.786, MRR 0.691, IER 0%, SVR 0%. Hybrid: Recall@5 0.821,
+  IER 26.9%, SVR 22.2%. Findings are written up in the README under Results.
 
 ## Next
 
-1. **Build the annotated query set** from `corpus/manifest.csv`, using the
-   `gold_chunk_id` column (42 rows with a value) as the expected answers.
-2. **Build the baseline retrievers** (BM25 and dense over the Chroma index).
+1. **Conflict detection.** For the top-k chunks, find pairs from different
+   policy families whose `conflicts_with` lists each other, and apply
+   C(d,D) to the lower-authority chunk with DELTA = 0.4 (DELTA is 0 now).
+   A helper `provenance.in_conflict(a, b)` is drafted but not yet used.
+   Note that `authority` gives a standalone document 1.0 whenever it
+   applies, so a crib sheet and the current policy it contradicts usually
+   tie on authority. Decide how to break that tie before relying on
+   "lower-authority".
+2. **Answer modes.** answer / answer_conditionally / abstain, chosen by
+   whether conflicting chunks of comparable authority remain after scoring.
+   Evaluate the false-answer rate on the 24 abstain queries and the
+   false-abstention rate on the 76 answer queries. A conflict signal alone
+   is unlikely to make leakage-probe and unanswerable queries abstain,
+   because those queries fail through missing evidence, not conflicting
+   evidence.
+3. **Ablations.** Drop each of authority, freshness and (once it exists) the
+   conflict penalty in turn and re-run the evaluation. The freshness ablation
+   matters in particular: GAMMA = 0 restores rank 1 for stale queries q065
+   and q070.
+4. **Dense-base variant.** Run scoped_search and provenance_rank on top of
+   dense instead of hybrid. Dense has the best baseline recall (0.929), so
+   it may recover the 3.6-point Recall@5 cost.
 
 ## Constraints
 
