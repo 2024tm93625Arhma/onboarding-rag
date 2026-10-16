@@ -1,0 +1,15 @@
+retriever,category,n_queries,n_ranked,recall@5,recall@10,mrr,ndcg@10,invalid_evidence_rate,scope_violation_rate,latency_ms_k5,latency_ms_k10
+scoped_search,cross_doc_conflict,12,12,0.8333,0.8333,0.4861,0.5764,0.1667,0.0000,14.8926,14.4096
+scoped_search,leakage_probe,12,0,,,,,0.0000,0.0000,14.1741,13.8481
+scoped_search,ordinary,25,25,0.8800,0.8800,0.8033,0.7426,0.0000,0.0000,14.4652,14.9313
+scoped_search,stale,8,8,0.8750,0.8750,0.8750,0.7312,0.0000,0.0000,13.7255,13.5757
+scoped_search,unanswerable,12,0,,,,,0.0833,0.0000,14.1577,12.2017
+scoped_search,user_dependent,19,19,0.8421,0.8421,0.5439,0.6203,0.3158,0.0000,14.9867,14.4441
+scoped_search,version_conflict,20,20,0.5500,0.6500,0.2725,0.3647,0.2500,0.0000,14.2394,15.2740
+provenance_rank,cross_doc_conflict,12,12,0.8333,1.0000,0.8545,0.8862,0.0000,0.0000,14.4187,14.6754
+provenance_rank,leakage_probe,12,0,,,,,0.0000,0.0000,12.6024,12.1058
+provenance_rank,ordinary,25,25,0.8800,0.8800,0.8100,0.7512,0.0000,0.0000,12.3134,12.3312
+provenance_rank,stale,8,8,0.8750,0.8750,0.7500,0.6447,0.0000,0.0000,12.4394,12.3718
+provenance_rank,unanswerable,12,0,,,,,0.0000,0.0000,12.3094,11.8947
+provenance_rank,user_dependent,19,19,0.8421,0.8421,0.6842,0.7256,0.0000,0.0000,14.6232,14.3089
+provenance_rank,version_conflict,20,20,0.5500,0.6500,0.4278,0.4813,0.0000,0.0000,13.3303,13.4828

@@ -1,4 +1,9 @@
-"""Evaluate every baseline retriever in retrievers.py over the frozen query set.
+"""Evaluate every retriever in retrievers.py over the frozen query set.
+
+Two groups are evaluated: the baselines (retrievers.RETRIEVERS, called as
+fn(query, k)) and the method retrievers (scoped_search and provenance_rank,
+called as fn(query, profile, k) with the profile of the query's
+asking_user_id).
 
 Each retriever is run over all queries in data/queries.csv at k=5 and k=10.
 Metrics, per retriever, overall and by query category:
@@ -31,11 +36,13 @@ Metrics, per retriever, overall and by query category:
   counted.
 
 The baselines apply no scope filter, so scope_violation_rate is expected to
-be non-zero.
+be non-zero. The method retrievers filter by scope, so it is expected to be 0.
 
-Writes data/results/baselines.csv (one row per retriever) and
-data/results/by_category.csv (one row per retriever x category), and prints
-both.
+Writes data/results/baselines.csv and data/results/method.csv (one row per
+retriever) and data/results/by_category.csv and
+data/results/method_by_category.csv (one row per retriever x category), prints
+them, and prints a comparison of every retriever's recall@5, IER
+(invalid_evidence_rate) and SVR (scope_violation_rate).
 
 Usage: python src/evaluate.py
 """
@@ -51,13 +58,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from retrievers import RETRIEVERS, _chunks  # noqa: E402
+from retrievers import RETRIEVERS, _chunks, provenance_rank, scoped_search  # noqa: E402
 
 QUERIES_IN = ROOT / "data" / "queries.csv"
 PROFILES_IN = ROOT / "data" / "user_profiles.json"
 RESULTS_DIR = ROOT / "data" / "results"
 BASELINES_OUT = RESULTS_DIR / "baselines.csv"
 BY_CATEGORY_OUT = RESULTS_DIR / "by_category.csv"
+METHOD_OUT = RESULTS_DIR / "method.csv"
+METHOD_BY_CATEGORY_OUT = RESULTS_DIR / "method_by_category.csv"
+
+# Profile-aware retrievers: fn(query, profile, k).
+METHODS = {
+    "scoped_search": scoped_search,
+    "provenance_rank": provenance_rank,
+}
 
 KS = (5, 10)
 WARMUP_QUERY = "warm-up"
@@ -177,15 +192,17 @@ def aggregate(rows):
 
 
 def run_retriever(fn, queries, profiles, golds):
-    fn(WARMUP_QUERY, max(KS))
+    """fn takes (query, profile, k); baselines are wrapped to ignore the profile."""
+    fn(WARMUP_QUERY, next(iter(profiles.values())), max(KS))
     per_query = []
     for q in queries:
+        user = profiles[q["asking_user_id"]]
         hits = {}
         for k in KS:
             start = time.perf_counter()
-            ranked = fn(q["question"], k)
+            ranked = fn(q["question"], user, k)
             hits[k] = (ranked, (time.perf_counter() - start) * 1000)
-        row = evaluate_query(q, profiles[q["asking_user_id"]], golds[q["query_id"]], hits)
+        row = evaluate_query(q, user, golds[q["query_id"]], hits)
         row["category"] = q["category"]
         per_query.append(row)
     return per_query
@@ -220,6 +237,23 @@ def print_table(title, rows, columns):
         print("  ".join(v.ljust(w) for v, w in zip(row, widths)))
 
 
+def evaluate_group(retrievers, queries, profiles, golds, categories):
+    """retrievers maps name -> fn(query, profile, k). Returns (overall, by_category)."""
+    overall, by_category = [], []
+    for name, fn in retrievers.items():
+        print(f"running {name} over {len(queries)} queries...", file=sys.stderr)
+        per_query = run_retriever(fn, queries, profiles, golds)
+        overall.append({"retriever": name, **aggregate(per_query)})
+        for cat in categories:
+            rows = [r for r in per_query if r["category"] == cat]
+            by_category.append({"retriever": name, "category": cat, **aggregate(rows)})
+    return overall, by_category
+
+
+def profile_free(fn):
+    return lambda query, profile, k: fn(query, k)
+
+
 def main():
     queries = load_queries()
     profiles = load_profiles()
@@ -227,22 +261,30 @@ def main():
     golds = {q["query_id"]: gold_ids(q, chunks) for q in queries}
     categories = sorted({q["category"] for q in queries})
 
-    baselines, by_category = [], []
-    for name, fn in RETRIEVERS.items():
-        print(f"running {name} over {len(queries)} queries...", file=sys.stderr)
-        per_query = run_retriever(fn, queries, profiles, golds)
-        baselines.append({"retriever": name, **aggregate(per_query)})
-        for cat in categories:
-            rows = [r for r in per_query if r["category"] == cat]
-            by_category.append({"retriever": name, "category": cat, **aggregate(rows)})
+    baselines, by_category = evaluate_group(
+        {name: profile_free(fn) for name, fn in RETRIEVERS.items()},
+        queries, profiles, golds, categories)
+    method, method_by_category = evaluate_group(
+        METHODS, queries, profiles, golds, categories)
 
     base_cols = ["retriever", "n_queries", "n_ranked", *METRICS]
     cat_cols = ["retriever", "category", "n_queries", "n_ranked", *METRICS]
     write_csv(BASELINES_OUT, baselines, base_cols)
     write_csv(BY_CATEGORY_OUT, by_category, cat_cols)
+    write_csv(METHOD_OUT, method, base_cols)
+    write_csv(METHOD_BY_CATEGORY_OUT, method_by_category, cat_cols)
 
     print_table(f"Baselines ({BASELINES_OUT.relative_to(ROOT)})", baselines, base_cols)
     print_table(f"By category ({BY_CATEGORY_OUT.relative_to(ROOT)})", by_category, cat_cols)
+    print_table(f"Method ({METHOD_OUT.relative_to(ROOT)})", method, base_cols)
+    print_table(f"Method by category ({METHOD_BY_CATEGORY_OUT.relative_to(ROOT)})",
+                method_by_category, cat_cols)
+
+    comparison = [{"retriever": r["retriever"], "Recall@5": r["recall@5"],
+                   "IER": r["invalid_evidence_rate"], "SVR": r["scope_violation_rate"]}
+                  for r in baselines + method]
+    print_table("Comparison (all 108 queries; Recall@5 over ranked queries only)",
+                comparison, ["retriever", "Recall@5", "IER", "SVR"])
 
 
 if __name__ == "__main__":
