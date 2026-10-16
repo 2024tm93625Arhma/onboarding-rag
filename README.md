@@ -26,6 +26,7 @@ src/provenance.py            applicability, access scope and policy-family helpe
 src/retrievers.py            five baselines, scoped_search and provenance_rank
 src/evaluate.py              runs every retriever over the query set; writes data/results/
 data/queries.csv             108 annotated evaluation queries
+data/query_split.csv         dev/test split of the queries (written by scripts/make_split.py)
 data/results/                evaluation output (baselines, method, per-category, answer modes)
 tests/test_leakage.py        scoped_search never returns a leakage probe's restricted doc
 tests/test_conflicts.py      provenance_rank keeps contradicting pages out of the top 5
@@ -33,6 +34,8 @@ scripts/smoke_test_index.py  sample query against the index, with and without a 
 scripts/validate_corpus.py   consistency checks for the corpus
 scripts/check_conflicts.py   checks standalone docs do not restate policy values
 scripts/check_chunks.py      checks chunks against the manifest; fills gold_chunk_id
+scripts/make_split.py        stratified dev/test split of the query set
+scripts/calibrate_relevance_floor.py  fits RELEVANCE_FLOOR on the dev split
 test_setup.py                smoke test for the retrieval libraries
 requirements.txt             Python dependencies
 ```
@@ -347,26 +350,26 @@ because the policy already ranked first: cross_doc_conflict MRR goes from
 
 ### Answer modes
 
-`provenance_answer` looks at the top 5 after scoring. If no declared-conflict
-pair of comparable authority (|ΔA| ≤ 0.1) is left in it, the mode is
-`answer`. If such a pair is left and the top-1 chunk is not the lower-
-precedence side, the mode is `answer_conditionally`. If the top-1 is the
-lower side, or the pair cannot be ordered, the mode is `abstain`. An empty
-scoped pool also gives `abstain`.
+`provenance_answer` takes `provenance_rank`'s top 5 and applies these checks
+in order:
 
-| Expected \ predicted | answer | answer_conditionally | abstain |
-|---|---|---|---|
-| answer (76) | 76 | 0 | 0 |
-| answer_conditionally (8) | 8 | 0 | 0 |
-| abstain (24) | 24 | 0 | 0 |
+1. **Relevance floor → `abstain`.** The cross-encoder
+   (`ms-marco-MiniLM-L-6-v2`) scores (query, top-1 chunk). If the logit is
+   below `RELEVANCE_FLOOR` = 2.1444, the mode is `abstain`, whatever the
+   conflict checks would say. An empty scoped pool also gives `abstain`.
+2. **Unresolved conflict → `abstain`.** A declared-conflict pair of comparable
+   authority (|ΔA| ≤ 0.1) is still in the top 5, and the top-1 is its lower-
+   precedence side, or the pair cannot be ordered.
+3. **`answer_conditionally`.** Such a pair is still there but the top-1 is
+   its winning side, or the top-1 chunk's freshness is below
+   `FRESHNESS_FLOOR` = e⁻¹ ≈ 0.368 (its effective_date is more than
+   `FRESHNESS_SCALE` = 5 years before the reference date).
+4. Otherwise, **`answer`**.
 
-False-answer rate on the 24 abstain queries: **100%**. False-abstention rate
-on the 76 answer queries: **0%**. Mode accuracy: 70.4% (76/108).
-(`data/results/answer_mode_summary.csv`, per query in
-`data/results/answer_modes.csv`.)
-
-The conflict signal does not separate the modes on this query set, for two
-reasons:
+Without the two floors (checks 2 to 4 only), every one of the 108 queries
+got `answer`: false-answer rate 100% (24/24), false-abstention rate 0%
+(0/76), mode accuracy 70.4%. The conflict signal could not separate the
+modes, for two reasons:
 
 - **The penalty resolves every conflict before the mode is chosen.** With
   DELTA = 0, the same rule returns `answer_conditionally` for 18 queries,
@@ -381,9 +384,93 @@ reasons:
   mode is `answer`. The stale queries likewise need an age signal, not a
   conflict signal.
 
-Making the abstain queries abstain needs an evidence-sufficiency signal (for
-example, a threshold on the top-1 relevance or a check that the answer is
-present). That signal does not exist yet.
+The two floors provide those signals: relevance for evidence sufficiency,
+and freshness for age.
+
+**Why a cross-encoder rather than `rel`.** `rel` is min-max normalised
+within the scoped pool, so the top-1 is always close to 1.0, even when the
+pool is all off-topic. The raw hybrid RRF score is an absolute value, but
+it depends only on rank, and the top-1 nearly always scores close to
+2/61 ≈ 0.033. Over the 100 answer and abstain queries, the AUC for
+separating answer from abstain is 0.77 for raw RRF and 0.90 for the
+cross-encoder logit on the top-1.
+
+**How the threshold was chosen.** `data/query_split.csv` splits the queries
+into dev (55) and test (53) halves, stratified by category, with a fixed
+seed (`scripts/make_split.py`). Before this there was no dev split, so a
+threshold tuned to separate "the 24 abstain from the 76 answer queries"
+would have been tuned on the full evaluation set.
+`scripts/calibrate_relevance_floor.py` scores only the 12 abstain and 39
+answer dev queries. It tries the midpoint between each pair of adjacent
+scores and keeps the one with the highest balanced accuracy,
+½·(abstain recall + answer recall). Balanced accuracy is used because the
+classes are imbalanced. Ties go to the widest gap. The winner is 2.1444,
+with dev balanced accuracy 0.817 (dev false-answer rate 8.3%,
+false-abstention rate 28.2%). The full sweep is in
+`data/results/relevance_floor_sweep.csv`. The test half was not looked at
+during calibration.
+
+**Why stale queries get `answer_conditionally` (option a, not
+relabelling).** The 8 stale documents exist to test an age signal that is
+separate from supersession, and "answer, but flag that the source is old"
+is the right behaviour for a user. So the labels stay as they are, and
+freshness triggers the mode. The floor was fixed at e⁻¹ from the existing
+`FRESHNESS_SCALE` instead of being fitted. The freshness values were seen
+before it was fixed, though, and the margin is narrow. The youngest stale
+document at top-1 is the 2021 org chart (F = 0.338). The oldest non-stale
+top-1 is `hr-wfh-policy-v1` (F = 0.413), which is the correct version for
+pre-2025 joiners and must not be flagged.
+
+#### Results
+
+Test (held out, 53 queries):
+
+| Expected \ predicted | answer | answer_conditionally | abstain |
+|---|---|---|---|
+| answer (37) | 25 | 0 | 12 |
+| answer_conditionally (4) | 0 | 3 | 1 |
+| abstain (12) | 0 | 0 | 12 |
+
+False-answer rate **0%** (0/12), false-abstention rate **32.4%** (12/37),
+mode accuracy 75.5%.
+
+Dev (used for calibration, 55 queries): false-answer 8.3% (1/12),
+false-abstention 28.2% (11/39), mode accuracy 74.5%.
+
+All 108 queries:
+
+| Expected \ predicted | answer | answer_conditionally | abstain |
+|---|---|---|---|
+| answer (76) | 53 | 0 | 23 |
+| answer_conditionally (8) | 0 | 5 | 3 |
+| abstain (24) | 1 | 0 | 23 |
+
+False-answer rate 4.2% (1/24), false-abstention rate 30.3% (23/76), mode
+accuracy 75.0%. (`data/results/answer_mode_summary.csv`; per query, with
+the top-1 relevance, freshness and doc, in
+`data/results/answer_modes.csv`.)
+
+**Reading the false abstentions.** In 20 of the 23, `provenance_rank`'s
+top-1 is not from the gold document. The parking-fee queries (q036–q039),
+the replacement-laptop queries (q033–q035) and several version_conflict
+queries all have this pattern. On those 20, the floor is turning a wrong
+answer into an abstention, so the false-abstention rate mostly reflects a
+ranking miss rather than an over-cautious floor. Only 3 of the 23 (q077,
+q080, q086) abstain when the gold document is at top-1. For comparison, 44
+of the 53 answered `answer` queries have the gold document at top-1.
+
+**The remaining errors.**
+- **q053, the one false answer** ("How are performance ratings calibrated
+  across teams?"). The restricted calibration guidelines are filtered out,
+  but the in-scope `hr-performance-review-guide` scores 6.37 on the
+  cross-encoder because it is on the same topic. This answer does not leak
+  the restricted document. The cross-encoder judges topical relevance, not
+  whether the chunk actually contains the answer.
+- **3 stale queries abstain** (q065, q070, q071). In each, the freshness
+  term has already pushed the stale gold document out of the top-1 (see
+  Findings), so what is left is an unrelated page with low relevance.
+  Abstaining is reasonable there, but the age flag never gets a chance to
+  fire.
 
 ## Status
 
@@ -408,10 +495,10 @@ What exists so far:
   recency prior) and the proposed method (`src/retrievers.py`): a scope
   filter followed by provenance-aware scoring with relevance, authority,
   freshness and a conflict penalty (DELTA = 0.4), plus the three answer
-  modes (`provenance_answer`).
+  modes (`provenance_answer`), with a cross-encoder relevance floor
+  calibrated on a dev split and a freshness floor for stale sources.
 - An evaluation harness (`src/evaluate.py`) and its results (see Results).
 
-Not built yet: an evidence-sufficiency signal for abstention (see Answer
-modes), ablations of the scoring terms, and a variant of the method that
+Not built yet: ablations of the scoring terms, and a variant of the method that
 uses dense as its base retriever. pandas and scikit-learn are installed but
 not used by any code yet.

@@ -33,15 +33,22 @@ Last updated: 2026-10-16
 
 - **Conflict penalty and answer modes.** DELTA = 0.4; lower side chosen by
   (A, is policy_version, effective_date). Contradicting page out of the top 5
-  for all 12 cross_doc_conflict queries (`tests/test_conflicts.py`). Answer
-  modes: false-answer rate 100% (24/24), false-abstention rate 0% (0/76).
-  Every query gets `answer`; see README > Answer modes for why.
+  for all 12 cross_doc_conflict queries (`tests/test_conflicts.py`). On
+  their own, conflicts gave every query `answer` (false-answer rate 100%).
+
+- **Relevance and freshness floors.** `answer_mode` abstains when the
+  cross-encoder logit of (query, top-1) is below RELEVANCE_FLOOR = 2.1444,
+  fitted on the dev half of `data/query_split.csv` by
+  `scripts/calibrate_relevance_floor.py`. It returns answer_conditionally
+  when top-1 freshness < e^-1 (more than 5 years old). Held-out test:
+  false-answer 0% (0/12), false-abstention 32.4% (12/37). All 108:
+  4.2% / 30.3%, mode accuracy 75.0%. 20 of the 23 false abstentions have a
+  non-gold doc at top-1. See README > Answer modes.
 
 ## Next
 
-0. **Evidence-sufficiency abstention.** The conflict signal never triggers
-   abstain (see README). Needs a separate signal; avoid tuning its threshold
-   on the evaluation queries.
+0. ~~**Evidence-sufficiency abstention.**~~ Done (relevance floor, above).
+   Any new threshold must be fitted on the dev split only; report test.
 1. ~~**Conflict detection.**~~ Done. For the top-k chunks, find pairs from different
    policy families whose `conflicts_with` lists each other, and apply
    C(d,D) to the lower-authority chunk with DELTA = 0.4 (DELTA is 0 now).

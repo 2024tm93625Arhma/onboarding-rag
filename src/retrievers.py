@@ -66,20 +66,29 @@ Each result carries "rel", "authority", "freshness" and "conflict" alongside
 "score".
 
 provenance_answer(query, profile, k) runs provenance_rank and picks an answer
-mode from its top ANSWER_K (see answer_mode):
+mode from its top ANSWER_K (see answer_mode). The checks run in this order:
 
-- answer:               no declared-conflict pair of comparable authority
-                        (|A(a) - A(b)| <= AUTHORITY_TOLERANCE) remains in the
-                        window after scoring.
-- answer_conditionally: such a pair remains, but the top-1 chunk is not its
-                        lower-precedence side: answer from the top-1 and flag
-                        the contradicting source.
-- abstain:              such a pair remains and the top-1 chunk is its lower-
-                        precedence side, or the pair has no lower side; or the
-                        scoped pool is empty.
+1. abstain if the scoped pool is empty, or if the top-1 chunk's relevance
+   (top_relevance: the cross-encoder logit of (query, top-1 chunk_text)) is
+   below RELEVANCE_FLOOR. This is the evidence-sufficiency check. rel cannot
+   serve: it is min-max normalised over the pool, so the top-1 nearly always
+   has rel close to 1.0 however poor the pool is. The relevance-floor check
+   runs before the conflict checks, so it takes precedence over them.
+2. abstain if a declared-conflict pair of comparable authority
+   (|A(a) - A(b)| <= AUTHORITY_TOLERANCE) remains in the window and the
+   top-1 chunk is its lower-precedence side, or the pair has no lower side.
+3. answer_conditionally if such a pair remains but the top-1 is not its lower
+   side (answer from the top-1 and flag the contradicting source), or if the
+   top-1 chunk's freshness is below FRESHNESS_FLOOR (answer and flag the
+   source's age).
+4. answer otherwise.
 
 A pair whose authorities differ by more than the tolerance is treated as
 resolved: authority already says which side governs this user.
+
+RELEVANCE_FLOOR is calibrated on the dev split only
+(scripts/calibrate_relevance_floor.py). FRESHNESS_FLOOR is fixed in advance at
+exp(-1), so a source older than FRESHNESS_SCALE years is flagged.
 
 Models, the BM25 index and the chunk table load on first use and are cached
 for the life of the process. Heavy imports (sentence-transformers, chromadb,
@@ -122,6 +131,12 @@ DAYS_PER_YEAR = 365.25
 CONFLICT_K = 10             # top-k of the unpenalised ranking searched for conflicts
 ANSWER_K = 5                # window answer_mode inspects
 AUTHORITY_TOLERANCE = 0.1   # authorities within this are "comparable"
+# Cross-encoder logit below which the top-1 chunk is not evidence for the
+# query. Calibrated on the dev split by scripts/calibrate_relevance_floor.py.
+RELEVANCE_FLOOR = 2.1444
+# Top-1 freshness below this is flagged as possibly out of date: exp(-1) is an
+# effective_date more than FRESHNESS_SCALE years before REFERENCE_DATE.
+FRESHNESS_FLOOR = math.exp(-1)
 
 ANSWER = "answer"
 ANSWER_CONDITIONALLY = "answer_conditionally"
@@ -324,24 +339,36 @@ def provenance_rank(query, profile, k):
     return _by_score(scored)[:k]
 
 
-def answer_mode(hits):
-    """answer / answer_conditionally / abstain for a ranked provenance_rank list."""
+def top_relevance(query, hits):
+    """Cross-encoder logit of (query, top-1 chunk_text); None for no hits."""
     if not hits:
+        return None
+    return float(_cross_encoder().predict([(query, hits[0]["chunk_text"])])[0])
+
+
+def answer_mode(hits, relevance):
+    """answer / answer_conditionally / abstain for a ranked provenance_rank list.
+
+    relevance is top_relevance(query, hits).
+    """
+    if not hits or relevance < RELEVANCE_FLOOR:
         return ABSTAIN
     window = hits[:ANSWER_K]
-    top = window[0]["chunk_id"]
+    top = window[0]
     unresolved = [loser for a, b, loser in conflict_pairs(window)
                   if abs(a["authority"] - b["authority"]) <= AUTHORITY_TOLERANCE]
-    if not unresolved:
-        return ANSWER
-    if any(loser is None or loser["chunk_id"] == top for loser in unresolved):
+    if any(loser is None or loser["chunk_id"] == top["chunk_id"] for loser in unresolved):
         return ABSTAIN
-    return ANSWER_CONDITIONALLY
+    if unresolved or top["freshness"] < FRESHNESS_FLOOR:
+        return ANSWER_CONDITIONALLY
+    return ANSWER
 
 
 def provenance_answer(query, profile, k):
+    """(mode, top-k hits, top-1 relevance)."""
     hits = provenance_rank(query, profile, max(k, ANSWER_K))
-    return answer_mode(hits), hits[:k]
+    relevance = top_relevance(query, hits)
+    return answer_mode(hits, relevance), hits[:k], relevance
 
 
 RETRIEVERS = {
