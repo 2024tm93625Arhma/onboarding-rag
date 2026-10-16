@@ -27,6 +27,10 @@ family of its own, so its chunks never move.
 These are the baselines. None of them reads applies_if, status or a user
 profile.
 
+scoped_search(query, profile, k, base) is not a baseline: it runs a base
+retriever SCOPE_DEPTH deep, drops chunks the profile may not see
+(provenance.in_scope) and returns the top k of what remains.
+
 Models, the BM25 index and the chunk table load on first use and are cached
 for the life of the process. Heavy imports (sentence-transformers, chromadb,
 index_chunks) are deferred so that BM25 works without them.
@@ -44,23 +48,21 @@ ROOT = Path(__file__).resolve().parent.parent
 CHUNKS_IN = ROOT / "data" / "chunks.jsonl"
 sys.path.insert(0, str(ROOT / "src"))
 
+from provenance import in_scope, policy_family  # noqa: E402
+
 CROSS_ENCODER_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 RRF_K = 60
 FUSION_DEPTH = 100  # how deep each list goes into RRF
 RERANK_POOL = 20    # hybrid candidates passed to the cross-encoder / recency prior
+SCOPE_DEPTH = 100   # base-retriever depth scoped_search filters before truncating
 
 TOKEN = re.compile(r"\w+")
-VERSION_SUFFIX = re.compile(r"-v\d+$")
 
 DEMO_QUERY = "how many leave days can I carry forward"
 
 
 def tokenize(text):
     return TOKEN.findall(text.lower())
-
-
-def policy_family(chunk):
-    return VERSION_SUFFIX.sub("", chunk["parent_doc_id"])
 
 
 def _result(chunk, score):
@@ -157,6 +159,14 @@ def recency_prior(query, k):
         for pos, hit in zip(positions, members):
             reordered[pos] = hit
     return reordered[:k]
+
+
+def scoped_search(query, profile, k, base=hybrid_search):
+    # Filter the deep pool, then truncate: filtering a top-k list would leave
+    # fewer than k results whenever out-of-scope chunks ranked high.
+    # Note that rerank and recency_prior cap their own pool at RERANK_POOL.
+    pool = base(query, max(k, SCOPE_DEPTH))
+    return [hit for hit in pool if in_scope(hit, profile)][:k]
 
 
 RETRIEVERS = {
