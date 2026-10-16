@@ -26,8 +26,9 @@ src/provenance.py            applicability, access scope and policy-family helpe
 src/retrievers.py            five baselines, scoped_search and provenance_rank
 src/evaluate.py              runs every retriever over the query set; writes data/results/
 data/queries.csv             108 annotated evaluation queries
-data/results/                evaluation output (baselines, method, per-category)
+data/results/                evaluation output (baselines, method, per-category, answer modes)
 tests/test_leakage.py        scoped_search never returns a leakage probe's restricted doc
+tests/test_conflicts.py      provenance_rank keeps contradicting pages out of the top 5
 scripts/smoke_test_index.py  sample query against the index, with and without a status filter
 scripts/validate_corpus.py   consistency checks for the corpus
 scripts/check_conflicts.py   checks standalone docs do not restate policy values
@@ -274,7 +275,7 @@ chunk, so they are counted only in the two validity rates.
 | Cross-encoder rerank | 0.869 | 0.697 | 33.3% | 25.9% |
 | Recency prior | 0.762 | 0.661 | 21.3% | 22.2% |
 | Scoped search (hybrid + scope filter) | 0.786 | 0.580 | 13.0% | **0.0%** |
-| **Provenance rank (proposed)** | 0.786 | 0.691 | **0.0%** | **0.0%** |
+| **Provenance rank (proposed)** | 0.786 | 0.693 | **0.0%** | **0.0%** |
 
 The first five rows are baselines. None of them reads `applies_if`, `status`
 or the user profile. Scoped search and provenance rank both use hybrid as
@@ -320,8 +321,8 @@ checks it per query.
 rank reaches IER 0% and SVR 0% in every query category. Against hybrid, its
 base retriever, that costs 3.6 points of Recall@5 (0.786 vs 0.821). The
 scope filter accounts for all of that loss: scoped search has the same
-Recall@5. Authority and freshness re-ranking then raise MRR from 0.580 to
-0.691.
+Recall@5. Authority, freshness and the conflict penalty then raise MRR from
+0.580 to 0.693.
 
 **Freshness works against stale queries.** The freshness term F(d,t) decays
 with document age. For the 8 stale queries, though, the gold answer *is* the
@@ -331,6 +332,58 @@ gold document drops from rank 1 to rank 2 behind a newer, less relevant
 page, and setting GAMMA to 0 restores rank 1. For these queries the
 expected behaviour is `answer_conditionally`, meaning answer from the old
 page and flag its age, not to demote it.
+
+**The conflict penalty removes every contradicting page from the top 5.**
+All 12 declared conflicts pair a current policy version with a standalone
+page that restates its superseded value. Authority cannot separate them
+(both get A = 1.0), so the lower side is chosen by the precedence key
+(A, is policy_version, effective_date): the formal policy beats the
+derivative page, then the later date wins. Without the penalty (DELTA = 0)
+the contradicting page is in provenance rank's top 5 for 8 of the 12
+cross_doc_conflict queries. With DELTA = 0.4 it is in none of them
+(`python tests/test_conflicts.py`). The effect on ranking metrics is small,
+because the policy already ranked first: cross_doc_conflict MRR goes from
+0.855 to 0.858, and overall MRR from 0.691 to 0.693.
+
+### Answer modes
+
+`provenance_answer` looks at the top 5 after scoring. If no declared-conflict
+pair of comparable authority (|ΔA| ≤ 0.1) is left in it, the mode is
+`answer`. If such a pair is left and the top-1 chunk is not the lower-
+precedence side, the mode is `answer_conditionally`. If the top-1 is the
+lower side, or the pair cannot be ordered, the mode is `abstain`. An empty
+scoped pool also gives `abstain`.
+
+| Expected \ predicted | answer | answer_conditionally | abstain |
+|---|---|---|---|
+| answer (76) | 76 | 0 | 0 |
+| answer_conditionally (8) | 8 | 0 | 0 |
+| abstain (24) | 24 | 0 | 0 |
+
+False-answer rate on the 24 abstain queries: **100%**. False-abstention rate
+on the 76 answer queries: **0%**. Mode accuracy: 70.4% (76/108).
+(`data/results/answer_mode_summary.csv`, per query in
+`data/results/answer_modes.csv`.)
+
+The conflict signal does not separate the modes on this query set, for two
+reasons:
+
+- **The penalty resolves every conflict before the mode is chosen.** With
+  DELTA = 0, the same rule returns `answer_conditionally` for 18 queries,
+  17 of which are expected to be `answer`. At DELTA = 0.4 every penalised
+  page leaves the top 5, so no unresolved pair is left. On this corpus, the
+  precedence key always orders a declared pair, so `abstain` cannot come from
+  a conflict at all.
+- **Abstain queries fail through missing evidence, not conflicting
+  evidence.** Leakage probes ask for documents the scope filter has already
+  removed, and unanswerable queries have no supporting document. In both
+  cases the top 5 holds other in-scope pages that don't conflict, so the
+  mode is `answer`. The stale queries likewise need an age signal, not a
+  conflict signal.
+
+Making the abstain queries abstain needs an evidence-sufficiency signal (for
+example, a threshold on the top-1 relevance or a check that the answer is
+present). That signal does not exist yet.
 
 ## Status
 
@@ -353,12 +406,12 @@ What exists so far:
   verified.
 - Five baseline retrievers (BM25, dense, hybrid RRF, cross-encoder rerank,
   recency prior) and the proposed method (`src/retrievers.py`): a scope
-  filter followed by provenance-aware scoring with relevance, authority and
-  freshness.
+  filter followed by provenance-aware scoring with relevance, authority,
+  freshness and a conflict penalty (DELTA = 0.4), plus the three answer
+  modes (`provenance_answer`).
 - An evaluation harness (`src/evaluate.py`) and its results (see Results).
 
-Not built yet: the conflict penalty C(d,D) (DELTA is currently 0), the
-answer modes (answer / answer_conditionally / abstain), ablations of the
-scoring terms, and a variant of the method that uses dense as its base
-retriever. pandas and scikit-learn are installed but not used by any code
-yet.
+Not built yet: an evidence-sufficiency signal for abstention (see Answer
+modes), ablations of the scoring terms, and a variant of the method that
+uses dense as its base retriever. pandas and scikit-learn are installed but
+not used by any code yet.

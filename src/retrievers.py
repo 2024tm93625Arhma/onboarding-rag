@@ -45,8 +45,41 @@ each chunk of scoped_search's SCOPE_DEPTH pool with
        Standalone docs are families of one and so get 1.0 when they apply.
 - F:   freshness, exp(-age_in_years / FRESHNESS_SCALE) with age measured from
        effective_date to REFERENCE_DATE.
-- C:   conflict penalty. Not implemented yet; DELTA is 0.
-Each result carries "rel", "authority" and "freshness" alongside "score".
+- C:   conflict penalty. The pool is first ranked without C. In its top
+       CONFLICT_K, every pair of chunks that declare a conflict with each other
+       (provenance.in_conflict: different policy families, each doc's
+       conflicts_with lists the other) is found. C(d,D) = 1 if d is the lower-
+       precedence side of at least one such pair, else 0, and the pool is
+       re-ranked with the penalty. One pass: chunks that enter the top
+       CONFLICT_K only after re-ranking are not checked again.
+
+       Precedence is the key (A, is policy_version, effective_date), compared
+       in that order. Authority alone does not separate the declared pairs: a
+       standalone doc gets A = 1.0 whenever it applies, so a crib sheet and the
+       current policy it contradicts tie. The tie goes to the formal policy
+       version over the derivative page, then to the later effective_date. A
+       pair equal on all three has no lower side and neither chunk is
+       penalised. conflicts_with is document-level, so every chunk of the
+       losing doc in the window is penalised, not only the one that restates
+       the value.
+Each result carries "rel", "authority", "freshness" and "conflict" alongside
+"score".
+
+provenance_answer(query, profile, k) runs provenance_rank and picks an answer
+mode from its top ANSWER_K (see answer_mode):
+
+- answer:               no declared-conflict pair of comparable authority
+                        (|A(a) - A(b)| <= AUTHORITY_TOLERANCE) remains in the
+                        window after scoring.
+- answer_conditionally: such a pair remains, but the top-1 chunk is not its
+                        lower-precedence side: answer from the top-1 and flag
+                        the contradicting source.
+- abstain:              such a pair remains and the top-1 chunk is its lower-
+                        precedence side, or the pair has no lower side; or the
+                        scoped pool is empty.
+
+A pair whose authorities differ by more than the tolerance is treated as
+resolved: authority already says which side governs this user.
 
 Models, the BM25 index and the chunk table load on first use and are cached
 for the life of the process. Heavy imports (sentence-transformers, chromadb,
@@ -67,7 +100,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CHUNKS_IN = ROOT / "data" / "chunks.jsonl"
 sys.path.insert(0, str(ROOT / "src"))
 
-from provenance import applies_to, in_scope, policy_family  # noqa: E402
+from provenance import applies_to, in_conflict, in_scope, policy_family  # noqa: E402
 
 CROSS_ENCODER_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 RRF_K = 60
@@ -79,13 +112,20 @@ SCOPE_DEPTH = 100   # base-retriever depth scoped_search filters before truncati
 ALPHA = 1.0   # relevance
 BETA = 0.6    # authority
 GAMMA = 0.2   # freshness
-DELTA = 0.0   # conflict penalty (conflict detection not implemented yet)
+DELTA = 0.4   # conflict penalty
 AUTHORITY_CURRENT = 1.0     # applies, and no later applicable version in the family
 AUTHORITY_SUPERSEDED = 0.3  # applies, but a later applicable version exists
 AUTHORITY_NOT_APPLICABLE = 0.0
 FRESHNESS_SCALE = 5.0       # years; F = exp(-age / FRESHNESS_SCALE)
 REFERENCE_DATE = date(2026, 9, 1)
 DAYS_PER_YEAR = 365.25
+CONFLICT_K = 10             # top-k of the unpenalised ranking searched for conflicts
+ANSWER_K = 5                # window answer_mode inspects
+AUTHORITY_TOLERANCE = 0.1   # authorities within this are "comparable"
+
+ANSWER = "answer"
+ANSWER_CONDITIONALLY = "answer_conditionally"
+ABSTAIN = "abstain"
 
 TOKEN = re.compile(r"\w+")
 
@@ -233,6 +273,31 @@ def freshness(chunk, ref=REFERENCE_DATE):
     return math.exp(-(age_days / DAYS_PER_YEAR) / FRESHNESS_SCALE)
 
 
+def precedence(hit):
+    """Key that orders the two sides of a declared conflict; higher wins."""
+    meta = hit["metadata"]
+    return (hit["authority"], meta["doc_kind"] == "policy_version", meta["effective_date"])
+
+
+def conflict_pairs(hits):
+    """(a, b, loser) for each declared-conflict pair in hits. loser is the
+    lower-precedence of a and b, or None when they are equal on precedence."""
+    pairs = []
+    for i, a in enumerate(hits):
+        for b in hits[i + 1:]:
+            if not in_conflict(a, b):
+                continue
+            pa, pb = precedence(a), precedence(b)
+            loser = None if pa == pb else (b if pa > pb else a)
+            pairs.append((a, b, loser))
+    return pairs
+
+
+def _by_score(hits):
+    # Ties broken by chunk_id so the order is deterministic.
+    return sorted(hits, key=lambda h: (-h["score"], h["chunk_id"]))
+
+
 def provenance_rank(query, profile, k):
     pool = scoped_search(query, profile, SCOPE_DEPTH)
     if not pool:
@@ -246,11 +311,37 @@ def provenance_rank(query, profile, k):
         rel = (hit["score"] - lo) / span if span > 0 else 1.0
         a = authority(hit, profile)
         f = freshness(hit)
-        score = ALPHA * rel + BETA * a + GAMMA * f  # - DELTA * C, once C exists
-        scored.append({**hit, "score": score, "rel": rel, "authority": a, "freshness": f})
-    # Ties broken by chunk_id so the order is deterministic.
-    scored.sort(key=lambda h: (-h["score"], h["chunk_id"]))
-    return scored[:k]
+        score = ALPHA * rel + BETA * a + GAMMA * f
+        scored.append({**hit, "score": score, "rel": rel, "authority": a,
+                       "freshness": f, "conflict": 0.0})
+    scored = _by_score(scored)
+    losers = {loser["chunk_id"] for *_, loser in conflict_pairs(scored[:CONFLICT_K])
+              if loser is not None}
+    for hit in scored:
+        if hit["chunk_id"] in losers:
+            hit["conflict"] = 1.0
+            hit["score"] -= DELTA
+    return _by_score(scored)[:k]
+
+
+def answer_mode(hits):
+    """answer / answer_conditionally / abstain for a ranked provenance_rank list."""
+    if not hits:
+        return ABSTAIN
+    window = hits[:ANSWER_K]
+    top = window[0]["chunk_id"]
+    unresolved = [loser for a, b, loser in conflict_pairs(window)
+                  if abs(a["authority"] - b["authority"]) <= AUTHORITY_TOLERANCE]
+    if not unresolved:
+        return ANSWER
+    if any(loser is None or loser["chunk_id"] == top for loser in unresolved):
+        return ABSTAIN
+    return ANSWER_CONDITIONALLY
+
+
+def provenance_answer(query, profile, k):
+    hits = provenance_rank(query, profile, max(k, ANSWER_K))
+    return answer_mode(hits), hits[:k]
 
 
 RETRIEVERS = {

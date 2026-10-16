@@ -31,9 +31,18 @@ Last updated: 2026-10-16
   rank: Recall@5 0.786, MRR 0.691, IER 0%, SVR 0%. Hybrid: Recall@5 0.821,
   IER 26.9%, SVR 22.2%. Findings are written up in the README under Results.
 
+- **Conflict penalty and answer modes.** DELTA = 0.4; lower side chosen by
+  (A, is policy_version, effective_date). Contradicting page out of the top 5
+  for all 12 cross_doc_conflict queries (`tests/test_conflicts.py`). Answer
+  modes: false-answer rate 100% (24/24), false-abstention rate 0% (0/76).
+  Every query gets `answer`; see README > Answer modes for why.
+
 ## Next
 
-1. **Conflict detection.** For the top-k chunks, find pairs from different
+0. **Evidence-sufficiency abstention.** The conflict signal never triggers
+   abstain (see README). Needs a separate signal; avoid tuning its threshold
+   on the evaluation queries.
+1. ~~**Conflict detection.**~~ Done. For the top-k chunks, find pairs from different
    policy families whose `conflicts_with` lists each other, and apply
    C(d,D) to the lower-authority chunk with DELTA = 0.4 (DELTA is 0 now).
    A helper `provenance.in_conflict(a, b)` is drafted but not yet used.
@@ -41,7 +50,7 @@ Last updated: 2026-10-16
    applies, so a crib sheet and the current policy it contradicts usually
    tie on authority. Decide how to break that tie before relying on
    "lower-authority".
-2. **Answer modes.** answer / answer_conditionally / abstain, chosen by
+2. ~~**Answer modes.**~~ Done; see above. answer / answer_conditionally / abstain, chosen by
    whether conflicting chunks of comparable authority remain after scoring.
    Evaluate the false-answer rate on the 24 abstain queries and the
    false-abstention rate on the 76 answer queries. A conflict signal alone

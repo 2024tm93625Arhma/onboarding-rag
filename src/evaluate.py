@@ -35,12 +35,25 @@ Metrics, per retriever, overall and by query category:
   One untimed warm-up call per retriever runs first, so model loading is not
   counted.
 
+Answer modes: provenance_answer picks answer / answer_conditionally /
+abstain for each query, scored against the query's expected_behaviour:
+
+- false_answer_rate:     share of the abstain queries given any mode other
+                         than abstain.
+- false_abstention_rate: share of the answer queries given abstain.
+- mode_accuracy:         share of all queries whose mode equals
+                         expected_behaviour.
+
+The 8 answer_conditionally (stale) queries count only in mode_accuracy.
+
 The baselines apply no scope filter, so scope_violation_rate is expected to
 be non-zero. The method retrievers filter by scope, so it is expected to be 0.
 
 Writes data/results/baselines.csv and data/results/method.csv (one row per
 retriever) and data/results/by_category.csv and
-data/results/method_by_category.csv (one row per retriever x category), prints
+data/results/method_by_category.csv (one row per retriever x category), and
+data/results/answer_modes.csv (one row per query) and
+data/results/answer_mode_summary.csv (one row) for the answer modes. It prints
 them, and prints a comparison of every retriever's recall@5, IER
 (invalid_evidence_rate) and SVR (scope_violation_rate).
 
@@ -58,7 +71,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from retrievers import RETRIEVERS, _chunks, provenance_rank, scoped_search  # noqa: E402
+from retrievers import (  # noqa: E402
+    ABSTAIN, ANSWER, ANSWER_CONDITIONALLY, ANSWER_K, RETRIEVERS, _chunks,
+    provenance_answer, provenance_rank, scoped_search)
 
 QUERIES_IN = ROOT / "data" / "queries.csv"
 PROFILES_IN = ROOT / "data" / "user_profiles.json"
@@ -67,6 +82,8 @@ BASELINES_OUT = RESULTS_DIR / "baselines.csv"
 BY_CATEGORY_OUT = RESULTS_DIR / "by_category.csv"
 METHOD_OUT = RESULTS_DIR / "method.csv"
 METHOD_BY_CATEGORY_OUT = RESULTS_DIR / "method_by_category.csv"
+ANSWER_MODES_OUT = RESULTS_DIR / "answer_modes.csv"
+ANSWER_MODE_SUMMARY_OUT = RESULTS_DIR / "answer_mode_summary.csv"
 
 # Profile-aware retrievers: fn(query, profile, k).
 METHODS = {
@@ -250,6 +267,41 @@ def evaluate_group(retrievers, queries, profiles, golds, categories):
     return overall, by_category
 
 
+def evaluate_answer_modes(queries, profiles):
+    print(f"running provenance_answer over {len(queries)} queries...", file=sys.stderr)
+    rows = []
+    for q in queries:
+        mode, _ = provenance_answer(q["question"], profiles[q["asking_user_id"]], ANSWER_K)
+        rows.append({"query_id": q["query_id"], "category": q["category"],
+                     "expected_behaviour": q["expected_behaviour"], "predicted_mode": mode})
+    return rows
+
+
+def share(rows, pred):
+    return sum(1 for r in rows if pred(r)) / len(rows) if rows else None
+
+
+def answer_mode_summary(rows):
+    abstain = [r for r in rows if r["expected_behaviour"] == ABSTAIN]
+    answer = [r for r in rows if r["expected_behaviour"] == ANSWER]
+    return {
+        "n_queries": len(rows),
+        "n_abstain": len(abstain),
+        "false_answer_rate": share(abstain, lambda r: r["predicted_mode"] != ABSTAIN),
+        "n_answer": len(answer),
+        "false_abstention_rate": share(answer, lambda r: r["predicted_mode"] == ABSTAIN),
+        "mode_accuracy": share(rows, lambda r: r["predicted_mode"] == r["expected_behaviour"]),
+    }
+
+
+def mode_confusion(rows):
+    modes = [ANSWER, ANSWER_CONDITIONALLY, ABSTAIN]
+    return [{"expected": exp,
+             **{f"pred_{m}": sum(1 for r in rows if r["expected_behaviour"] == exp
+                                 and r["predicted_mode"] == m) for m in modes}}
+            for exp in modes]
+
+
 def profile_free(fn):
     return lambda query, profile, k: fn(query, k)
 
@@ -266,6 +318,8 @@ def main():
         queries, profiles, golds, categories)
     method, method_by_category = evaluate_group(
         METHODS, queries, profiles, golds, categories)
+    modes = evaluate_answer_modes(queries, profiles)
+    mode_summary = answer_mode_summary(modes)
 
     base_cols = ["retriever", "n_queries", "n_ranked", *METRICS]
     cat_cols = ["retriever", "category", "n_queries", "n_ranked", *METRICS]
@@ -273,6 +327,10 @@ def main():
     write_csv(BY_CATEGORY_OUT, by_category, cat_cols)
     write_csv(METHOD_OUT, method, base_cols)
     write_csv(METHOD_BY_CATEGORY_OUT, method_by_category, cat_cols)
+    mode_cols = ["query_id", "category", "expected_behaviour", "predicted_mode"]
+    summary_cols = list(mode_summary)
+    write_csv(ANSWER_MODES_OUT, modes, mode_cols)
+    write_csv(ANSWER_MODE_SUMMARY_OUT, [mode_summary], summary_cols)
 
     print_table(f"Baselines ({BASELINES_OUT.relative_to(ROOT)})", baselines, base_cols)
     print_table(f"By category ({BY_CATEGORY_OUT.relative_to(ROOT)})", by_category, cat_cols)
@@ -285,6 +343,11 @@ def main():
                   for r in baselines + method]
     print_table("Comparison (all 108 queries; Recall@5 over ranked queries only)",
                 comparison, ["retriever", "Recall@5", "IER", "SVR"])
+    print_table(f"Answer modes ({ANSWER_MODE_SUMMARY_OUT.relative_to(ROOT)})",
+                [mode_summary], summary_cols)
+    confusion = mode_confusion(modes)
+    print_table("Answer modes: expected (rows) x predicted (columns)",
+                confusion, list(confusion[0]))
 
 
 if __name__ == "__main__":
