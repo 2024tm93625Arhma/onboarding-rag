@@ -13,6 +13,9 @@ plus one variant that changes the base retriever rather than a weight:
   instead of hybrid_search, default weights. rel is then the dense cosine
   score, min-max normalised across the scoped pool.
 
+and the three weight ablations repeated over that dense base
+(provenance_rank_dense_no_authority, _no_freshness, _no_conflict).
+
 The full method (no overrides) is included as the reference row, named
 provenance_rank as in method.csv.
 
@@ -49,6 +52,9 @@ VARIANTS = {
     "no_freshness": {"gamma": 0.0},
     "no_conflict": {"delta": 0.0},
     "provenance_rank_dense": {"base": dense_search},
+    "provenance_rank_dense_no_authority": {"base": dense_search, "beta": 0.0},
+    "provenance_rank_dense_no_freshness": {"base": dense_search, "gamma": 0.0},
+    "provenance_rank_dense_no_conflict": {"base": dense_search, "delta": 0.0},
 }
 
 
