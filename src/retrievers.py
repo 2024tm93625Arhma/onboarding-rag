@@ -36,7 +36,9 @@ each chunk of scoped_search's SCOPE_DEPTH pool with
 
     score(q, d, u) = ALPHA*rel(q,d) + BETA*A(d,u) + GAMMA*F(d,t) - DELTA*C(d,D)
 
-- rel: the hybrid RRF score, min-max normalised across the scoped pool.
+- rel: the base retriever's score, min-max normalised across the scoped pool.
+       The default base is dense_search (cosine similarity); pass
+       base=hybrid_search for the RRF-based variant.
 - A:   authority for this user. 1.0 if d applies to u and no other version in
        d's policy family both applies to u and has a later effective_date; 0.3
        if d applies but such a later version exists; 0.0 if d does not apply.
@@ -44,7 +46,9 @@ each chunk of scoped_search's SCOPE_DEPTH pool with
        later version counts even when none of its chunks were retrieved.
        Standalone docs are families of one and so get 1.0 when they apply.
 - F:   freshness, exp(-age_in_years / FRESHNESS_SCALE) with age measured from
-       effective_date to REFERENCE_DATE.
+       effective_date to REFERENCE_DATE. GAMMA is 0 by default, so F does not
+       move the ranking; it is still computed and returned, because answer_mode
+       uses it for the answer_conditionally decision.
 - C:   conflict penalty. The pool is first ranked without C. In its top
        CONFLICT_K, every pair of chunks that declare a conflict with each other
        (provenance.in_conflict: different policy families, each doc's
@@ -120,7 +124,7 @@ SCOPE_DEPTH = 100   # base-retriever depth scoped_search filters before truncati
 # provenance_rank weights and constants
 ALPHA = 1.0   # relevance
 BETA = 0.6    # authority
-GAMMA = 0.2   # freshness
+GAMMA = 0.0   # freshness (0: F only feeds answer_mode's freshness flag)
 DELTA = 0.4   # conflict penalty
 AUTHORITY_CURRENT = 1.0     # applies, and no later applicable version in the family
 AUTHORITY_SUPERSEDED = 0.3  # applies, but a later applicable version exists
@@ -133,7 +137,7 @@ ANSWER_K = 5                # window answer_mode inspects
 AUTHORITY_TOLERANCE = 0.1   # authorities within this are "comparable"
 # Cross-encoder logit below which the top-1 chunk is not evidence for the
 # query. Calibrated on the dev split by scripts/calibrate_relevance_floor.py.
-RELEVANCE_FLOOR = 2.1444
+RELEVANCE_FLOOR = 1.8979
 # Top-1 freshness below this is flagged as possibly out of date: exp(-1) is an
 # effective_date more than FRESHNESS_SCALE years before REFERENCE_DATE.
 FRESHNESS_FLOOR = math.exp(-1)
@@ -314,11 +318,12 @@ def _by_score(hits):
 
 
 def provenance_rank(query, profile, k, alpha=None, beta=None, gamma=None, delta=None,
-                    base=hybrid_search):
+                    base=dense_search):
     """alpha..delta override ALPHA..DELTA for this call (used by ablations);
     None means the module constant, read at call time. base is the retriever
-    scoped_search runs (used by ablations); rel is then that retriever's own
-    score, min-max normalised across the scoped pool."""
+    scoped_search runs (dense_search by default; overridable, e.g. by
+    ablations); rel is that retriever's own score, min-max normalised across
+    the scoped pool."""
     alpha = ALPHA if alpha is None else alpha
     beta = BETA if beta is None else beta
     gamma = GAMMA if gamma is None else gamma
@@ -331,7 +336,7 @@ def provenance_rank(query, profile, k, alpha=None, beta=None, gamma=None, delta=
     span = hi - lo
     scored = []
     for hit in pool:
-        # A pool whose hybrid scores are all equal carries no relevance signal.
+        # A pool whose base scores are all equal carries no relevance signal.
         rel = (hit["score"] - lo) / span if span > 0 else 1.0
         a = authority(hit, profile)
         f = freshness(hit)
