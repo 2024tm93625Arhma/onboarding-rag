@@ -313,7 +313,13 @@ def _by_score(hits):
     return sorted(hits, key=lambda h: (-h["score"], h["chunk_id"]))
 
 
-def provenance_rank(query, profile, k):
+def provenance_rank(query, profile, k, alpha=None, beta=None, gamma=None, delta=None):
+    """alpha..delta override ALPHA..DELTA for this call (used by ablations);
+    None means the module constant, read at call time."""
+    alpha = ALPHA if alpha is None else alpha
+    beta = BETA if beta is None else beta
+    gamma = GAMMA if gamma is None else gamma
+    delta = DELTA if delta is None else delta
     pool = scoped_search(query, profile, SCOPE_DEPTH)
     if not pool:
         return []
@@ -326,7 +332,7 @@ def provenance_rank(query, profile, k):
         rel = (hit["score"] - lo) / span if span > 0 else 1.0
         a = authority(hit, profile)
         f = freshness(hit)
-        score = ALPHA * rel + BETA * a + GAMMA * f
+        score = alpha * rel + beta * a + gamma * f
         scored.append({**hit, "score": score, "rel": rel, "authority": a,
                        "freshness": f, "conflict": 0.0})
     scored = _by_score(scored)
@@ -335,7 +341,7 @@ def provenance_rank(query, profile, k):
     for hit in scored:
         if hit["chunk_id"] in losers:
             hit["conflict"] = 1.0
-            hit["score"] -= DELTA
+            hit["score"] -= delta
     return _by_score(scored)[:k]
 
 
