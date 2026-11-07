@@ -7,8 +7,10 @@ prompts makes no LLM calls. The provider is taken from the environment as in
 src/generate.py (e.g. LLM_PROVIDER=ollama LLM_MODEL=llama3).
 
 Citations are every chunk_id-shaped token (<doc_id>::<chunk>) in the raw
-answer text, not only those that match a retrieved chunk, so fabricated
-citations are visible.
+answer text (raw_answer_text, before answer_query's citation guard strips
+invalid citations), not only those that match a retrieved chunk, so
+fabricated citations are visible. All metrics except fabricated_citation_rate
+are therefore pre-guard.
 
 Metrics (mechanical; no LLM judge):
 
@@ -17,7 +19,15 @@ Metrics (mechanical; no LLM judge):
                          Denominator: n_gold.
 - cited_chunk_retrieved: share of non-abstained answers with at least one
                          citation in which every cited chunk_id is in the
-                         retrieved hits. Denominator: n_cited.
+                         retrieved hits. Denominator: n_cited. Pre-guard.
+- fabricated_citation_rate: share of non-abstained answers with at least one
+                         citation for which the guard in answer_query found a
+                         citation to a chunk_id not passed in the prompt
+                         (had_invalid_citation). Denominator: n_cited. The
+                         prompt's chunk_ids are the retrieved hits, so this
+                         should equal 1 - cited_chunk_retrieved; a difference
+                         means the guard and this script disagree on what a
+                         citation is.
 - uncited_claim_rate:    share of non-abstained answers containing no citation
                          at all. Denominator: n_answered.
 - abstain_compliance:    share of abstained queries whose output has no
@@ -53,7 +63,8 @@ MODES = [ANSWER, ANSWER_CONDITIONALLY, ABSTAIN]
 CHUNK_ID = re.compile(r"[A-Za-z0-9][\w.-]*::[\w.-]*\w")
 
 METRIC_COLS = ["n_queries", "n_answered", "n_gold", "citation_accuracy",
-               "n_cited", "cited_chunk_retrieved", "uncited_claim_rate",
+               "n_cited", "cited_chunk_retrieved", "fabricated_citation_rate",
+               "uncited_claim_rate",
                "n_abstain", "abstain_compliance"]
 
 
@@ -64,7 +75,7 @@ def cited_ids(text):
 
 def score_query(q, result):
     retrieved = {h["chunk_id"] for h in result["hits"]}
-    cited = cited_ids(result["answer_text"])
+    cited = cited_ids(result["raw_answer_text"])
     abstained = result["mode"] == ABSTAIN
     gold = q["gold_chunk_id"]
     return {
@@ -74,8 +85,12 @@ def score_query(q, result):
         "has_gold": bool(gold),
         "gold_cited": bool(gold) and gold in cited,
         "all_cited_retrieved": all(c in retrieved for c in cited),
+        "invalid_citations": result["invalid_citations"],
+        "had_invalid_citation": result["had_invalid_citation"],
+        "flagged": result["flagged"],
+        "orphaned_claims": result["orphaned_claims"],
         "abstain_ok": abstained and not cited and not result["citations"]
-                      and result["answer_text"] == REFUSAL,
+                      and result["raw_answer_text"] == REFUSAL,
         "cache_hit": result.get("cache_hit"),
     }
 
@@ -96,6 +111,7 @@ def aggregate(rows):
         "citation_accuracy": rate(with_gold, lambda r: r["gold_cited"]),
         "n_cited": len(with_cites),
         "cited_chunk_retrieved": rate(with_cites, lambda r: r["all_cited_retrieved"]),
+        "fabricated_citation_rate": rate(with_cites, lambda r: r["had_invalid_citation"]),
         "uncited_claim_rate": rate(answered, lambda r: not r["cited"]),
         "n_abstain": len(abstained),
         "abstain_compliance": rate(abstained, lambda r: r["abstain_ok"]),
@@ -141,6 +157,14 @@ def main():
         print("\nAnswers citing chunk_ids not in the retrieved set:")
         for r in bad:
             print(f"  {r['query_id']} ({r['mode']}): {', '.join(r['cited'])}")
+            print(f"    stripped by guard: {', '.join(r['invalid_citations']) or '(none)'}")
+
+    flagged = [r for r in rows if r["flagged"]]
+    print(f"\nFlagged answers (stripping left a claim with no citation): {len(flagged)}")
+    for r in flagged:
+        print(f"  {r['query_id']} ({r['mode']}):")
+        for claim in r["orphaned_claims"]:
+            print(f"    - {claim}")
 
 
 if __name__ == "__main__":

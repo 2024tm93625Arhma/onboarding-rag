@@ -29,6 +29,14 @@ Providers (stdlib HTTP only, no SDK dependencies), chosen by LLM_PROVIDER:
              LLM_MODEL (required)
 All calls use temperature 0.
 
+Citation guard: after the model returns, every cited chunk_id is checked
+against the chunk_ids passed in the prompt. Any not in that set is stripped
+from answer_text and recorded in invalid_citations (had_invalid_citation is
+set). If that leaves a claim (a sentence or list item) with no citation, the
+answer is flagged (flagged, orphaned_claims) instead of being returned as if
+it were fully cited. The cache stores the raw response; the guard runs on
+every call, cached or not.
+
 Every LLM response is cached in data/generation_cache/<sha256>.json, keyed
 by (provider, model, query, profile_id, chunk_ids, prompt). A re-run with the
 same inputs reads the cache and makes no network call.
@@ -41,6 +49,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -297,17 +306,93 @@ def extract_citations(text, allowed_ids):
     return [cid for _, cid in sorted(cited)]
 
 
-def answer_query(query, profile, k=5):
-    """{mode, answer_text, citations, hits, relevance}.
+# Any chunk_id-shaped token (<doc_id>::<chunk>), bracketed or bare. Same
+# pattern as scripts/evaluate_generation.py, so the guard and the evaluator
+# agree on what counts as a citation.
+CHUNK_ID_RE = re.compile(r"[A-Za-z0-9][\w.-]*::[\w.-]*\w")
+# A bracket group holding one or more chunk_ids, e.g. [a::s01p0] or [a::s01p0, b::s02p0].
+CITATION_GROUP_RE = re.compile(r"\[([^\[\]\n]*::[^\[\]\n]*)\]")
+# Claims are lines, split further into sentences. A segment that is only
+# citations (e.g. "Submit the form. [x]") is joined to the sentence before it.
+_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
+_CITATION_ONLY_RE = re.compile(r"^(\[[^\[\]]*\][\s.,;:]*)+$")
+_REMOVED = "\x00"
 
-    hits is provenance_answer's list, unchanged. citations are the chunk_ids
-    from hits that the answer cites (empty for abstain).
+
+def split_claims(text):
+    """Claim segments of text: non-empty lines, each split into sentences."""
+    claims = []
+    for line in text.splitlines():
+        segments = []
+        for seg in _SENTENCE_SPLIT_RE.split(line.strip()):
+            if not seg:
+                continue
+            if segments and _CITATION_ONLY_RE.match(seg):
+                segments[-1] += " " + seg
+            else:
+                segments.append(seg)
+        claims.extend(segments)
+    return claims
+
+
+def validate_citations(text, allowed_ids):
+    """(clean_text, invalid_citations, orphaned_claims).
+
+    Every chunk_id cited in text that is not in allowed_ids (the chunk_ids
+    passed in the prompt) is stripped from the text. invalid_citations lists
+    the distinct stripped ids in first-mention order. orphaned_claims lists
+    the claims (from the original text) that cited only invalid ids, so
+    after stripping they have no citation at all.
+    """
+    allowed = set(allowed_ids)
+    invalid = list(dict.fromkeys(c for c in CHUNK_ID_RE.findall(text) if c not in allowed))
+    if not invalid:
+        return text, [], []
+
+    def fix_group(m):
+        ids = CHUNK_ID_RE.findall(m.group(1))
+        keep = [c for c in ids if c in allowed]
+        if len(keep) == len(ids):
+            return m.group(0)
+        return f"[{', '.join(keep)}]" if keep else _REMOVED
+
+    clean = CITATION_GROUP_RE.sub(fix_group, text)
+    # Bare (unbracketed) invalid ids left after the bracket pass.
+    clean = CHUNK_ID_RE.sub(lambda m: m.group(0) if m.group(0) in allowed else _REMOVED,
+                            clean)
+    # Drop each removal mark with the space before it, and with the separator
+    # joining it to a kept citation group ("[a], [b]" -> "[a]").
+    clean = re.sub(r"(?<=\])[ \t]*[,;][ \t]*" + _REMOVED, "", clean)
+    clean = re.sub(_REMOVED + r"[ \t]*[,;][ \t]*(?=\[)", "", clean)
+    clean = re.sub(r"[ \t]*" + _REMOVED, "", clean)
+
+    orphaned = []
+    for claim in split_claims(text):
+        ids = CHUNK_ID_RE.findall(claim)
+        if ids and not any(c in allowed for c in ids):
+            orphaned.append(claim)
+    return clean, invalid, orphaned
+
+
+def answer_query(query, profile, k=5):
+    """{mode, answer_text, raw_answer_text, citations, invalid_citations,
+    had_invalid_citation, orphaned_claims, flagged, hits, relevance}.
+
+    hits is provenance_answer's list, unchanged. answer_text is the model's
+    answer with every citation to a chunk_id not passed in the prompt removed;
+    raw_answer_text is the model's answer before that. invalid_citations
+    lists the removed chunk_ids. citations are the chunk_ids from hits that
+    the answer cites (empty for abstain). flagged is True when stripping left
+    a claim with no citation at all; orphaned_claims lists those claims as the
+    model wrote them.
     """
     mode, hits, relevance = provenance_answer(query, profile, k)
-    result = {"mode": mode, "answer_text": None, "citations": [],
+    result = {"mode": mode, "answer_text": None, "raw_answer_text": None,
+              "citations": [], "invalid_citations": [], "had_invalid_citation": False,
+              "orphaned_claims": [], "flagged": False,
               "hits": hits, "relevance": relevance}
     if mode == ABSTAIN:
-        result["answer_text"] = REFUSAL
+        result["answer_text"] = result["raw_answer_text"] = REFUSAL
         return result
     assert mode in (ANSWER, ANSWER_CONDITIONALLY), mode
     provider, model, call = resolve_provider()
@@ -315,8 +400,12 @@ def answer_query(query, profile, k=5):
     system, user = build_prompt(query, hits, mode)
     text, cache_hit = cached_call(provider, model, call, query, profile["user_id"],
                                   chunk_ids, system, user)
-    result.update(answer_text=text.strip(),
-                  citations=extract_citations(text, chunk_ids),
+    raw = text.strip()
+    clean, invalid, orphaned = validate_citations(raw, chunk_ids)
+    result.update(answer_text=clean, raw_answer_text=raw,
+                  citations=extract_citations(clean, chunk_ids),
+                  invalid_citations=invalid, had_invalid_citation=bool(invalid),
+                  orphaned_claims=orphaned, flagged=bool(orphaned),
                   provider=provider, model=model, cache_hit=cache_hit)
     return result
 
@@ -345,6 +434,12 @@ def main():
     print(f"retrieved: {', '.join(h['chunk_id'] for h in result['hits']) or '(none)'}")
     print(f"\nanswer:\n{result['answer_text']}\n")
     print(f"citations: {', '.join(result['citations']) or '(none)'}")
+    if result["had_invalid_citation"]:
+        print(f"invalid citations stripped: {', '.join(result['invalid_citations'])}")
+    if result["flagged"]:
+        print("\nWARNING: stripping invalid citations left these claims with no citation:")
+        for claim in result["orphaned_claims"]:
+            print(f"  - {claim}")
 
 
 if __name__ == "__main__":
