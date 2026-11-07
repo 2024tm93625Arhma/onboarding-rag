@@ -9,13 +9,16 @@ the ranked list that was evaluated.
 Answer modes:
 - abstain:              no LLM call. A fixed refusal pointing to an SME.
 - answer:               LLM answers from the top-k chunks, citing [chunk_id].
-- answer_conditionally: as answer, and the LLM must also state the condition
-                        under which the answer holds. The condition is built
-                        from the applies_if of the competing versions in the
-                        hits (both sides of a declared conflict, and other
-                        versions of the top-1's policy family) and, when the
-                        top-1 is below FRESHNESS_FLOOR, from its
-                        effective_date.
+- answer_conditionally: as answer, and the LLM must also end with a
+                        'Condition:' line. The prompt gives exactly one framing:
+                        * applicability, if the top-1 has competing versions in
+                          the hits (both sides of a declared conflict, or other
+                          versions of its policy family): name who the version
+                          applies to, from its applies_if;
+                        * staleness otherwise (the mode was triggered by the
+                          top-1 being below FRESHNESS_FLOOR): a date caveat
+                          naming the document's effective_date, with no mention
+                          of applicability.
 
 Providers (stdlib HTTP only, no SDK dependencies), chosen by LLM_PROVIDER:
 - anthropic: ANTHROPIC_API_KEY; model LLM_MODEL (default claude-opus-5-5)
@@ -48,7 +51,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from provenance import load_profiles, policy_family  # noqa: E402
 from retrievers import (  # noqa: E402
-    ABSTAIN, ANSWER, ANSWER_CONDITIONALLY, FRESHNESS_FLOOR, conflict_pairs,
+    ABSTAIN, ANSWER, ANSWER_CONDITIONALLY, conflict_pairs,
     provenance_answer)
 
 CACHE_DIR = ROOT / "data" / "generation_cache"
@@ -211,12 +214,12 @@ def _describe_applies_if(hit):
     return " AND ".join(_format_condition(c) for c in conds) if conds else "no condition (everyone)"
 
 
-def competing_conditions(hits):
-    """Lines describing when the top-1 answer holds, from the hits only.
+def competing_docs(hits):
+    """{doc_id: hit} of the top-1's doc and its competing versions in hits.
 
     Competing versions are (a) both sides of any declared-conflict pair among
     the hits and (b) other docs in the hits from the top-1's policy family.
-    If the top-1 is below FRESHNESS_FLOOR its effective_date is added.
+    The top-1's doc comes first.
     """
     top = hits[0]
     docs = {top["metadata"]["doc_id"]: top}
@@ -227,21 +230,46 @@ def competing_conditions(hits):
     for hit in hits:
         if policy_family(hit) == family:
             docs.setdefault(hit["metadata"]["doc_id"], hit)
-    top_id = top["metadata"]["doc_id"]
+    return docs
+
+
+def conditional_framing(hits):
+    """'applicability' when the top-1 has competing versions in hits, else
+    'staleness'. Exactly one framing is ever given to the model."""
+    return "applicability" if len(competing_docs(hits)) > 1 else "staleness"
+
+
+def applicability_instruction(hits):
+    """Prompt block asking for a condition naming who the version applies to."""
+    docs = competing_docs(hits)
+    top_id = hits[0]["metadata"]["doc_id"]
     lines = []
     for doc_id, hit in docs.items():
         role = "source of the answer" if doc_id == top_id else "competing version"
-        lines.append(f"- {doc_id} ({role}, effective {hit['metadata']['effective_date']}): "
-                     f"applies if {_describe_applies_if(hit)}")
+        lines.append(f"- {doc_id} ({role}): applies if {_describe_applies_if(hit)}")
     others = [d for d in docs if d != top_id]
-    if others:
-        lines.append(f"- {top_id} takes precedence over {', '.join(others)}, which may "
-                     "state a different value; the answer holds only if that precedence "
-                     "is correct for the user.")
-    if top.get("freshness", 1.0) < FRESHNESS_FLOOR:
-        lines.append(f"- {top_id} took effect on {top['metadata']['effective_date']} "
-                     "and may be out of date; the answer holds only if it is still current.")
-    return lines
+    lines.append(f"- {top_id} takes precedence over {', '.join(others)}, which may "
+                 "state a different value.")
+    return (
+        "\nOther versions of this policy exist and may apply to different people. "
+        "The versions and who each applies to:\n"
+        + "\n".join(lines) + "\n"
+        "Answer the question from the source of the answer, then end with one line "
+        "starting 'Condition:' that names who this version applies to, taken from "
+        "its 'applies if' above.\n")
+
+
+def staleness_instruction(hits):
+    """Prompt block asking ONLY for a date-based caveat on the top-1's age."""
+    top = hits[0]
+    top_id = top["metadata"]["doc_id"]
+    date = top["metadata"]["effective_date"]
+    return (
+        f"\nThe source of this answer, {top_id}, took effect on {date} and may be "
+        "out of date.\n"
+        "Answer the question, then end with one line starting 'Condition:' that "
+        f"says the answer is based on {top_id}, effective {date}, and may be out "
+        "of date. Do not claim the document is current or the latest version.\n")
 
 
 def build_prompt(query, hits, mode):
@@ -249,15 +277,10 @@ def build_prompt(query, hits, mode):
     blocks = "\n\n".join(f"[{h['chunk_id']}]\n{h['chunk_body']}" for h in hits)
     user = f"Chunks:\n\n{blocks}\n\nQuestion: {query}\n"
     if mode == ANSWER_CONDITIONALLY:
-        conditions = "\n".join(competing_conditions(hits))
-        user += (
-            "\nThis answer only holds under certain conditions. Competing versions "
-            "and their applicability conditions:\n"
-            f"{conditions}\n"
-            "Answer the question, then end with one line starting 'Condition:' "
-            "that states when your answer holds, taken from the conditions above "
-            "(who the version applies to, which document it overrides, or that the "
-            "document may be out of date, with its date).\n")
+        if conditional_framing(hits) == "applicability":
+            user += applicability_instruction(hits)
+        else:
+            user += staleness_instruction(hits)
     user += "\nAnswer (cite every claim as [chunk_id]):"
     return SYSTEM_PROMPT, user
 

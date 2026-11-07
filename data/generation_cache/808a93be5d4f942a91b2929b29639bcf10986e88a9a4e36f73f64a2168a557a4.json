@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I add the printer on my floor?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "it-floor-printer-setup::s00p0",
+    "it-floor-printer-setup::s02p0",
+    "it-floor-printer-setup::s04p0",
+    "it-floor-printer-setup::s03p0",
+    "it-floor-printer-setup::s01p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-floor-printer-setup::s00p0]\nThe office has two network printers on the 4th floor. Each printer must be\nadded to your desktop once before you can print to it.\n\n[it-floor-printer-setup::s02p0]\n1. Open *Control Panel* and choose *Devices and Printers*.\n2. Click *Add a printer*, then *The printer that I want isn't listed*.\n3. Choose *Add a printer using a TCP/IP address or hostname*.\n4. Enter the address from the table below and click *Next*.\n5. When asked for a driver, choose *Have Disk* and browse to\n   `\\\\teamvault\\public\\drivers\\printers`.\n6. Print a test page to check it works.\n\n| Printer | IP address |\n|---|---|\n| `PRN-4F-EAST` | 10.10.4.21 |\n| `PRN-4F-WEST` | 10.10.4.22 |\n\n[it-floor-printer-setup::s04p0]\nPaper is in the cupboard under each printer. For toner or a jam you cannot\nclear, raise a HelpLine ticket with the printer name.\n\n[it-floor-printer-setup::s03p0]\nPrinted pages come out straight away, so collect them at once. For\nconfidential documents, stand at the printer while the job prints.\n\n[it-floor-printer-setup::s01p0]\n| Printer name | Location | Type |\n|---|---|---|\n| `PRN-4F-EAST` | Near the Banyan meeting room | Black and white, double-sided |\n| `PRN-4F-WEST` | Next to the pantry | Colour, A4 and A3 |\n\nUse `PRN-4F-EAST` for everyday printing. Colour printing on\n`PRN-4F-WEST` is for client documents only.\n\nQuestion: How do I add the printer on my floor?\n\nThe source of this answer, it-floor-printer-setup, took effect on 2019-11-04 and may be out of date.\nAnswer the question, then end with one line starting 'Condition:' that says the answer is based on it-floor-printer-setup, effective 2019-11-04, and may be out of date. Do not claim the document is current or the latest version.\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "To add the printer on your floor, follow these steps:\n\n1. Open *Control Panel* and choose *Devices and Printers* [it-floor-printer-setup::s02p0].\n2. Click *Add a printer*, then *The printer that I want isn't listed* [it-floor-printer-setup::s02p0].\n3. Choose *Add a printer using a TCP/IP address or hostname* [it-floor-printer-setup::s02p0].\n4. Enter the address from the table below and click *Next* [it-floor-printer-setup::s02p0].\n5. When asked for a driver, choose *Have Disk* and browse to `\\\\teamvault\\public\\drivers\\printers` [it-floor-printer-setup::s02p0].\n6. Print a test page to check it works [it-floor-printer-setup::s02p0].\n\nCondition: This answer is based on it-floor-printer-setup, effective 2019-11-04, and may be out of date."
+}

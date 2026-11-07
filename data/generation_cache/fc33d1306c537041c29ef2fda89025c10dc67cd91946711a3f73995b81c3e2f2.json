@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "When do I have to pre-register a guest by?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "fac-visitor-pass-v2::s01p0",
+    "fac-visitor-hosting-checklist::s00p0",
+    "fac-visitor-pass-v1::s01p0",
+    "fac-visitor-hosting-checklist::s01p0",
+    "fac-visitor-hosting-checklist::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-visitor-pass-v2::s01p0]\nEvery visitor must be pre-registered by their host in the visitor system at\nleast **48 hours** before arrival. The visitor receives a QR code by email.\n\n[fac-visitor-hosting-checklist::s00p0]\nUse this checklist whenever you invite a candidate, client, vendor or family\nmember to the office. The rules for registering visitors, including how early\nthe registration must be made, are in the Visitor Pass Policy. This checklist\nhelps you plan around them.\n\n[fac-visitor-pass-v1::s01p0]\nEvery visitor must be pre-registered by their host in the visitor system at\nleast **24 hours** before arrival. The visitor receives a QR code by email.\n\n[fac-visitor-hosting-checklist::s01p0]\n- [ ] Register the visitor in the visitor system, within the deadline set by\n      the Visitor Pass Policy.\n- [ ] Check that the visitor's name matches their photo ID exactly.\n- [ ] Book a meeting room if you need one.\n- [ ] Tell the visitor which office and entrance to use and to bring a\n      government photo ID.\n- [ ] If the visitor needs step-free access or other support, tell reception\n      through the visitor system.\n- [ ] If the visitor will use a laptop on the network, ask the IT service desk\n      about guest Wi-Fi.\n- [ ] If the visitor will see confidential material, make sure a\n      non-disclosure agreement is in place.\n\n[fac-visitor-hosting-checklist::s03p0]\n- [ ] Walk the visitor back to reception.\n- [ ] Make sure the pass is handed in.\n- [ ] Clear the meeting room.\n\nQuestion: When do I have to pre-register a guest by?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fac-visitor-pass-v2::s01p0], every visitor must be pre-registered by their host in the visitor system at least **48 hours** before arrival."
+}

@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How long does IT take to install software I requested?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "it-software-install-v2::s03p0",
+    "it-new-joiner-setup-guide::s10p0",
+    "it-software-catalogue-howto::s00p0",
+    "it-troubleshooting-faq::s15p0",
+    "it-software-catalogue-howto::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-software-install-v2::s03p0]\nOnce a request has been approved, IT installs the software or adds it to the\ncatalogue within **3 business days**. Requests that need a new paid licence\nmay take longer if procurement is required; the employee is told the expected\ndate when the request is approved.\n\n[it-new-joiner-setup-guide::s10p0]\nStandard software is installed during first login. Other approved software can\nbe installed at any time from the self-service software catalogue; see How to\nInstall Software from the Catalogue. For anything not in the catalogue, the\nrequest process and fulfilment time are set in the Software Installation\nPolicy.\n\nNever install software from outside the catalogue without approval, and never\ninstall tools on the prohibited list in that policy.\n\n[it-software-catalogue-howto::s00p0]\nThe self-service software catalogue lets you install approved applications\non your company laptop without raising a ticket. This page explains how to\nuse it. Which software is allowed, how to request software that is not in the\ncatalogue, and how long IT takes to fulfil a request are all covered by the\nSoftware Installation Policy.\n\n[it-troubleshooting-faq::s15p0]\nRaise a software request through the IT service portal. The approval steps and\nthe time IT takes to install approved software are set out in the Software\nInstallation Policy.\n\n[it-software-catalogue-howto::s02p0]\n1. Search for the application by name, or browse by category.\n2. Select it and read the short description.\n3. Click *Install*. Installation happens in the background, and you can keep\n   working.\n4. Some applications need a restart. The catalogue will tell you, and you can\n   choose when to restart.\n\nQuestion: How long does IT take to install software I requested?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-software-install-v2::s03p0], once a request has been approved, IT installs the software or adds it to the catalogue within **3 business days**. Additionally, [it-new-joiner-setup-guide::s10p0] mentions that the request process and fulfilment time are set in the Software Installation Policy."
+}

@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "Where do I download my payslip?",
+  "profile_id": "u001",
+  "chunk_ids": [
+    "hr-payslip-download-howto::s01p0",
+    "hr-payslip-download-howto::s00p0",
+    "hr-payslip-download-howto::s02p0",
+    "hr-onboarding-faq::s06p0",
+    "fin-procure-to-pay-guide::s13p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-payslip-download-howto::s01p0]\n1. Sign in to the employee portal and open the HR system.\n2. Go to *Pay* > *Payslips*.\n3. Choose the month you need from the list.\n4. Select *Download PDF*. The file is password-protected; the password hint is\n   shown on the download screen.\n\n[hr-payslip-download-howto::s00p0]\nPayslips are published in the HR system after each salary run.\n\n[hr-payslip-download-howto::s02p0]\nIf a payslip is missing or a figure looks incorrect, raise a ticket with the\nPayroll team through the HR helpdesk and attach the payslip. Expense\nreimbursements appear as a separate line; for when approved claims are paid,\nsee the Expense Claims policy.\n\n[hr-onboarding-faq::s06p0]\nSalaries are paid monthly. Your payslip is available in the HR system; see\n*How to Download Your Payslip*.\n\n[fin-procure-to-pay-guide::s13p0]\nRaise a Finance ticket on the employee portal and choose *Procurement* for\nquestions about quotes, requisitions or suppliers, or *Accounts Payable* for\ninvoices and payments.\n\nQuestion: Where do I download my payslip?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-payslip-download-howto::s01p0], you can download your payslip by signing in to the employee portal, opening the HR system, going to *Pay* > *Payslips*, choosing the month you need, and selecting *Download PDF*."
+}

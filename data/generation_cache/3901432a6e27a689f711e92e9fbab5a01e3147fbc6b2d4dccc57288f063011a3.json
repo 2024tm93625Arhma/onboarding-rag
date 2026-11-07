@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I apply for a corporate card?",
+  "profile_id": "u001",
+  "chunk_ids": [
+    "fin-corporate-card-howto::s02p0",
+    "fin-corporate-card-howto::s01p0",
+    "fin-corporate-card-howto::s03p0",
+    "fin-corporate-card-howto::s00p0",
+    "fin-corporate-card-howto::s07p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fin-corporate-card-howto::s02p0]\n1. Raise a request in the expense tool under *Cards* > *Apply*.\n2. Your department head approves it.\n3. Finance orders the card from the bank. It is posted to your office and\n   usually arrives within 10 working days.\n4. Activate it using the bank's instructions and set a PIN.\n\nYour spending limit is set on the approval and shown in the expense tool.\n\n[fin-corporate-card-howto::s01p0]\nEmployees who travel for work or regularly buy small items for their team.\nYour department head decides who needs a card.\n\n[fin-corporate-card-howto::s03p0]\n- Use it only for business costs. Personal spending is not allowed, even if\n  you plan to pay it back.\n- Keep every itemised receipt.\n- Do not withdraw cash unless your approval allows it.\n- Do not share the card or its number with anyone, including colleagues.\n\n[fin-corporate-card-howto::s00p0]\nA corporate card lets you pay for business costs without using your own money.\nThe company pays the card bill directly. You still account for every\ntransaction in the expense tool.\n\n[fin-corporate-card-howto::s07p0]\nTell Finance before your last working day. Clear all outstanding\ntransactions, then cut the card in half and hand it to your manager.\n\nQuestion: How do I apply for a corporate card?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to the provided documents, to apply for a corporate card, you should:\n\n1. Raise a request in the expense tool under *Cards* > *Apply*. [fin-corporate-card-howto::s02p0]\n2. Your department head approves it. [fin-corporate-card-howto::s02p0]\n3. Finance orders the card from the bank. It is posted to your office and usually arrives within 10 working days. [fin-corporate-card-howto::s02p0]\n\nPlease note that the department head decides who needs a card, as stated in [fin-corporate-card-howto::s01p0]."
+}

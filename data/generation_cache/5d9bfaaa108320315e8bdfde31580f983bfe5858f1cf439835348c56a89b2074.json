@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I raise an IT support ticket?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "it-helpline-ticketing-howto::s00p0",
+    "it-helpline-ticketing-howto::s02p0",
+    "it-escalation-matrix::s05p0",
+    "it-helpline-ticketing-howto::s05p0",
+    "it-helpline-ticketing-howto::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-helpline-ticketing-howto::s00p0]\nHelpLine is the ticketing system for IT and admin requests. Raise a HelpLine\nticket for any problem with your desktop, email, network drives, printers or\nphone, and for requests such as new software or access to a TeamVault\nfolder.\n\n[it-helpline-ticketing-howto::s02p0]\nIf you cannot open HelpLine, email `helpline@corp.local`; the message is\nturned into a ticket automatically. For urgent problems that stop you\nworking, call extension 222.\n\n[it-escalation-matrix::s05p0]\nMost tickets do not need escalating; the service desk tracks them against the\ntargets above. Escalate yourself only if:\n\n- the impact has become worse since you raised the ticket,\n- a deadline makes the problem more urgent than it first looked, or\n- the ticket has had no update for longer than the table allows.\n\nTo escalate, reply on the ticket with the word **ESCALATE** in the first line\nand explain the reason. This notifies the service desk team lead. If you get\nno response within half a working day, your manager can contact the IT\nOperations Manager directly, quoting the ticket number.\n\n[it-helpline-ticketing-howto::s05p0]\nWhen the engineer marks a ticket *Resolved*, you get an email. Reply\n*reopen* if the problem is not fixed; otherwise the ticket closes\nautomatically.\n\n[it-helpline-ticketing-howto::s03p0]\nClick *My Calls* to see your open tickets. The status moves from *Logged* to\n*Assigned*, *In Progress* and *Closed*. You can add a note to a ticket at any\ntime; the engineer is notified.\n\nQuestion: How do I raise an IT support ticket?\n\nThe source of this answer, it-helpline-ticketing-howto, took effect on 2020-01-13 and may be out of date.\nAnswer the question, then end with one line starting 'Condition:' that says the answer is based on it-helpline-ticketing-howto, effective 2020-01-13, and may be out of date. Do not claim the document is current or the latest version.\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "To raise an IT support ticket, you can use the HelpLine system and raise a ticket for any problem with your desktop, email, network drives, printers, or phone, and for requests such as new software or access to a TeamVault folder [it-helpline-ticketing-howto::s00p0]. Alternatively, if you cannot open HelpLine, you can email `helpline@corp.local` and the message will be turned into a ticket automatically [it-helpline-ticketing-howto::s02p0]. For urgent problems that stop you working, you can call extension 222 [it-helpline-ticketing-howto::s02p0].\n\nCondition: The answer is based on it-helpline-ticketing-howto, effective 2020-01-13, and may be out of date."
+}

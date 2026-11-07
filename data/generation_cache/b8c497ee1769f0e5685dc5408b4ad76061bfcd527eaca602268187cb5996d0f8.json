@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I share a large file with a colleague?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "it-teamvault-file-sharing-guide::s03p0",
+    "it-teamvault-file-sharing-guide::s00p0",
+    "it-teamvault-file-sharing-guide::s01p0",
+    "it-teamvault-file-sharing-guide::s02p0",
+    "it-teamvault-file-sharing-guide::s04p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-teamvault-file-sharing-guide::s03p0]\n1. Right-click the file in the TeamVault web page and choose *Share link*.\n2. Enter the colleague's name and choose *View* or *Edit*.\n3. Click *Send*. They get an email with the link.\n\nLinks to people outside the company cannot be created. To send a file to a\nclient or vendor, ask IT for a one-time transfer folder.\n\n[it-teamvault-file-sharing-guide::s00p0]\nTeamVault is our internal file-sharing tool. Use it to store team documents\nand to share files with colleagues. Do not use personal cloud storage or\nemail attachments for work files.\n\n[it-teamvault-file-sharing-guide::s01p0]\nEvery employee gets a TeamVault account on their first day. Open\n`\\\\teamvault\\home` from File Explorer, or go to the TeamVault web page from\nthe intranet menu. Sign in with your Windows username and password.\n\n[it-teamvault-file-sharing-guide::s02p0]\n- **Home folder (H: drive):** your personal space. Only you can see it.\n- **Team folder (T: drive):** shared with everyone in your team. Your\n  manager asks IT to add or remove members.\n- **Public folder:** readable by all employees. Use it for templates and\n  forms that everyone needs.\n\nThe H: and T: drives are mapped automatically when you log in to an office\ndesktop.\n\n[it-teamvault-file-sharing-guide::s04p0]\nEach home folder has a fixed quota. When you reach it, TeamVault stops\naccepting new files. Delete old files or ask IT for more space through a\nHelpLine ticket.\n\nQuestion: How do I share a large file with a colleague?\n\nThe source of this answer, it-teamvault-file-sharing-guide, took effect on 2020-02-10 and may be out of date.\nAnswer the question, then end with one line starting 'Condition:' that says the answer is based on it-teamvault-file-sharing-guide, effective 2020-02-10, and may be out of date. Do not claim the document is current or the latest version.\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-teamvault-file-sharing-guide::s03p0], you can share a large file with a colleague by right-clicking the file in the TeamVault web page, choosing \"Share link\", entering the colleague's name, choosing \"View\" or \"Edit\", and clicking \"Send\". They will receive an email with the link.\n\nCondition: The answer is based on it-teamvault-file-sharing-guide, effective 2020-02-10, and may be out of date."
+}

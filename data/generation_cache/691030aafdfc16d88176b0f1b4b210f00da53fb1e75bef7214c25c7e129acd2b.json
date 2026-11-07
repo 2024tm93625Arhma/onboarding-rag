@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the turnaround time for approved software requests?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "it-software-install-v2::s03p0",
+    "it-troubleshooting-faq::s15p0",
+    "it-new-joiner-setup-guide::s10p0",
+    "it-software-install-v1::s03p0",
+    "it-escalation-matrix::s08p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-software-install-v2::s03p0]\nOnce a request has been approved, IT installs the software or adds it to the\ncatalogue within **3 business days**. Requests that need a new paid licence\nmay take longer if procurement is required; the employee is told the expected\ndate when the request is approved.\n\n[it-troubleshooting-faq::s15p0]\nRaise a software request through the IT service portal. The approval steps and\nthe time IT takes to install approved software are set out in the Software\nInstallation Policy.\n\n[it-new-joiner-setup-guide::s10p0]\nStandard software is installed during first login. Other approved software can\nbe installed at any time from the self-service software catalogue; see How to\nInstall Software from the Catalogue. For anything not in the catalogue, the\nrequest process and fulfilment time are set in the Software Installation\nPolicy.\n\nNever install software from outside the catalogue without approval, and never\ninstall tools on the prohibited list in that policy.\n\n[it-software-install-v1::s03p0]\nOnce a request has been approved, IT installs the software or adds it to the\ncatalogue within **5 business days**. Requests that need a new paid licence\nmay take longer if procurement is required; the employee is told the expected\ndate when the request is approved.\n\n[it-escalation-matrix::s08p0]\nThis matrix does not set timelines for service requests. For those, see the\nrelevant policy:\n\n- new or replacement laptops and the refresh schedule: Laptop Request and\n  Refresh Policy,\n- software that is not in the catalogue: Software Installation Policy,\n- returning equipment when you leave or receive a replacement: IT Asset Return\n  Policy,\n- VPN session rules: VPN Access Policy,\n- password requirements: Password Rules.\n\nQuestion: What is the turnaround time for approved software requests?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-software-install-v2::s03p0], once a request has been approved, IT installs the software or adds it to the catalogue within **3 business days**."
+}

@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "By when must an expense claim be submitted?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "hr-expense-claims-v2::s04p0",
+    "hr-expense-claims-v2::s05p0",
+    "fin-expense-claim-howto::s06p0",
+    "fin-claimpoint-expense-guide::s02p0",
+    "fin-expense-claim-howto::s01p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-expense-claims-v2::s04p0]\nAll expense claims must be submitted in the expense tool within\n**30 calendar days** of the date the expense was incurred. Claims submitted after\nthis deadline are rejected automatically and cannot be reopened, except where\nthe employee's manager and the Finance Controller both approve a written\nexception.\n\n[hr-expense-claims-v2::s05p0]\n1. Log in to the expense tool from the employee portal.\n2. Create a new claim and select the correct expense category.\n3. Enter the amount, the date and the business purpose in one or two sentences.\n4. Attach a clear photo or scan of an itemised receipt. Card slips alone are\n   not accepted.\n5. For client meals, list the names and organisations of all attendees.\n6. Submit the claim for approval.\n\n[fin-expense-claim-howto::s06p0]\nFor questions about the tool, raise a ticket with Finance through the\nemployee portal. For questions about whether something can be claimed, see\nthe Expense Claims Policy or ask your manager.\n\n[fin-claimpoint-expense-guide::s02p0]\n1. Click *New Claim* and choose the month the expenses belong to.\n2. Add one line per expense. Choose the expense type from the drop-down list\n   and enter the date, amount and a short description.\n3. Enter your cost centre code. Ask your manager if you do not know it.\n4. Click *Save and Print*. ClaimPoint prints a claim form with a barcode.\n\n[fin-expense-claim-howto::s01p0]\n- Have an itemised receipt for each expense. A card slip on its own is not\n  enough.\n- Know your cost centre. The tool fills in your default one; change it only if\n  another team's budget is paying.\n- For client meals, note the names and organisations of everyone who\n  attended.\n\nQuestion: By when must an expense claim be submitted?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-expense-claims-v2::s04p0], all expense claims must be submitted in the expense tool within **30 calendar days** of the date the expense was incurred."
+}

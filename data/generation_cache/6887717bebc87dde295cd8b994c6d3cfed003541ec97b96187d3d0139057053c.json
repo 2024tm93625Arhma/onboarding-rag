@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How are performance ratings calibrated across teams?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "hr-performance-review-guide::s08p0",
+    "hr-performance-review-guide::s13p0",
+    "hr-performance-review-guide::s07p0",
+    "hr-performance-review-guide::s01p0",
+    "hr-performance-review-guide::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-performance-review-guide::s08p0]\nManagers in each department meet to compare proposed ratings, so that similar\nperformance receives similar ratings across teams. Managers should come\nprepared with evidence for each rating. Ratings may change during\ncalibration; the manager explains any change to the employee.\n\n[hr-performance-review-guide::s13p0]\nPay increases and promotions are decided after calibration and communicated\nseparately by the manager. Ratings are one input among several, including\nrole scope and market data.\n\n[hr-performance-review-guide::s07p0]\nThe manager reads the self-review and peer feedback, then writes an overall\nassessment and proposes a rating. The rating scale and its descriptions are\nshown in the HR system next to the rating field.\n\n[hr-performance-review-guide::s01p0]\nReviews give every employee a clear, fair picture of how they are doing,\nrecognise good work and agree where to grow next. They also feed into\ndecisions on pay increases and promotions, so they need to be done carefully\nand on time.\n\n[hr-performance-review-guide::s02p0]\n1. **Goal setting** at the start of the year.\n2. **Mid-year check-in** to review progress and adjust goals.\n3. **Year-end review**, made up of a self-review, peer feedback and a manager\n   review.\n4. **Calibration** across teams.\n5. **Review conversation** and sharing of the final rating.\n\nPeople Operations announces the dates for each step on the employee portal.\n\nQuestion: How are performance ratings calibrated across teams?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-performance-review-guide::s08p0], Managers in each department meet to compare proposed ratings, so that similar performance receives similar ratings across teams."
+}

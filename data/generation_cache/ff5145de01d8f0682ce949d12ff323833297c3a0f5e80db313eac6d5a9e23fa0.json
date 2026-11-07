@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How many unused leave days can I carry into next year?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "hr-leave-policy-v2::s02p0",
+    "hr-leave-policy-v2::s01p0",
+    "hr-leave-policy-v2::s03p0",
+    "fin-payroll-calendar-2026::s02p0",
+    "hr-leave-policy-v2::s00p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-leave-policy-v2::s02p0]\nEmployees may carry forward up to **5 unused leave days** into the next\ncalendar year. Carried-forward days must be used by 31 March of that year,\nor they expire.\n\n[hr-leave-policy-v2::s01p0]\nFull-time employees earn 24 days of paid annual leave per calendar year,\naccrued monthly at 2 days per month.\n\n[hr-leave-policy-v2::s03p0]\nThis policy applies to employees who joined on or after 1 April 2025.\nEmployees who joined before that date remain under v1.\n\n[fin-payroll-calendar-2026::s02p0]\n| Month | Cut-off | Pay date |\n|---|---|---|\n| January | Tue 20 January | Fri 30 January |\n| February | Fri 20 February | Fri 27 February |\n| March | Fri 20 March | Tue 31 March |\n| April | Mon 20 April | Thu 30 April |\n| May | Wed 20 May | Fri 29 May |\n| June | Sat 20 June | Tue 30 June |\n| July | Mon 20 July | Fri 31 July |\n| August | Thu 20 August | Mon 31 August |\n| September | Sun 20 September | Wed 30 September |\n| October | Tue 20 October | Fri 30 October |\n| November | Fri 20 November | Mon 30 November |\n| December | Sun 20 December | Thu 31 December |\n\nWhen the cut-off falls on a weekend, systems stay open and approvals made that\nday still count. Payroll staff will not be available to answer queries until\nthe next working day, so plan any urgent change for the Friday before.\n\n[hr-leave-policy-v2::s00p0]\nThis policy sets out how annual leave is earned, used and carried forward.\nIt replaces v1 for employees who joined on or after 1 April 2025.\n\nQuestion: How many unused leave days can I carry into next year?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-leave-policy-v2::s02p0], employees may carry forward up to **5 unused leave days** into the next calendar year."
+}

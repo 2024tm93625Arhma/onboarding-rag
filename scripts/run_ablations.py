@@ -84,8 +84,8 @@ def main():
 
     ref = next(r for r in overall if r["retriever"] == REFERENCE)
     deltas = [{"retriever": r["retriever"],
-               "IER": r["invalid_evidence_rate"],
-               "dIER": r["invalid_evidence_rate"] - ref["invalid_evidence_rate"],
+               "IER": r["ier@1"],
+               "dIER": r["ier@1"] - ref["ier@1"],
                "Recall@5": r["recall@5"], "dRecall@5": r["recall@5"] - ref["recall@5"],
                "MRR": r["mrr"], "dMRR": r["mrr"] - ref["mrr"]}
               for r in overall]

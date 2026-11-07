@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the advance booking window for desks?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "fac-desk-booking-howto::s02p0",
+    "fac-desk-booking-v2::s01p0",
+    "fac-desk-booking-howto::s00p0",
+    "fac-desk-booking-howto::s05p0",
+    "fac-desk-booking-v2::s06p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-desk-booking-howto::s02p0]\n1. Open the app and tap **Book a desk**.\n2. Pick the date. Dates outside the booking window allowed by the Desk Booking\n   Policy are greyed out.\n3. Select your office and floor. The floor plan opens with your team's\n   neighbourhood highlighted.\n4. Tap a green desk to see its equipment, such as a docking station, a second\n   monitor or a standing frame.\n5. Tap **Confirm**. The booking appears under **My bookings** and in your\n   calendar.\n\n[fac-desk-booking-v2::s01p0]\nDesks are booked in the workplace app or on the intranet. Desks can be booked\nup to **14 days** in advance. Each booking covers one full working day.\n\n[fac-desk-booking-howto::s00p0]\nAll offices use shared desks, so you need a booking before you come in. This\nguide walks through the booking steps in the workplace app. The rules\nthemselves, including how far ahead you can book and the check-in deadline,\nare set out in the Desk Booking Policy. Check that policy if you are unsure\nwhat is allowed.\n\n[fac-desk-booking-howto::s05p0]\nOpen **My bookings**, choose the booking and tap **Cancel**. Cancel as soon as\nyour plans change.\n\n[fac-desk-booking-v2::s06p0]\nEmployees who need an adjusted or fixed desk for medical or accessibility\nreasons can request one from Facilities. Such desks are not bookable by others.\n\nQuestion: What is the advance booking window for desks?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fac-desk-booking-v2::s01p0], desks can be booked up to **14 days** in advance."
+}

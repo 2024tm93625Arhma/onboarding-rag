@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the referral bonus these days?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "hr-referral-bonus-v2::s01p0",
+    "hr-onboarding-faq::s05p0",
+    "hr-referral-bonus-v2::s03p0",
+    "hr-referral-bonus-v2::s05p0",
+    "hr-referral-bonus-v2::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-referral-bonus-v2::s01p0]\nA successful referral earns a bonus of **INR 75,000** per hire, paid to the\nreferring employee. The amount is the same for all roles and levels.\n\n[hr-onboarding-faq::s05p0]\nYes. Submit the referral through the referral portal. The bonus amount and\neligibility rules are in the Employee Referral Bonus Policy.\n\n[hr-referral-bonus-v2::s03p0]\nThe bonus is paid through payroll in the salary cycle after the referred hire\ncompletes probation. Both the referring employee and the new hire must still\nbe employed on the payment date. The bonus is taxable income.\n\n[hr-referral-bonus-v2::s05p0]\nThis policy applies to all employees. It replaces v1 in full.\n\n[hr-referral-bonus-v2::s02p0]\n- The referral must be submitted through the referral portal before the\n  candidate applies through any other channel.\n- The referred candidate must not have applied to the company in the\n  preceding six months.\n- Hiring managers, recruiters and HR business partners are not eligible for a\n  bonus on roles they are directly hiring for.\n- Referrals of former employees are eligible only if they left the company\n  more than twelve months earlier.\n\nQuestion: What is the referral bonus these days?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-referral-bonus-v2::s01p0], the referral bonus is INR 75,000 per hire, paid to the referring employee."
+}

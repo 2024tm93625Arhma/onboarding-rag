@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the minimum password length we have to use?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "it-password-rules-v2::s01p0",
+    "it-password-rules-v1::s01p0",
+    "it-troubleshooting-faq::s00p0",
+    "it-password-rules-v2::s05p0",
+    "it-password-rules-v2::s04p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-password-rules-v2::s01p0]\n- Minimum length: **14 characters**.\n- Must include at least one letter and one number.\n- Must not contain your name, username or the company name.\n- Must not match any of your last five passwords.\n\nPassphrases made of several unrelated words are encouraged.\n\n[it-password-rules-v1::s01p0]\n- Minimum length: **12 characters**.\n- Must include at least one letter and one number.\n- Must not contain your name, username or the company name.\n- Must not match any of your last five passwords.\n\nPassphrases made of several unrelated words are encouraged.\n\n[it-troubleshooting-faq::s00p0]\nThis FAQ collects the problems the IT service desk hears about most often,\nwith steps you can try yourself before raising a ticket. Many problems are\nfixed by a restart, so try that first unless the answer says otherwise. For\nrules and limits, such as password requirements or VPN session limits, this\npage points you to the policy that sets them rather than repeating them.\n\n[it-password-rules-v2::s05p0]\nThis policy applies to all employees. It replaces v1 in full.\n\n[it-password-rules-v2::s04p0]\nMulti-factor authentication is required on all company accounts in addition to\nthe password.\n\nQuestion: What is the minimum password length we have to use?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-password-rules-v2::s01p0], the minimum password length is **14 characters**."
+}

@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How soon after my last day must I return my equipment?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "it-asset-return-v2::s02p0",
+    "it-remote-working-guide::s13p0",
+    "it-troubleshooting-faq::s23p0",
+    "it-asset-return-v1::s02p0",
+    "hr-exit-clearance-checklist::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-asset-return-v2::s02p0]\nAll equipment must be returned within **3 working days** of the employee's last\nworking day, or of receiving a replacement device. Equipment can be handed in\nat any office IT desk or sent by the courier that IT arranges.\n\n[it-remote-working-guide::s13p0]\nIf you receive a replacement laptop, or when you leave the company, equipment\nmust be returned under the IT Asset Return Policy, which explains the return\noptions for employees who do not visit an office.\n\n[it-troubleshooting-faq::s23p0]\nAll company equipment. The list and the deadline are in the IT Asset Return\nPolicy.\n\n[it-asset-return-v1::s02p0]\nAll equipment must be returned within **7 working days** of the employee's last\nworking day, or of receiving a replacement device. Equipment can be handed in\nat any office IT desk or sent by the courier that IT arranges.\n\n[hr-exit-clearance-checklist::s02p0]\n- [ ] Return your laptop, charger and any other company equipment. The return\n      deadline and process are in the IT Asset Return Policy.\n- [ ] Return your ID badge and any access cards to reception.\n- [ ] Return your parking permit if you have one, as described in the Office\n      Parking Policy.\n- [ ] Remove personal files from your laptop. Do not copy company data to\n      personal devices.\n- [ ] Update your personal email address in the HR system so that we can send\n      your documents.\n\nQuestion: How soon after my last day must I return my equipment?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-asset-return-v2::s02p0], all equipment must be returned within **3 working days** of the employee's last working day, or of receiving a replacement device."
+}

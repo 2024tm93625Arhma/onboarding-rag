@@ -1,0 +1,8 @@
+category,n_queries,n_answered,n_gold,citation_accuracy,n_cited,cited_chunk_retrieved,uncited_claim_rate,n_abstain,abstain_compliance
+cross_doc_conflict,12,11,11,0.9091,11,1.0000,0.0000,1,1.0000
+leakage_probe,12,1,0,,1,1.0000,0.0000,11,1.0000
+ordinary,25,19,0,,19,0.7368,0.0000,6,1.0000
+stale,8,7,0,,7,0.8571,0.0000,1,1.0000
+unanswerable,12,0,0,,0,,,12,1.0000
+user_dependent,19,16,16,1.0000,16,1.0000,0.0000,3,1.0000
+version_conflict,20,16,16,0.8125,16,0.9375,0.0000,4,1.0000

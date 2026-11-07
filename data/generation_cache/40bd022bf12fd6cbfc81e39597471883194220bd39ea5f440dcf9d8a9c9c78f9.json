@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "I forgot my ID badge - what do I do?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "fac-id-badge-faq::s00p0",
+    "it-printer-setup-howto::s03p0",
+    "fac-new-starter-office-checklist::s01p0",
+    "it-mfa-reset-howto::s02p0",
+    "it-mfa-reset-howto::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-id-badge-faq::s00p0]\n**Where do I get my ID badge?**\nNew joiners collect their badge from reception on their first day. Bring a\ngovernment photo ID. Your photo is taken at the desk if one was not uploaded\nduring onboarding.\n\n**What does the badge open?**\nThe main entrance, the floors your team works on, the pantries and your\nlocker if it has a badge reader. Restricted areas such as server rooms, the\nmail room and the Security office need separate approval.\n\n**How do I get access to another floor or a restricted area?**\nRaise a ticket under *Facilities > Access* and name the area and the reason.\nYour manager approves the request. Restricted areas also need approval from\nthe area owner.\n\n**I forgot my badge. Can I still get in?**\nYes. Go to reception with a photo ID. You will get a temporary day badge,\nwhich must be handed in at reception before you leave. Repeatedly forgetting\nyour badge is reported to your manager.\n\n**I lost my badge. What should I do?**\nReport it straight away by calling Security on extension 2222 or raising an\nurgent ticket under *Facilities > Access*. Security deactivates the lost badge\nand arranges a replacement. A replacement for a lost badge may be charged; the\ncharge is shown on the ticket.\n\n**My badge stopped working.**\nBadges can fail if they are bent or kept next to a phone magnet. Ask reception\nto test it. If it is faulty, reception issues a new one.\n\n**Can I let someone in behind me?**\nNo. Everyone must tap their own badge. Do not hold doors open for people you\ndo not know, even if they look like employees. Visitors are signed in at\nreception under the Visitor Pass Policy.\n\n**Do I have to wear the badge?**\nYes. Wear it visibly on a lanyard or clip at all times in the office.\n\n**What happens when I leave the company?**\nHand in your badge on your last working day as part of exit clearance. It is\ndeactivated at the end of that day.\n\n[it-printer-setup-howto::s03p0]\nIf your badge is not recognised, contact the Facilities desk. For any other\nprinting problem, raise a ticket in the IT service portal.\n\n[fac-new-starter-office-checklist::s01p0]\n- [ ] Collect your ID badge from reception on your first day.\n- [ ] Test your badge on the main entrance and your floor's door.\n- [ ] Note the emergency exits and assembly point for your floor.\n\n[it-mfa-reset-howto::s02p0]\nCall the IT service desk. You will be asked to verify your identity on a video\ncall with your photo ID. IT then clears your registered methods, and you set\nup the authenticator app again at your next sign-in.\n\n[it-mfa-reset-howto::s03p0]\nReport it to the IT service desk straight away so that the phone can be\nremoved from your account.\n\nQuestion: I forgot my ID badge - what do I do?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fac-id-badge-faq::s00p0], if you forgot your ID badge, you can go to reception with a photo ID and get a temporary day badge. This temporary badge must be handed in at reception before you leave."
+}

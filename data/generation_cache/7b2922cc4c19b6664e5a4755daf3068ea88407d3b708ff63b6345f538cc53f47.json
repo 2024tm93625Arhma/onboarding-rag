@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the cut-off for claiming expenses?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "hr-expense-claims-v2::s08p0",
+    "hr-expense-claims-v2::s01p0",
+    "hr-expense-claims-v2::s02p0",
+    "fin-payroll-faq::s02p0",
+    "fin-expense-claim-howto::s04p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-expense-claims-v2::s08p0]\nApproved claims are paid through payroll in the next salary run after\napproval, provided approval is completed before the payroll cut-off on the\n20th of the month. Claims approved after the cut-off are paid with the\nfollowing month's salary. Reimbursements are not taxable when they are\nsupported by valid receipts.\n\n[hr-expense-claims-v2::s01p0]\nThe policy covers business expenses incurred while carrying out work for the\ncompany, including client meals, local conveyance, work-related travel costs,\nconference fees and small purchases made on the company's behalf. Spending\nlimits for specific categories such as meals, hotels and per-diems are set out\nin the Finance Reimbursement Limits policy and are not repeated here.\n\n[hr-expense-claims-v2::s02p0]\n- Local travel for work purposes, such as a taxi to a client site or between\n  company offices during the working day\n- Meals with clients or partners where a business purpose is recorded\n- Registration fees for approved conferences, courses or certifications\n- Stationery, cables or other small items bought for work when the standard\n  procurement route was not practical\n- Mobile data or roaming charges incurred during approved business travel\n\n[fin-payroll-faq::s02p0]\n**How do I download my payslip?**\nSee How to Download Your Payslip.\n\n**Why is my take-home pay different this month?**\nCommon reasons are an expense reimbursement, a bonus, arrears from a salary\nrevision, leave without pay, a change in tax deduction after you updated your\ninvestment declaration, or a new deduction such as a parking permit or an\ninsurance premium. Each item has its own line on the payslip.\n\n**Where do expense reimbursements appear?**\nAs a separate, non-taxable line. They are paid in the first salary run after\nyour claim is approved, as long as approval happens before the cut-off. See\nthe Expense Claims Policy for the rest of the rules.\n\n**Where are bonuses and referral payments shown?**\nAs separate earnings lines in the month they are paid. The amounts and\neligibility rules are in the relevant HR policy.\n\n[fin-expense-claim-howto::s04p0]\n- You can follow the claim under *My Claims*. The status changes from\n  *Submitted* to *Approved* and then *Paid*.\n- If your manager returns the claim, read the comment, fix the line and\n  resubmit. Do not create a new claim for the same expense.\n- Approved claims are paid with your salary. The Payroll Calendar shows the\n  cut-off and pay dates. Reimbursements appear as a separate line on your\n  payslip.\n\nQuestion: What is the cut-off for claiming expenses?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-expense-claims-v2::s08p0], the cut-off for claiming expenses is the 20th of the month."
+}

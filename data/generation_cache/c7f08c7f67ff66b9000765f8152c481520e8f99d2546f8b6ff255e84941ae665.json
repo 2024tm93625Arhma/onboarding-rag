@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What do I pay each month for a parking permit?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "fac-parking-v1::s02p0",
+    "fac-parking-faq::s00p0",
+    "fac-parking-v1::s01p0",
+    "fac-parking-v1::s03p0",
+    "fac-workplace-faq::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-parking-v1::s02p0]\nA monthly car parking permit costs **INR 1,000**, deducted from salary. Two-wheeler\nparking is free and needs no permit.\n\n[fac-parking-faq::s00p0]\nThis FAQ covers practical questions about getting to the office. Permit\neligibility, charges and car park rules are set by the Office Parking Policy.\nWhich version of that policy applies to you depends on your office and join\ndate, so check the policy for the details that apply to you.\n\n**How do I apply for a car parking permit?**\nRaise a ticket under *Facilities > Parking* and give your vehicle\nregistration number. Permits are allocated in the order requests arrive. You\nwill be told on the ticket when yours is ready to collect.\n\n**How much does a permit cost?**\nSee the Office Parking Policy. The charge is deducted from salary, and the\namount depends on which version of the policy governs you.\n\n**Can I park a motorcycle or scooter?**\nYes. Two-wheeler parking is in the marked area at the car park entrance. The\nOffice Parking Policy sets out how it works.\n\n**Is there bicycle parking?**\nYes. Bicycle racks are by the main entrance and are covered by CCTV. Showers\nand changing rooms are on the ground floor.\n\n**I have a disability. Can I get a reserved bay?**\nYes. Raise a ticket under *Facilities > Parking* and choose *Accessible bay*.\nYour request is kept confidential.\n\n**Can I leave my car overnight?**\nOnly with approval from Facilities. Ask on a ticket before the day.\n\n**I have changed my car. What do I do?**\nUpdate the registration number on your permit through a Facilities ticket.\n\n**Is there a company shuttle?**\nSome offices run a shuttle from the nearest metro station during peak hours.\nTimings are posted on the intranet *Workplace* page.\n\n**Where can visitors park?**\nVisitor parking is limited. Mention it when you register your visitor under\nthe Visitor Pass Policy and reception will try to reserve a space.\n\n**Who do I ask about something not covered here?**\nThe Facilities help desk.\n\n[fac-parking-v1::s01p0]\nCar parking is available only to employees with a monthly permit. Permits are\nrequested from the Facilities help desk and are allocated first-come,\nfirst-served.\n\n[fac-parking-v1::s03p0]\nPark only in marked bays and display the permit at all times. Overnight parking\nneeds Facilities approval. Reserved bays for employees with disabilities are\nallocated on request at no charge.\n\n[fac-workplace-faq::s03p0]\n**Is there parking?**\nParking depends on your office. Where car parking is available, it needs a\npermit under the Office Parking Policy, and the Parking and Commuting FAQ\nexplains how to apply. Check the policy for the charge that applies to you.\n\n**Can I cycle to work?**\nYes. Bicycle racks, showers and changing rooms are available at most offices.\nSee the floor guide for your office.\n\nQuestion: What do I pay each month for a parking permit?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fac-parking-v1::s02p0], a monthly car parking permit costs **INR 1,000**, deducted from salary."
+}

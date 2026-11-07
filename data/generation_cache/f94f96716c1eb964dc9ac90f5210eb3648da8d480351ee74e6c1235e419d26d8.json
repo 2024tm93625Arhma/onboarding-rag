@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the work-from-home limit for my team?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "hr-wfh-policy-v2::s02p0",
+    "hr-wfh-policy-v2::s03p0",
+    "hr-wfh-policy-v2::s05p0",
+    "hr-benefits-faq::s14p0",
+    "hr-wfh-policy-v2::s11p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-wfh-policy-v2::s02p0]\nEligible employees may work from home for up to **2 days** per week.\nUnused days do not carry over to the following week and cannot be combined\ninto a longer block of remote working.\n\n[hr-wfh-policy-v2::s03p0]\nEach team agrees one or two anchor days per week on which everyone is expected\nin the office. Work-from-home days should not be taken on a team's anchor days\nunless the manager agrees in advance.\n\n[hr-wfh-policy-v2::s05p0]\nEmployees working from home keep the same core hours as in the office, 10:00\nto 16:00 local time, and must be reachable on chat and phone during those\nhours. Meetings should be joined with the camera on where practical.\n\n[hr-benefits-faq::s14p0]\nYes, within the limits of the Work From Home Policy. The weekly allowance\ndepends on your join date.\n\n[hr-wfh-policy-v2::s11p0]\nRequests to work remotely for more than one consecutive week, for example to\ncare for a family member or while relocating, are handled as a temporary\nremote-work arrangement. They need approval from the manager and the HR\nbusiness partner and are reviewed after one month.\n\nQuestion: What is the work-from-home limit for my team?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-wfh-policy-v2::s02p0], eligible employees may work from home for up to 2 days per week."
+}

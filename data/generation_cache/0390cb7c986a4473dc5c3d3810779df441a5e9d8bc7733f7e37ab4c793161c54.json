@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How long does probation last for a new engineer?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "hr-probation-policy-v2::s01p0",
+    "hr-probation-policy-v2::s06p0",
+    "hr-manager-onboarding-checklist::s03p0",
+    "hr-engineering-onboarding-checklist::s04p0",
+    "hr-probation-policy-v2::s00p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-probation-policy-v2::s01p0]\nEvery new employee serves a probation period of **3 months** starting on\ntheir date of joining. During probation the employee and manager agree clear\nobjectives in the first two weeks and hold a documented check-in at the\nmidpoint of the probation period.\n\n[hr-probation-policy-v2::s06p0]\nThis policy applies to employees who joined on or after 1 July 2026.\nEmployees who joined before that date remain under v1.\n\n[hr-manager-onboarding-checklist::s03p0]\n- [ ] Agree written objectives for the probation period. The timing and review\n      steps are in the Probation Policy.\n- [ ] Hold regular one-to-ones and ask what is and is not working.\n- [ ] Make sure they have completed mandatory training in the learning\n      portal.\n- [ ] Check that their first expense claim, if any, is submitted correctly.\n\n[hr-engineering-onboarding-checklist::s04p0]\n- [ ] Your probation period is 6 months from your joining date. Agree your\n      probation objectives with your manager in your first two weeks.\n- [ ] Have a check-in with your manager at the midpoint of your probation.\n- [ ] Attend your probation review meeting before it ends. Your manager will\n      confirm your employment in writing.\n\n[hr-probation-policy-v2::s00p0]\nThis policy describes the probation period for new employees and how it is\nreviewed and confirmed.\nIt replaces v1 for employees who joined on or after 1 July 2026.\n\nQuestion: How long does probation last for a new engineer?\n\nOther versions of this policy exist and may apply to different people. The versions and who each applies to:\n- hr-probation-policy-v2 (source of the answer): applies if join_date >= 2026-07-01\n- hr-engineering-onboarding-checklist (competing version): applies if no condition (everyone)\n- hr-probation-policy-v2 takes precedence over hr-engineering-onboarding-checklist, which may state a different value.\nAnswer the question from the source of the answer, then end with one line starting 'Condition:' that names who this version applies to, taken from its 'applies if' above.\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-engineering-onboarding-checklist::s04p0], the probation period for a new engineer is 6 months from their joining date."
+}

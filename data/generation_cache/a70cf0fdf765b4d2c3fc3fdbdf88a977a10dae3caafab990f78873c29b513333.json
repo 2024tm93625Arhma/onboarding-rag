@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "Why does my VPN keep disconnecting when I step away?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "it-troubleshooting-faq::s12p0",
+    "it-vpn-troubleshooting-faq::s02p0",
+    "it-vpn-troubleshooting-faq::s03p0",
+    "it-remote-working-guide::s05p0",
+    "it-vpn-troubleshooting-faq::s06p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-troubleshooting-faq::s12p0]\nSee the VPN Troubleshooting FAQ. Session and inactivity limits are set in the\nVPN Access Policy, so a disconnection after a quiet period is expected.\n\n[it-vpn-troubleshooting-faq::s02p0]\nProbably not. Sessions end automatically after a period of inactivity, and\nafter a maximum duration, as described in the VPN Access Policy. Sign in again\nto reconnect.\n\n[it-vpn-troubleshooting-faq::s03p0]\nThe VPN Access Policy limits how many sessions you can have open at once, so\nsigning in on a second device can end the first. Disconnect on the device you\nare not using.\n\n[it-remote-working-guide::s05p0]\nWhich systems need the VPN, session limits, the rules on personal use and the\ntravel rules are all in the VPN Access Policy. Connect only when you need a\nsystem that requires it. If you are disconnected or the VPN will not connect, see\nthe VPN Troubleshooting FAQ.\n\n[it-vpn-troubleshooting-faq::s06p0]\nHow meeting traffic is routed while you are connected is described in the\nVPN Access Policy. Use the approved meeting platform for work calls, and close\nother video tools while you are on the VPN.\n\nQuestion: Why does my VPN keep disconnecting when I step away?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-vpn-troubleshooting-faq::s12p0], session and inactivity limits are set in the VPN Access Policy, so a disconnection after a quiet period is expected. Additionally, [it-vpn-troubleshooting-faq::s02p0] states that sessions end automatically after a period of inactivity, and after a maximum duration, as described in the VPN Access Policy."
+}

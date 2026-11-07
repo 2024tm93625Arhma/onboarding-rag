@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I raise a purchase order?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "fin-purchase-order-howto::s02p0",
+    "fin-purchase-order-howto::s01p0",
+    "fin-purchase-order-howto::s04p0",
+    "fin-purchase-order-howto::s00p0",
+    "fin-purchase-order-howto::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fin-purchase-order-howto::s02p0]\n1. Open the procurement system from the employee portal.\n2. Select *Create* > *Purchase Requisition*.\n3. Choose the supplier and enter a clear description of what you are buying.\n4. Add one line per item or service, with quantity, unit price and delivery\n   date.\n5. Enter the cost centre and attach the quote or quotes.\n6. Submit the requisition. It is routed for approval automatically.\n7. Once it is approved, Procurement converts it into a PO and sends it to the\n   supplier. You receive a copy by notification.\n\n[fin-purchase-order-howto::s01p0]\n- The supplier must already be set up in the procurement system. If they are\n  not, start vendor onboarding first; see the Vendor Onboarding Checklist.\n- Have the supplier's quote as a PDF. Orders above INR 5,00,000 need three\n  quotes, or a written reason why only one supplier can do the work.\n- Know the cost centre that will pay.\n\n[fin-purchase-order-howto::s04p0]\n- Give the PO number to the supplier contact and ask them to quote it on\n  every invoice. Invoices without a valid PO number are returned unpaid.\n- When the goods or services arrive, record a goods receipt against the PO\n  under *My Purchase Orders* > *Receive*. Accounts Payable cannot pay the\n  invoice until you do.\n\n[fin-purchase-order-howto::s00p0]\nA purchase order (PO) is the company's formal commitment to pay a supplier.\nYou need an approved PO before you place any order with a supplier. The only\nexception is a small purchase of up to INR 10,000 paid on a corporate card.\nFor the full process from quote to payment, see the Procure-to-Pay Guide.\n\n[fin-purchase-order-howto::s03p0]\n| Order value | Approvers |\n|---|---|\n| Up to INR 5,00,000 | Budget holder for the cost centre |\n| Above INR 5,00,000 up to INR 25,00,000 | Budget holder and department head |\n| Above INR 25,00,000 | Budget holder, department head and CFO |\n\nQuestion: How do I raise a purchase order?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to the provided chunks, to raise a purchase order, you should:\n\n1. Open the procurement system from the employee portal [fin-purchase-order-howto::s02p0]\n2. Select \"Create\" > \"Purchase Requisition\" [fin-purchase-order-howto::s02p0]\n3. Choose the supplier and enter a clear description of what you are buying [fin-purchase-order-howto::s02p0]\n4. Add one line per item or service, with quantity, unit price, and delivery date [fin-purchase-order-howto::s02p0]\n5. Enter the cost centre and attach the quote or quotes [fin-purchase-order-howto::s02p0]\n6. Submit the requisition. It is routed for approval automatically [fin-purchase-order-howto::s02p0]\n\nNote: Make sure the supplier is already set up in the procurement system, and you have their quote as a PDF, and know the cost centre that will pay [fin-purchase-order-howto::s01p0]."
+}

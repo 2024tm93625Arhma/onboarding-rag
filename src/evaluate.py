@@ -18,17 +18,20 @@ Metrics, per retriever, overall and by query category:
   is gold_doc_id. Queries with neither (abstain queries) have no gold and are
   left out of these four metrics; n_ranked counts the queries that are in.
 
-- invalid_evidence_rate: share of queries whose top-1 chunk is invalid for
-  the asking user: its applies_if conditions are not all satisfied by the
-  user's profile, its parent doc is the query's must_not_use_doc_id, or it is
-  out of the user's scope (see below).
+- ier@1 (invalid evidence rate at 1; formerly invalid_evidence_rate): share
+  of queries whose top-1 chunk is invalid for the asking user: its applies_if
+  conditions are not all satisfied by the user's profile, its parent doc is
+  the query's must_not_use_doc_id, or it is out of the user's scope (see
+  below).
+- ier@5: share of queries where ANY chunk in the top 5 is invalid for the
+  asking user, by the same test as ier@1. ier@5 >= ier@1.
 - scope_violation_rate: share of queries where any chunk in the top 5 is out
   of the user's scope.
 
   A chunk is in scope when its department_scope contains "all" or the user's
   department, and the user's grade is at least its min_grade (if it has one).
 
-  Both rates use every query, abstain queries included: an abstain query
+  These rates use every query, abstain queries included: an abstain query
   still retrieves evidence, and that evidence can still be invalid.
 
 - latency_ms_k5, latency_ms_k10: mean wall-clock time per retriever call.
@@ -59,8 +62,8 @@ retriever) and data/results/by_category.csv and
 data/results/method_by_category.csv (one row per retriever x category), and
 data/results/answer_modes.csv (one row per query) and
 data/results/answer_mode_summary.csv (one row per split) for the answer modes. It prints
-them, and prints a comparison of every retriever's recall@5, IER
-(invalid_evidence_rate) and SVR (scope_violation_rate).
+them, and prints a comparison of every retriever's recall@5, IER@1, IER@5 and SVR
+(scope_violation_rate).
 
 Usage: python src/evaluate.py
 """
@@ -108,7 +111,7 @@ OPS = {
 }
 
 METRICS = ["recall@5", "recall@10", "mrr", "ndcg@10",
-           "invalid_evidence_rate", "scope_violation_rate",
+           "ier@1", "ier@5", "scope_violation_rate",
            "latency_ms_k5", "latency_ms_k10"]
 
 
@@ -195,7 +198,8 @@ def evaluate_query(query, user, gold, hits):
     row = {
         "latency_ms_k5": lat5,
         "latency_ms_k10": lat10,
-        "invalid_evidence_rate": float(bool(top5) and not is_valid(top5[0], user, must_not_use)),
+        "ier@1": float(bool(top5) and not is_valid(top5[0], user, must_not_use)),
+        "ier@5": float(any(not is_valid(c, user, must_not_use) for c in top5)),
         "scope_violation_rate": float(any(not in_scope(c, user) for c in top5)),
     }
     if gold:
@@ -365,10 +369,11 @@ def main():
                 method_by_category, cat_cols)
 
     comparison = [{"retriever": r["retriever"], "Recall@5": r["recall@5"],
-                   "IER": r["invalid_evidence_rate"], "SVR": r["scope_violation_rate"]}
+                   "IER@1": r["ier@1"], "IER@5": r["ier@5"],
+                   "SVR": r["scope_violation_rate"]}
                   for r in baselines + method]
     print_table("Comparison (all 108 queries; Recall@5 over ranked queries only)",
-                comparison, ["retriever", "Recall@5", "IER", "SVR"])
+                comparison, ["retriever", "Recall@5", "IER@1", "IER@5", "SVR"])
     print_table(f"Answer modes ({ANSWER_MODE_SUMMARY_OUT.relative_to(ROOT)})",
                 mode_summaries, summary_cols)
     for name in SPLITS:

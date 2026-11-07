@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "Where do I find my cost centre code?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "fin-cost-centre-howto::s01p0",
+    "fin-cost-centre-howto::s00p0",
+    "fin-cost-centre-howto::s02p0",
+    "fin-claimpoint-expense-guide::s02p0",
+    "fin-claimpoint-expense-guide::s05p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fin-cost-centre-howto::s01p0]\n1. Open the HR system and go to *My Profile* > *Job Details*.\n2. Your cost centre is shown under *Organisation*, for example `CC-4120`.\n\nThe expense tool fills in this code automatically.\n\n[fin-cost-centre-howto::s00p0]\nYou need a cost centre code for expense claims, corporate card transactions\nand purchase orders. It tells Finance which team's budget pays for the cost.\n\n[fin-cost-centre-howto::s02p0]\nIf the cost belongs to a different team or project, ask that team's budget\nholder for their code and enter it on the claim line. Their budget holder\nwill then be asked to approve the line.\n\n[fin-claimpoint-expense-guide::s02p0]\n1. Click *New Claim* and choose the month the expenses belong to.\n2. Add one line per expense. Choose the expense type from the drop-down list\n   and enter the date, amount and a short description.\n3. Enter your cost centre code. Ask your manager if you do not know it.\n4. Click *Save and Print*. ClaimPoint prints a claim form with a barcode.\n\n[fin-claimpoint-expense-guide::s05p0]\n- **Claim stuck at Printed:** Finance has not received the paper form. Check\n  that you dropped it at reception.\n- **Forgot ClaimPoint password:** click *Reset password*; a new one is sent\n  to your email.\n- **Wrong cost centre:** ask Finance to reject the claim, then create a new\n  one.\n\nQuestion: Where do I find my cost centre code?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fin-cost-centre-howto::s01p0], you can find your cost centre code by opening the HR system and going to *My Profile* > *Job Details*. Your cost centre is shown under *Organisation*, for example `CC-4120`. The expense tool also fills in this code automatically."
+}

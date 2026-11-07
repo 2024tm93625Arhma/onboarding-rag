@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I book a meeting room?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "fac-meeting-room-howto::s05p0",
+    "fac-meeting-room-howto::s01p0",
+    "fac-meeting-room-howto::s00p0",
+    "fac-meeting-room-howto::s04p0",
+    "fac-meeting-room-howto::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-meeting-room-howto::s05p0]\n- Book the smallest room that fits your group.\n- Do not hold recurring bookings you no longer use.\n- Leave the room as you found it: wipe the whiteboard, take your rubbish and\n  put chairs back.\n- Hosting external guests? Register them as described in the Visitor Pass\n  Policy before you book the room.\n\n[fac-meeting-room-howto::s01p0]\n1. Create a new meeting in your calendar.\n2. Select **Add room** and filter by office, floor and capacity.\n3. Tick any equipment you need, such as a video conferencing screen or a\n   whiteboard.\n4. Choose a free room and send the invitation. The room accepts\n   automatically if it is free.\n\nIf the room declines, someone else has booked it. Pick another room or time.\n\n[fac-meeting-room-howto::s00p0]\nMeeting rooms are booked through your calendar, just like inviting a person.\n\n[fac-meeting-room-howto::s04p0]\nRooms for more than 20 people, the town hall space and the training rooms\ncannot be booked from the calendar. Raise a ticket under *Facilities > Events*\nand describe the event, the number of attendees and any catering or\naudio-visual support you need.\n\n[fac-meeting-room-howto::s02p0]\nEach room has a panel by the door. Tap **Check in** on the panel within\n15 minutes of the start time. Rooms that are not checked in are released so\nothers can use them.\n\nQuestion: How do I book a meeting room?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fac-meeting-room-howto::s01p0], you can book a meeting room by:\n\n1. Creating a new meeting in your calendar.\n2. Selecting **Add room** and filtering by office, floor, and capacity.\n3. Ticking any equipment you need, such as a video conferencing screen or a whiteboard.\n4. Choosing a free room and sending the invitation. The room accepts automatically if it is free.\n\nIf the room declines, someone else has booked it. Pick another room or time."
+}

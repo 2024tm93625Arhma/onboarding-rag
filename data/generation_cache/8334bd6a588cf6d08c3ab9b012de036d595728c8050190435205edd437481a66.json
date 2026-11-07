@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I raise a grievance?",
+  "profile_id": "u001",
+  "chunk_ids": [
+    "hr-grievance-handling-sop::s03p0",
+    "hr-grievance-handling-sop::s10p0",
+    "hr-grievance-handling-sop::s04p0",
+    "hr-grievance-handling-sop::s02p0",
+    "hr-grievance-handling-sop::s00p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-grievance-handling-sop::s03p0]\nMany concerns can be resolved by talking to the person involved or to the\nemployee's manager. Employees are encouraged to try this first where they feel\ncomfortable. Managers who receive a concern should listen, take notes, agree\nnext steps with the employee and follow up. If the concern is about the\nmanager, the employee may go directly to stage two.\n\n[hr-grievance-handling-sop::s10p0]\nRaising or being part of a grievance can be stressful. Employees can use the\nemployee assistance programme for free, confidential counselling at any\nstage.\n\n[hr-grievance-handling-sop::s04p0]\n1. The employee raises a *Confidential* ticket with the HR helpdesk, choosing\n   the *Grievance* category, and describes the concern, the people involved\n   and the outcome they are looking for.\n2. Employee Relations acknowledges the ticket and assigns a case owner who has\n   no involvement in the matter.\n3. The case owner meets the employee to understand the concern and agrees\n   whether an investigation is needed.\n4. If an investigation is needed, the case owner or an appointed investigator\n   interviews the people involved and reviews relevant documents, such as\n   emails, chat records or HR system entries.\n5. The case owner prepares a written outcome, setting out the findings, the\n   decision and any actions, and meets the employee to explain it.\n6. The outcome is recorded in the HR system. Only Employee Relations can see\n   the case file.\n\n[hr-grievance-handling-sop::s02p0]\n- **Confidentiality:** information is shared only with people who need it to\n  resolve the concern.\n- **No retaliation:** raising a concern in good faith never counts against an\n  employee. Retaliation is a disciplinary matter.\n- **Fairness:** everyone involved has a chance to give their account before a\n  decision is made.\n- **Right to be accompanied:** the employee may bring a colleague to any\n  formal meeting.\n\n[hr-grievance-handling-sop::s00p0]\nThis procedure explains how employees can raise a workplace concern and how\nEmployee Relations handles it. It aims to resolve concerns fairly, quickly and\nconfidentially, and to protect everyone involved from retaliation.\n\nQuestion: How do I raise a grievance?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-grievance-handling-sop::s04p0], you can raise a grievance by:\n\n1. The employee raises a *Confidential* ticket with the HR helpdesk, choosing the *Grievance* category, and describes the concern, the people involved and the outcome they are looking for.\n\nPlease note that this is the process outlined in the provided chunks."
+}

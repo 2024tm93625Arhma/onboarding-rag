@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I connect to the office Wi-Fi?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "it-wifi-setup-howto::s03p0",
+    "it-laptop-first-login-howto::s02p0",
+    "it-wifi-setup-howto::s00p0",
+    "it-wifi-setup-howto::s02p0",
+    "it-wifi-setup-howto::s01p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-wifi-setup-howto::s03p0]\nRaise a ticket in the IT service portal with your office, floor and the\nnetwork name you tried.\n\n[it-laptop-first-login-howto::s02p0]\nTurn on the laptop and connect to the network. In the office, the laptop\njoins the CORP Wi-Fi by itself. At home, choose your own Wi-Fi network. Sign\nin with your company email address and the temporary password.\n\n[it-wifi-setup-howto::s00p0]\nEvery office has two wireless networks.\n\n- **CORP:** for company laptops only. Gives full access to internal systems\n  without the VPN.\n- **GUEST:** for visitors and personal phones. Internet access only.\n\n[it-wifi-setup-howto::s02p0]\nSelect GUEST and accept the terms on the sign-in page. The guest password is\ndisplayed at reception.\n\n[it-wifi-setup-howto::s01p0]\nCompany laptops join CORP automatically using a device certificate. If the\nlaptop does not connect, restart it while in the office so it can renew the\ncertificate.\n\nQuestion: How do I connect to the office Wi-Fi?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "To connect to the office Wi-Fi, you can follow these steps:\n\n* In the office, your laptop will join the CORP Wi-Fi by itself [it-laptop-first-login-howto::s02p0].\n* If you're in the office and having trouble connecting, restart your laptop to renew the device certificate [it-wifi-setup-howto::s01p0].\n* If you're a visitor or using your personal phone, select the GUEST network and accept the terms on the sign-in page. The guest password is displayed at reception [it-wifi-setup-howto::s02p0].\n\nNote: If you're having trouble connecting to the CORP network, you can raise a ticket in the IT service portal with your office, floor, and the network name you tried [it-wifi-setup-howto::s03p0]."
+}

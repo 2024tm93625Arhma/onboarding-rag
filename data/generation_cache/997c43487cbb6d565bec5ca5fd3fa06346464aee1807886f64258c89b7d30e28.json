@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I update my emergency contact details?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "hr-emergency-contact-howto::s01p0",
+    "hr-emergency-contact-howto::s00p0",
+    "fac-escalation-contacts::s01p0",
+    "eng-on-call-handbook::s03p0",
+    "it-helpline-ticketing-howto::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-emergency-contact-howto::s01p0]\n1. Open the HR system from the employee portal.\n2. Go to *My Profile* > *Emergency Contacts*.\n3. Select *Add* or edit an existing contact. Enter the person's name,\n   relationship to you and a phone number they usually answer.\n4. Save your changes. No approval is needed.\n\nPlease check your details whenever you move house or your contact changes\ntheir number.\n\n[hr-emergency-contact-howto::s00p0]\nEvery employee must keep at least one emergency contact on record. HR uses it\nonly if you are taken ill or injured at work or cannot be reached during an\nincident.\n\n[fac-escalation-contacts::s01p0]\n| Situation | Contact | How |\n|---|---|---|\n| Routine request or minor fault | Facilities help desk | Employee portal ticket under *Facilities* |\n| Quick question | Facilities help desk | #ask-facilities chat channel |\n| Urgent building fault (leak, power cut, lift stuck, no air conditioning on a floor) | Facilities duty line | Extension 2200, staffed during office hours; calls outside hours divert to the on-call facilities manager |\n| Security concern, lost badge, suspicious person, theft | Security | Extension 2222, staffed at all times |\n| Fire, medical emergency or injury | Security, then the emergency services | Extension 2222; Security will call the emergency services and guide them to you |\n\nIf you are ever unsure whether something is urgent, call. It is better to be\ntold that a ticket is enough than to leave a hazard in place.\n\n[eng-on-call-handbook::s03p0]\n1. Acknowledge the page.\n2. Open the alert's linked runbook and follow it.\n3. If users are affected, open an incident in #incidents and set the\n   severity.\n4. If you are not making progress, escalate to the secondary. Asking for help\n   early is expected, not a sign of failure.\n5. When the problem is resolved, close the incident and note what you did.\n\n[it-helpline-ticketing-howto::s02p0]\nIf you cannot open HelpLine, email `helpline@corp.local`; the message is\nturned into a ticket automatically. For urgent problems that stop you\nworking, call extension 222.\n\nQuestion: How do I update my emergency contact details?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-emergency-contact-howto::s01p0], you can update your emergency contact details by:\n\n1. Open[ing] the HR system from the employee portal.\n2. Going to *My Profile* > *Emergency Contacts*.\n3. Selecting *Add* or editing an existing contact. Enter the person's name, relationship to you, and a phone number they usually answer.\n4. Saving your changes. No approval is needed.\n\nPlease check your details whenever you move house or your contact changes their number, as stated in [hr-emergency-contact-howto::s00p0]."
+}

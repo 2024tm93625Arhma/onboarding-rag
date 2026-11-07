@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How far ahead can I book a desk?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "fac-desk-booking-v2::s01p0",
+    "fac-desk-booking-howto::s00p0",
+    "fac-desk-booking-howto::s02p0",
+    "fac-workplace-faq::s01p0",
+    "hr-wfh-policy-v2::s13p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-desk-booking-v2::s01p0]\nDesks are booked in the workplace app or on the intranet. Desks can be booked\nup to **14 days** in advance. Each booking covers one full working day.\n\n[fac-desk-booking-howto::s00p0]\nAll offices use shared desks, so you need a booking before you come in. This\nguide walks through the booking steps in the workplace app. The rules\nthemselves, including how far ahead you can book and the check-in deadline,\nare set out in the Desk Booking Policy. Check that policy if you are unsure\nwhat is allowed.\n\n[fac-desk-booking-howto::s02p0]\n1. Open the app and tap **Book a desk**.\n2. Pick the date. Dates outside the booking window allowed by the Desk Booking\n   Policy are greyed out.\n3. Select your office and floor. The floor plan opens with your team's\n   neighbourhood highlighted.\n4. Tap a green desk to see its equipment, such as a docking station, a second\n   monitor or a standing frame.\n5. Tap **Confirm**. The booking appears under **My bookings** and in your\n   calendar.\n\n[fac-workplace-faq::s01p0]\n**Do I have a permanent desk?**\nNo. All offices use shared desks that you book in the workplace app. The How\nto Book a Desk guide explains the steps.\n\n**How far in advance can I book a desk?**\nThe booking window is set by the Desk Booking Policy. The workplace app only\nlets you pick dates inside that window.\n\n**What is a neighbourhood?**\nAn area of a floor set aside for one team so that its members can sit\ntogether. Your manager can tell you which neighbourhood is yours.\n\n**Can I leave my things on the desk overnight?**\nNo. Desks must be cleared at the end of every day. Use a locker for anything\nyou want to keep in the office. The End of Day Office Checklist lists what to\ndo before you leave.\n\n**I need a special chair or a fixed desk for a medical reason.**\nRaise a confidential ticket under *Facilities > Workplace adjustments*. The\nDesk Booking Policy explains how adjusted and fixed desks work. An occupational\nhealth assessment may be arranged for you.\n\n[hr-wfh-policy-v2::s13p0]\nOn office days employees should book a desk through the desk booking system as\ndescribed in the Facilities Desk Booking policy.\n\nQuestion: How far ahead can I book a desk?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fac-desk-booking-v2::s01p0], desks can be booked up to **14 days** in advance."
+}

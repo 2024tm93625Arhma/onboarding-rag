@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How early must a visitor be registered before they arrive?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "fac-visitor-pass-v2::s01p0",
+    "fac-visitor-hosting-checklist::s00p0",
+    "fin-travel-booking-v2::s03p0",
+    "fac-visitor-pass-v1::s01p0",
+    "fac-visitor-hosting-checklist::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-visitor-pass-v2::s01p0]\nEvery visitor must be pre-registered by their host in the visitor system at\nleast **48 hours** before arrival. The visitor receives a QR code by email.\n\n[fac-visitor-hosting-checklist::s00p0]\nUse this checklist whenever you invite a candidate, client, vendor or family\nmember to the office. The rules for registering visitors, including how early\nthe registration must be made, are in the Visitor Pass Policy. This checklist\nhelps you plan around them.\n\n[fin-travel-booking-v2::s03p0]\nDomestic flights must be booked at least **21 days** before the travel\ndate. International flights should be booked as early as possible once the trip\nis approved. Where a trip is arranged at short notice for a genuine business\nreason, such as a client escalation, the employee's manager must record the\nreason in the travel request; the Travel Desk will then book the best\navailable fare.\n\n[fac-visitor-pass-v1::s01p0]\nEvery visitor must be pre-registered by their host in the visitor system at\nleast **24 hours** before arrival. The visitor receives a QR code by email.\n\n[fac-visitor-hosting-checklist::s03p0]\n- [ ] Walk the visitor back to reception.\n- [ ] Make sure the pass is handed in.\n- [ ] Clear the meeting room.\n\nQuestion: How early must a visitor be registered before they arrive?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fac-visitor-pass-v2::s01p0], every visitor must be pre-registered by their host in the visitor system at least **48 hours** before arrival."
+}

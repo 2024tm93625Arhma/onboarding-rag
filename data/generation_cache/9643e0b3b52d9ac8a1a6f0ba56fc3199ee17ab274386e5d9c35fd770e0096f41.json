@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How many days a week am I allowed to work from home?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "hr-wfh-policy-v2::s02p0",
+    "hr-benefits-faq::s14p0",
+    "hr-onboarding-faq::s03p0",
+    "hr-wfh-policy-v2::s05p0",
+    "hr-wfh-policy-v2::s04p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-wfh-policy-v2::s02p0]\nEligible employees may work from home for up to **2 days** per week.\nUnused days do not carry over to the following week and cannot be combined\ninto a longer block of remote working.\n\n[hr-benefits-faq::s14p0]\nYes, within the limits of the Work From Home Policy. The weekly allowance\ndepends on your join date.\n\n[hr-onboarding-faq::s03p0]\nThe Work From Home Policy sets the weekly allowance and how to book remote\ndays. The allowance depends on your join date, so read the version that\napplies to you.\n\n[hr-wfh-policy-v2::s05p0]\nEmployees working from home keep the same core hours as in the office, 10:00\nto 16:00 local time, and must be reachable on chat and phone during those\nhours. Meetings should be joined with the camera on where practical.\n\n[hr-wfh-policy-v2::s04p0]\n1. Mark the days in the attendance system by Friday of the previous week.\n2. Tell your manager if you plan to change a day at short notice.\n3. Keep your calendar status set to \"Working remotely\" on those days.\n\nManagers may decline or reschedule a work-from-home day where the business\nneed requires the employee on site, for example for a client visit, an\naudit or an incident review.\n\nQuestion: How many days a week am I allowed to work from home?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-wfh-policy-v2::s02p0], eligible employees may work from home for up to **2 days** per week."
+}

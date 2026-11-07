@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How far in advance should I book a domestic flight?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "fin-travel-booking-v2::s03p0",
+    "fin-travel-booking-v1::s03p0",
+    "fac-desk-booking-howto::s00p0",
+    "fin-travel-booking-v2::s10p0",
+    "fac-desk-booking-v2::s01p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fin-travel-booking-v2::s03p0]\nDomestic flights must be booked at least **21 days** before the travel\ndate. International flights should be booked as early as possible once the trip\nis approved. Where a trip is arranged at short notice for a genuine business\nreason, such as a client escalation, the employee's manager must record the\nreason in the travel request; the Travel Desk will then book the best\navailable fare.\n\n[fin-travel-booking-v1::s03p0]\nDomestic flights must be booked at least **14 days** before the travel\ndate. International flights should be booked as early as possible once the trip\nis approved. Where a trip is arranged at short notice for a genuine business\nreason, such as a client escalation, the employee's manager must record the\nreason in the travel request; the Travel Desk will then book the best\navailable fare.\n\n[fac-desk-booking-howto::s00p0]\nAll offices use shared desks, so you need a booking before you come in. This\nguide walks through the booking steps in the workplace app. The rules\nthemselves, including how far ahead you can book and the check-in deadline,\nare set out in the Desk Booking Policy. Check that policy if you are unsure\nwhat is allowed.\n\n[fin-travel-booking-v2::s10p0]\nEmployees may request a cash or forex advance for international trips through\nthe travel portal. Advances must be settled in the expense tool after the trip,\nand any unused amount is returned to the company or deducted from salary.\n\n[fac-desk-booking-v2::s01p0]\nDesks are booked in the workplace app or on the intranet. Desks can be booked\nup to **14 days** in advance. Each booking covers one full working day.\n\nQuestion: How far in advance should I book a domestic flight?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fin-travel-booking-v2::s03p0], domestic flights must be booked at least **21 days** before the travel date."
+}

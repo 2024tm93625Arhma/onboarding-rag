@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How long is my probation period?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "hr-probation-policy-v2::s01p0",
+    "hr-onboarding-faq::s02p0",
+    "hr-probation-policy-v2::s06p0",
+    "hr-probation-policy-v2::s04p0",
+    "hr-probation-policy-v2::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-probation-policy-v2::s01p0]\nEvery new employee serves a probation period of **3 months** starting on\ntheir date of joining. During probation the employee and manager agree clear\nobjectives in the first two weeks and hold a documented check-in at the\nmidpoint of the probation period.\n\n[hr-onboarding-faq::s02p0]\nSee the Probation Policy. The length of probation depends on your date of\njoining, and your offer letter also states it.\n\n[hr-probation-policy-v2::s06p0]\nThis policy applies to employees who joined on or after 1 July 2026.\nEmployees who joined before that date remain under v1.\n\n[hr-probation-policy-v2::s04p0]\nThe notice period during probation is shorter than after confirmation; it is\nstated in the employee's offer letter.\n\n[hr-probation-policy-v2::s03p0]\nProbation may be extended once, for a period agreed between the manager and\nHR, where there is a clear performance or conduct concern that the employee has\na fair chance to address. The reasons must be recorded in writing and shared\nwith the employee.\n\nQuestion: How long is my probation period?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-probation-policy-v2::s01p0], every new employee serves a probation period of 3 months starting on their date of joining. Additionally, [hr-onboarding-faq::s02p0] states that the length of probation depends on the date of joining, and the offer letter also states it. Therefore, the answer is 3 months."
+}

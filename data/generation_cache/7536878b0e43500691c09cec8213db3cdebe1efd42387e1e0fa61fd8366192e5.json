@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "Who is the head of the engineering organisation?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "hr-organisation-chart::s04p0",
+    "hr-organisation-chart::s01p0",
+    "hr-organisation-chart::s02p0",
+    "hr-organisation-chart::s00p0",
+    "hr-organisation-chart::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-organisation-chart::s04p0]\n- **Engineering Manager:** Vikram Singh. Leads all product developers.\n- **IT and Infrastructure Lead:** Deepa Krishnan. Looks after desktops, the\n  office network, servers and the HelpLine desk.\n- **QA Lead:** Arjun Bhat. Leads testing and release sign-off.\n\n[hr-organisation-chart::s01p0]\n- **Chief Executive Officer:** Rohan Mehta\n- **Chief Operating Officer:** Anita Desai (reports to the CEO)\n- **Chief Financial Officer:** Suresh Iyer (reports to the CEO)\n- **Head of Technology:** Karthik Rao (reports to the CEO)\n\n[hr-organisation-chart::s02p0]\n- **Head of People and Admin:** Meera Nair. Leads HR, recruitment and\n  office administration as one team.\n- **Office Manager:** Farhan Sheikh. Looks after the office, reception and\n  travel bookings.\n\n[hr-organisation-chart::s00p0]\nThis page shows who leads each part of the company and who they report to.\nUse it to find the right leader for a question or an escalation.\n\n[hr-organisation-chart::s03p0]\n- **Finance Manager:** Lakshmi Pillai. Leads accounts, payroll and\n  expense claims.\n- **Legal and Compliance:** handled by an external law firm, coordinated by\n  the CFO's office.\n\nQuestion: Who is the head of the engineering organisation?\n\nThe source of this answer, hr-organisation-chart, took effect on 2021-04-01 and may be out of date.\nAnswer the question, then end with one line starting 'Condition:' that says the answer is based on hr-organisation-chart, effective 2021-04-01, and may be out of date. Do not claim the document is current or the latest version.\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "The head of the engineering organization is Vikram Singh, who is the Engineering Manager, as stated in [hr-organisation-chart::s04p0].\n\nCondition: The answer is based on hr-organisation-chart, effective 2021-04-01, and may be out of date."
+}

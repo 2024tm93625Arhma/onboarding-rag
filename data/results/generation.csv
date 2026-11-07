@@ -1,0 +1,5 @@
+group,n_queries,n_answered,n_gold,citation_accuracy,n_cited,cited_chunk_retrieved,uncited_claim_rate,n_abstain,abstain_compliance
+overall,108,70,43,0.9070,70,0.9000,0.0000,38,1.0000
+mode=answer,60,60,39,0.9231,60,0.8833,0.0000,0,
+mode=answer_conditionally,10,10,4,0.7500,10,1.0000,0.0000,0,
+mode=abstain,38,0,0,,0,,,38,1.0000

@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the minimum notice for booking work travel?",
+  "profile_id": "u005",
+  "chunk_ids": [
+    "fin-travel-booking-v2::s03p0",
+    "fin-travel-booking-v2::s08p0",
+    "fin-travel-booking-v2::s09p0",
+    "fac-desk-booking-v2::s03p0",
+    "fin-travel-booking-v2::s05p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fin-travel-booking-v2::s03p0]\nDomestic flights must be booked at least **21 days** before the travel\ndate. International flights should be booked as early as possible once the trip\nis approved. Where a trip is arranged at short notice for a genuine business\nreason, such as a client escalation, the employee's manager must record the\nreason in the travel request; the Travel Desk will then book the best\navailable fare.\n\n[fin-travel-booking-v2::s08p0]\nEmployees travelling internationally must register the trip with the Travel\nDesk, carry the company travel insurance card and follow any travel advisories\nissued by the Security team. Travel to countries on the company's restricted\nlist is not allowed without approval from the Chief Operating Officer.\n\n[fin-travel-booking-v2::s09p0]\nEmployees are responsible for holding a valid passport with at least six months\nof validity remaining on the date of return. The Travel Desk arranges business\nvisas and the company pays visa fees for approved trips. Visa applications\nshould be started as soon as the trip is approved, since processing times vary\nby country.\n\n[fac-desk-booking-v2::s03p0]\nEmployees must check in to their booked desk by 10:30 using the QR code on the\ndesk. Bookings not checked in by then are released for others to use.\n\n[fin-travel-booking-v2::s05p0]\nThe Travel Desk books hotels from the company's preferred list where one is\navailable in the destination city. Nightly hotel limits are set in the Finance\nReimbursement Limits policy. Stays with friends or family are allowed, but no\nhotel allowance is paid in that case.\n\nQuestion: What is the minimum notice for booking work travel?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fin-travel-booking-v2::s03p0], domestic flights must be booked at least **21 days** before the travel date."
+}

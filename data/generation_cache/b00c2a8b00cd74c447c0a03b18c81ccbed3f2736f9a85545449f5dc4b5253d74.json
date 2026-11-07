@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "After how long of no activity does the VPN log me out?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "it-vpn-access-v2::s04p0",
+    "it-vpn-troubleshooting-faq::s02p0",
+    "it-troubleshooting-faq::s12p0",
+    "it-vpn-troubleshooting-faq::s03p0",
+    "it-remote-working-guide::s05p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[it-vpn-access-v2::s04p0]\n- A VPN session that has no network activity for **30 minutes** is\n  disconnected automatically and the employee must sign in again.\n- Every session, active or not, is ended after 12 hours and requires a fresh\n  sign-in with multi-factor authentication.\n- Only one VPN session per user may be open at any time. Signing in on a\n  second device ends the first session.\n\n[it-vpn-troubleshooting-faq::s02p0]\nProbably not. Sessions end automatically after a period of inactivity, and\nafter a maximum duration, as described in the VPN Access Policy. Sign in again\nto reconnect.\n\n[it-troubleshooting-faq::s12p0]\nSee the VPN Troubleshooting FAQ. Session and inactivity limits are set in the\nVPN Access Policy, so a disconnection after a quiet period is expected.\n\n[it-vpn-troubleshooting-faq::s03p0]\nThe VPN Access Policy limits how many sessions you can have open at once, so\nsigning in on a second device can end the first. Disconnect on the device you\nare not using.\n\n[it-remote-working-guide::s05p0]\nWhich systems need the VPN, session limits, the rules on personal use and the\ntravel rules are all in the VPN Access Policy. Connect only when you need a\nsystem that requires it. If you are disconnected or the VPN will not connect, see\nthe VPN Troubleshooting FAQ.\n\nQuestion: After how long of no activity does the VPN log me out?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-vpn-access-v2::s04p0], a VPN session that has no network activity for **30 minutes** is disconnected automatically and the employee must sign in again."
+}

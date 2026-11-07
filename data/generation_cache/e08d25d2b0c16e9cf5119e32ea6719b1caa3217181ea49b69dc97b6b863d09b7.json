@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What is the per-day meal cap on domestic travel?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "fin-reimbursement-limits-v2::s01p0",
+    "fin-manager-expense-crib-sheet::s02p0",
+    "fac-workplace-faq::s05p0",
+    "fin-reimbursement-limits-v2::s03p0",
+    "fin-reimbursement-limits-v1::s01p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fin-reimbursement-limits-v2::s01p0]\nWhile travelling on approved business within India, employees may claim meals\nup to **INR 2,000** per day. The limit is per day, not per meal, and covers\nbreakfast, lunch, dinner and snacks. Meals included in a hotel rate or provided\nat an event cannot also be claimed.\n\n[fin-manager-expense-crib-sheet::s02p0]\nThe daily meal allowance is INR 1,500 per day on domestic trips. It is a\ndaily limit, not a per-meal limit. Return any claim over the limit unless the\nemployee has explained why, for example a client dinner.\n\n[fac-workplace-faq::s05p0]\n**Is food provided?**\nOffices with a cafeteria serve breakfast and lunch on working days. Every\nfloor has a pantry with tea, coffee and drinking water at no cost.\n\n**Can I store food in the pantry fridge?**\nYes, labelled with your name and the date. Fridges are cleared every Friday\nevening and anything left inside is thrown away.\n\n**Can I eat at my desk?**\nLight snacks are fine. Please eat full meals in the cafeteria or pantry to\nkeep shared desks clean for the next person.\n\n[fin-reimbursement-limits-v2::s03p0]\nClient meals are reimbursed at actual cost with a business purpose and attendee\nlist. Expenses of this kind that exceed the amount set by Finance each year\nneed department head approval.\n\n[fin-reimbursement-limits-v1::s01p0]\nWhile travelling on approved business within India, employees may claim meals\nup to **INR 1,500** per day. The limit is per day, not per meal, and covers\nbreakfast, lunch, dinner and snacks. Meals included in a hotel rate or provided\nat an event cannot also be claimed.\n\nQuestion: What is the per-day meal cap on domestic travel?\n\nOther versions of this policy exist and may apply to different people. The versions and who each applies to:\n- fin-reimbursement-limits-v2 (source of the answer): applies if no condition (everyone)\n- fin-manager-expense-crib-sheet (competing version): applies if no condition (everyone)\n- fin-reimbursement-limits-v1 (competing version): applies if no condition (everyone)\n- fin-reimbursement-limits-v2 takes precedence over fin-manager-expense-crib-sheet, fin-reimbursement-limits-v1, which may state a different value.\nAnswer the question from the source of the answer, then end with one line starting 'Condition:' that names who this version applies to, taken from its 'applies if' above.\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [fin-reimbursement-limits-v2::s01p0], the per-day meal cap on domestic travel is INR 2,000.\n\nCondition: Everyone."
+}

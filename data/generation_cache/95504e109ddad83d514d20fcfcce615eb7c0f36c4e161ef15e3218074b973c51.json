@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I get to the Indiranagar office?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "fac-indiranagar-office-directions::s06p0",
+    "fac-indiranagar-office-directions::s04p0",
+    "fac-indiranagar-office-directions::s01p0",
+    "fac-indiranagar-office-directions::s00p0",
+    "fac-indiranagar-office-directions::s03p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[fac-indiranagar-office-directions::s06p0]\nFor questions about the office, email the Facilities team or call the\nreception desk on extension 400.\n\n[fac-indiranagar-office-directions::s04p0]\n1. Sign in with the building security guard on the ground floor.\n2. Take the lift to the 4th floor. Our reception is on the left as you\n   leave the lift.\n3. Reception will give you a temporary badge until your ID badge is ready.\n\n[fac-indiranagar-office-directions::s01p0]\nTake the Purple Line to Indiranagar station. Leave by the exit towards\n100 Feet Road and walk south for about ten minutes, then turn left onto\n12th Main Road. Maple Court is the grey building on the right, opposite the\nbakery.\n\n[fac-indiranagar-office-directions::s00p0]\nOur Bengaluru office is at 4th Floor, Maple Court, 12th Main Road,\nHAL 2nd Stage, Indiranagar, Bengaluru 560038. This page explains how to get\nthere and what to do when you arrive for the first time.\n\n[fac-indiranagar-office-directions::s03p0]\nThere is a small covered area for two-wheelers behind the building. The\nbuilding has only a few car spaces, and Facilities decides who gets them.\nStreet parking nearby is limited, so we recommend the metro.\n\nQuestion: How do I get to the Indiranagar office?\n\nThe source of this answer, fac-indiranagar-office-directions, took effect on 2019-06-03 and may be out of date.\nAnswer the question, then end with one line starting 'Condition:' that says the answer is based on fac-indiranagar-office-directions, effective 2019-06-03, and may be out of date. Do not claim the document is current or the latest version.\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "To get to the Indiranagar office, take the Purple Line to Indiranagar station. Leave by the exit towards 100 Feet Road and walk south for about ten minutes, then turn left onto 12th Main Road. Maple Court is the grey building on the right, opposite the bakery. [fac-indiranagar-office-directions::s01p0]\n\nCondition: The answer is based on fac-indiranagar-office-directions, effective 2019-06-03, and may be out of date."
+}
