@@ -313,14 +313,17 @@ def _by_score(hits):
     return sorted(hits, key=lambda h: (-h["score"], h["chunk_id"]))
 
 
-def provenance_rank(query, profile, k, alpha=None, beta=None, gamma=None, delta=None):
+def provenance_rank(query, profile, k, alpha=None, beta=None, gamma=None, delta=None,
+                    base=hybrid_search):
     """alpha..delta override ALPHA..DELTA for this call (used by ablations);
-    None means the module constant, read at call time."""
+    None means the module constant, read at call time. base is the retriever
+    scoped_search runs (used by ablations); rel is then that retriever's own
+    score, min-max normalised across the scoped pool."""
     alpha = ALPHA if alpha is None else alpha
     beta = BETA if beta is None else beta
     gamma = GAMMA if gamma is None else gamma
     delta = DELTA if delta is None else delta
-    pool = scoped_search(query, profile, SCOPE_DEPTH)
+    pool = scoped_search(query, profile, SCOPE_DEPTH, base=base)
     if not pool:
         return []
     raw = [hit["score"] for hit in pool]

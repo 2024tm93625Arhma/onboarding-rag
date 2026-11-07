@@ -27,3 +27,10 @@ no_conflict,stale,8,8,0.8750,0.8750,0.7500,0.6447,0.0000,0.0000,11.1124,10.8508
 no_conflict,unanswerable,12,0,,,,,0.0000,0.0000,11.9378,11.7184
 no_conflict,user_dependent,19,19,0.8421,0.8421,0.6842,0.7256,0.0000,0.0000,11.4037,11.6181
 no_conflict,version_conflict,20,20,0.5500,0.6500,0.4278,0.4813,0.0000,0.0000,12.2511,12.1637
+provenance_rank_dense,cross_doc_conflict,12,12,0.9167,0.9167,0.9167,0.9167,0.0000,0.0000,7.8991,7.9185
+provenance_rank_dense,leakage_probe,12,0,,,,,0.0000,0.0000,7.3656,7.2450
+provenance_rank_dense,ordinary,25,25,0.8800,0.9200,0.8578,0.8211,0.0000,0.0000,7.9450,7.3588
+provenance_rank_dense,stale,8,8,0.8750,0.8750,0.7812,0.6979,0.0000,0.0000,13.1866,11.0031
+provenance_rank_dense,unanswerable,12,0,,,,,0.0000,0.0000,7.4411,8.0951
+provenance_rank_dense,user_dependent,19,19,1.0000,1.0000,0.9123,0.9348,0.0000,0.0000,8.1121,8.1323
+provenance_rank_dense,version_conflict,20,20,0.8000,1.0000,0.7751,0.8262,0.0000,0.0000,10.2916,11.1305

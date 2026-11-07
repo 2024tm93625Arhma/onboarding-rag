@@ -7,6 +7,12 @@ at their module constants:
 - no_freshness: GAMMA = 0
 - no_conflict:  DELTA = 0
 
+plus one variant that changes the base retriever rather than a weight:
+
+- provenance_rank_dense: scoped_search and provenance_rank over dense_search
+  instead of hybrid_search, default weights. rel is then the dense cosine
+  score, min-max normalised across the scoped pool.
+
 The full method (no overrides) is included as the reference row, named
 provenance_rank as in method.csv.
 
@@ -30,18 +36,19 @@ sys.path.insert(0, str(ROOT / "src"))
 from evaluate import (  # noqa: E402
     METRICS, RESULTS_DIR, evaluate_group, gold_ids, load_profiles, load_queries,
     print_table, write_csv)
-from retrievers import _chunks, provenance_rank  # noqa: E402
+from retrievers import _chunks, dense_search, provenance_rank  # noqa: E402
 
 ABLATIONS_OUT = RESULTS_DIR / "ablations.csv"
 ABLATIONS_BY_CATEGORY_OUT = RESULTS_DIR / "ablations_by_category.csv"
 REFERENCE = "provenance_rank"
 
-# name -> weight overrides passed to provenance_rank
+# name -> keyword overrides (weights, base) passed to provenance_rank
 VARIANTS = {
     REFERENCE: {},
     "no_authority": {"beta": 0.0},
     "no_freshness": {"gamma": 0.0},
     "no_conflict": {"delta": 0.0},
+    "provenance_rank_dense": {"base": dense_search},
 }
 
 
