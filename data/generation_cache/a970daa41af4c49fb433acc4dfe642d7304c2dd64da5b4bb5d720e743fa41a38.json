@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How much do I get if someone I refer is hired?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "hr-referral-bonus-v2::s01p0",
+    "hr-benefits-faq::s15p0",
+    "hr-referral-bonus-v2::s03p0",
+    "hr-talent-acquisition-wiki::s04p0",
+    "hr-referral-bonus-v2::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-referral-bonus-v2::s01p0]\nA successful referral earns a bonus of **INR 75,000** per hire, paid to the\nreferring employee. The amount is the same for all roles and levels.\n\n[hr-benefits-faq::s15p0]\nYes. The amount and conditions are in the Employee Referral Bonus Policy.\n\n[hr-referral-bonus-v2::s03p0]\nThe bonus is paid through payroll in the salary cycle after the referred hire\ncompletes probation. Both the referring employee and the new hire must still\nbe employed on the payment date. The bonus is taxable income.\n\n[hr-talent-acquisition-wiki::s04p0]\nIf they ask, tell referrers that a successful referral earns a bonus of\nINR 50,000 per hire, paid once the new joiner has completed their probation.\nThe referrer must still be employed on the payout date.\n\n[hr-referral-bonus-v2::s02p0]\n- The referral must be submitted through the referral portal before the\n  candidate applies through any other channel.\n- The referred candidate must not have applied to the company in the\n  preceding six months.\n- Hiring managers, recruiters and HR business partners are not eligible for a\n  bonus on roles they are directly hiring for.\n- Referrals of former employees are eligible only if they left the company\n  more than twelve months earlier.\n\nQuestion: How much do I get if someone I refer is hired?\n\nThis answer only holds under certain conditions. Competing versions and their applicability conditions:\n- hr-referral-bonus-v2 (source of the answer, effective 2025-07-01): applies if no condition (everyone)\n- hr-talent-acquisition-wiki (competing version, effective 2024-08-01): applies if no condition (everyone)\n- hr-referral-bonus-v2 takes precedence over hr-talent-acquisition-wiki, which may state a different value; the answer holds only if that precedence is correct for the user.\nAnswer the question, then end with one line starting 'Condition:' that states when your answer holds, taken from the conditions above (who the version applies to, which document it overrides, or that the document may be out of date, with its date).\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-referral-bonus-v2::s01p0], a successful referral earns a bonus of **INR 75,000** per hire, paid to the referring employee.\n\nCondition: This answer holds for everyone, effective 2025-07-01, and takes precedence over hr-talent-acquisition-wiki."
+}

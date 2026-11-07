@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How long do I have to submit an expense claim after the spend?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "hr-expense-claims-v2::s04p0",
+    "hr-expense-claims-v2::s07p0",
+    "fin-expense-claim-howto::s04p0",
+    "hr-onboarding-faq::s04p0",
+    "hr-expense-claims-v2::s05p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-expense-claims-v2::s04p0]\nAll expense claims must be submitted in the expense tool within\n**30 calendar days** of the date the expense was incurred. Claims submitted after\nthis deadline are rejected automatically and cannot be reopened, except where\nthe employee's manager and the Finance Controller both approve a written\nexception.\n\n[hr-expense-claims-v2::s07p0]\nClaims are approved by the employee's line manager. Claims above the threshold\ndefined in the Reimbursement Limits policy also need approval from the\ndepartment head. Managers are expected to review claims within five working\ndays of submission. A manager may return a claim for correction; a returned\nclaim keeps its original expense date for the purpose of the submission\ndeadline.\n\n[fin-expense-claim-howto::s04p0]\n- You can follow the claim under *My Claims*. The status changes from\n  *Submitted* to *Approved* and then *Paid*.\n- If your manager returns the claim, read the comment, fix the line and\n  resubmit. Do not create a new claim for the same expense.\n- Approved claims are paid with your salary. The Payroll Calendar shows the\n  cut-off and pay dates. Reimbursements appear as a separate line on your\n  payslip.\n\n[hr-onboarding-faq::s04p0]\nSubmit a claim in the expense tool. The deadline for submitting claims and the\nreceipts you need are in the Expense Claims Policy; spending limits are in the\nFinance Reimbursement Limits policy.\n\n[hr-expense-claims-v2::s05p0]\n1. Log in to the expense tool from the employee portal.\n2. Create a new claim and select the correct expense category.\n3. Enter the amount, the date and the business purpose in one or two sentences.\n4. Attach a clear photo or scan of an itemised receipt. Card slips alone are\n   not accepted.\n5. For client meals, list the names and organisations of all attendees.\n6. Submit the claim for approval.\n\nQuestion: How long do I have to submit an expense claim after the spend?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "You have **30 calendar days** to submit an expense claim after the expense was incurred [hr-expense-claims-v2::s04p0]."
+}
