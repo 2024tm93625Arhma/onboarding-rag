@@ -5,3 +5,5 @@ pandas
 numpy
 scikit-learn
 pyyaml
+fastapi
+uvicorn

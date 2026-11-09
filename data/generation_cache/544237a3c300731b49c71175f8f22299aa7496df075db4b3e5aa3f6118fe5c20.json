@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How many leave days can I carry forward?",
+  "profile_id": "u001",
+  "chunk_ids": [
+    "hr-leave-policy-v1::s02p0",
+    "hr-leave-policy-v1::s01p0",
+    "hr-wfh-policy-v1::s02p0",
+    "hr-leave-policy-v1::s03p0",
+    "hr-leave-policy-v2::s02p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.",
+    "user": "Chunks:\n\n[hr-leave-policy-v1::s02p0]\nEmployees may carry forward up to **12 unused leave days** into the next\ncalendar year. Carried-forward days must be used by 31 March of that year,\nor they expire.\n\n[hr-leave-policy-v1::s01p0]\nFull-time employees earn 24 days of paid annual leave per calendar year,\naccrued monthly at 2 days per month.\n\n[hr-wfh-policy-v1::s02p0]\nEligible employees may work from home for up to **3 days** per week.\nUnused days do not carry over to the following week and cannot be combined\ninto a longer block of remote working.\n\n[hr-leave-policy-v1::s03p0]\nThis policy applies to employees who joined before 1 April 2025.\n\n[hr-leave-policy-v2::s02p0]\nEmployees may carry forward up to **5 unused leave days** into the next\ncalendar year. Carried-forward days must be used by 31 March of that year,\nor they expire.\n\nQuestion: How many leave days can I carry forward?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [hr-leave-policy-v1::s02p0], employees may carry forward up to **12 unused leave days** into the next calendar year. However, this policy only applies to employees who joined before 1 April 2025, which is not specified in the provided chunks. \n\nAdditionally, [hr-leave-policy-v2::s02p0] states that employees may carry forward up to **5 unused leave days** into the next calendar year."
+}
