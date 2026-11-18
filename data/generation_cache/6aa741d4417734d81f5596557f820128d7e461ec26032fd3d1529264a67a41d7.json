@@ -1,0 +1,19 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I use the company password manager?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "it-password-manager-howto::s00p0",
+    "it-password-manager-howto::s01p0",
+    "it-password-manager-howto::s07p0",
+    "it-password-manager-howto::s06p0",
+    "it-new-joiner-setup-guide::s04p0"
+  ],
+  "temperature": 0,
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the chunk_id it comes from, in square brackets, e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[it-password-manager-howto::s00p0] [APPLIES TO YOU]\nEvery employee has a licence for the company password manager. Use it to\nstore every work password you cannot sign in to with single sign-on. The\nrules that passwords must meet are set out in the Password Rules policy; this\npage only explains how to use the tool.\n\n[it-password-manager-howto::s01p0] [APPLIES TO YOU]\n1. Install the password manager from the self-service software catalogue.\n2. Install the browser extension when prompted.\n3. Open the app and sign in with single sign-on.\n4. Create your master password. This is the one password you must remember.\n   It cannot be recovered by IT, so choose a passphrase you will not forget.\n\n[it-password-manager-howto::s07p0] [APPLIES TO YOU]\n- Lock the password manager when you step away.\n- Use a different password for every system.\n- Run the *Security check* page from time to time to find weak or reused\n  passwords.\n\n[it-password-manager-howto::s06p0] [APPLIES TO YOU]\nContact the IT service desk. IT can reset your account, but the items in your\nvault will be lost. You will then need to reset the passwords for the systems\nyou stored.\n\n[it-new-joiner-setup-guide::s04p0] [APPLIES TO YOU]\nInstall the company password manager from the software catalogue and create\nyour master password. See How to Use the Company Password Manager. Store every\nwork password that is not covered by single sign-on in it from the start.\n\nQuestion: How do I use the company password manager?\n\nAnswer (cite every claim as [chunk_id]):"
+  },
+  "response": "According to [it-password-manager-howto::s00p0], the company password manager is available for every employee, and this page explains how to use the tool. To use the company password manager, follow the steps in [it-password-manager-howto::s01p0]: install the password manager from the self-service software catalogue, install the browser extension when prompted, open the app and sign in with single sign-on, and create your master password."
+}

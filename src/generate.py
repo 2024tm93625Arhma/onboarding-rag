@@ -20,6 +20,12 @@ Answer modes:
                           naming the document's effective_date, with no mention
                           of applicability.
 
+In every mode, each chunk's header is marked [APPLIES TO YOU] (authority ==
+AUTHORITY_CURRENT) or [DOES NOT APPLY TO YOU] (superseded or not applicable),
+and the system prompt tells the model to answer only from applicable chunks.
+The mark comes from the hit's authority; no profile attribute is put in the
+prompt.
+
 Providers (stdlib HTTP only, no SDK dependencies), chosen by LLM_PROVIDER:
 - anthropic: ANTHROPIC_API_KEY; model LLM_MODEL (default claude-opus-5-5)
 - openai:    OPENAI_API_KEY, optional OPENAI_BASE_URL; model LLM_MODEL (required)
@@ -28,6 +34,18 @@ Providers (stdlib HTTP only, no SDK dependencies), chosen by LLM_PROVIDER:
 - ollama:    optional OLLAMA_HOST (default http://localhost:11434); model
              LLM_MODEL (required)
 All calls use temperature 0.
+
+Citation format, chosen by CITATION_FORMAT (env var of the same name):
+- chunk_id (default): each chunk is headed [<chunk_id>] and the model cites
+  chunk_ids.
+- numbered: each chunk is headed [1], [2], ... in rank order (the marking is
+  kept) and the model cites by number. answer_query maps every bracketed
+  number back to its chunk_id before anything else sees the text, so
+  raw_answer_text, the guard and all metrics work on chunk_ids exactly as
+  under chunk_id. A number outside 1..len(hits) becomes the chunk_id-shaped
+  token out-of-range::<n>, which is not in the prompt, so the guard strips it
+  as an invalid citation and the evaluator counts it as fabricated.
+  model_answer_text keeps the model's numbered text.
 
 Citation guard: after the model returns, every cited chunk_id is checked
 against the chunk_ids passed in the prompt. Any not in that set is stripped
@@ -38,8 +56,10 @@ it were fully cited. The cache stores the raw response; the guard runs on
 every call, cached or not.
 
 Every LLM response is cached in data/generation_cache/<sha256>.json, keyed
-by (provider, model, query, profile_id, chunk_ids, prompt). A re-run with the
-same inputs reads the cache and makes no network call.
+by (provider, model, query, profile_id, chunk_ids, prompt), plus
+citation_format when it is not chunk_id (the chunk_id key is left as it was,
+so existing cache entries stay valid). A re-run with the same inputs reads the
+cache and makes no network call.
 
 CLI:
     python -m src.generate "<query>" --profile u001 [--k 5]
@@ -60,13 +80,19 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from provenance import load_profiles, policy_family  # noqa: E402
 from retrievers import (  # noqa: E402
-    ABSTAIN, ANSWER, ANSWER_CONDITIONALLY, conflict_pairs,
+    ABSTAIN, ANSWER, ANSWER_CONDITIONALLY, AUTHORITY_CURRENT, conflict_pairs,
     provenance_answer)
 
 CACHE_DIR = ROOT / "data" / "generation_cache"
 TEMPERATURE = 0
 MAX_TOKENS = 1024
 TIMEOUT = 300  # seconds per HTTP call
+
+CITATION_FORMATS = ("chunk_id", "numbered")
+CITATION_FORMAT = os.environ.get("CITATION_FORMAT", "chunk_id").strip().lower()
+if CITATION_FORMAT not in CITATION_FORMATS:
+    raise RuntimeError(f"unknown CITATION_FORMAT {CITATION_FORMAT!r}; expected one of: "
+                       + ", ".join(CITATION_FORMATS))
 
 REFUSAL = ("I can't answer this reliably from the documents available to you. "
            "Please raise it with a subject-matter expert (SME) in the owning team, "
@@ -81,7 +107,31 @@ SYSTEM_PROMPT = (
     "e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n"
     "3. If the chunks do not contain the answer, say that you cannot answer "
     "from the provided documents, and do not guess.\n"
-    "4. Be concise.")
+    "4. Be concise.\n"
+    "5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. "
+    "Answer from the chunks marked [APPLIES TO YOU]. Chunks marked "
+    "[DOES NOT APPLY TO YOU] are shown only for context and must not be used as "
+    "the answer. Do not present values from a version that does not apply as an "
+    "alternative or option for the user.")
+
+_CHUNK_ID_CITE_RULE = (
+    "2. Cite every claim with the chunk_id it comes from, in square brackets, "
+    "e.g. [hr-leave-policy-v2::s03p0]. Use only chunk_ids that appear below.\n")
+_NUMBERED_CITE_RULE = (
+    "2. Cite every claim with the number of the chunk it comes from, in square "
+    "brackets, e.g. [2]. Use only chunk numbers that appear below.\n")
+assert _CHUNK_ID_CITE_RULE in SYSTEM_PROMPT
+SYSTEM_PROMPTS = {
+    "chunk_id": SYSTEM_PROMPT,
+    "numbered": SYSTEM_PROMPT.replace(_CHUNK_ID_CITE_RULE, _NUMBERED_CITE_RULE),
+}
+ANSWER_CUES = {
+    "chunk_id": "\nAnswer (cite every claim as [chunk_id]):",
+    "numbered": "\nAnswer (cite every claim as [chunk number]):",
+}
+
+APPLIES_MARK = "[APPLIES TO YOU]"
+NOT_APPLIES_MARK = "[DOES NOT APPLY TO YOU]"
 
 
 # ------------------------------------------------------------------ providers
@@ -186,16 +236,20 @@ def resolve_provider():
 
 # ---------------------------------------------------------------------- cache
 
-def cache_key(provider, model, query, profile_id, chunk_ids, prompt):
-    blob = json.dumps([provider, model, query, profile_id, list(chunk_ids), prompt],
-                      ensure_ascii=False, separators=(",", ":"))
+def cache_key(provider, model, query, profile_id, chunk_ids, prompt,
+              citation_format="chunk_id"):
+    parts = [provider, model, query, profile_id, list(chunk_ids), prompt]
+    if citation_format != "chunk_id":  # chunk_id keeps the original key
+        parts.append(citation_format)
+    blob = json.dumps(parts, ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
-def cached_call(provider, model, call, query, profile_id, chunk_ids, system, user):
+def cached_call(provider, model, call, query, profile_id, chunk_ids, system, user,
+                citation_format="chunk_id"):
     """(response text, cache_hit)."""
     prompt = {"system": system, "user": user}
-    key = cache_key(provider, model, query, profile_id, chunk_ids, prompt)
+    key = cache_key(provider, model, query, profile_id, chunk_ids, prompt, citation_format)
     path = CACHE_DIR / f"{key}.json"
     if path.exists():
         with path.open(encoding="utf-8") as f:
@@ -204,7 +258,8 @@ def cached_call(provider, model, call, query, profile_id, chunk_ids, system, use
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     record = {"provider": provider, "model": model, "query": query,
               "profile_id": profile_id, "chunk_ids": list(chunk_ids),
-              "temperature": TEMPERATURE, "prompt": prompt, "response": response}
+              "temperature": TEMPERATURE, "citation_format": citation_format,
+              "prompt": prompt, "response": response}
     tmp = path.with_suffix(".tmp")
     with tmp.open("w", encoding="utf-8") as f:
         json.dump(record, f, ensure_ascii=False, indent=2)
@@ -281,17 +336,54 @@ def staleness_instruction(hits):
         "of date. Do not claim the document is current or the latest version.\n")
 
 
-def build_prompt(query, hits, mode):
-    """(system, user). Chunks appear in exactly the order of hits."""
-    blocks = "\n\n".join(f"[{h['chunk_id']}]\n{h['chunk_body']}" for h in hits)
+def applicability_mark(hit):
+    """Header mark from the hit's authority for the asking user.
+
+    Only AUTHORITY_CURRENT applies: a superseded version (a later version also
+    applies to the user) and a non-applicable one are both marked as not
+    applying. The mark is derived from authority alone, so no profile
+    attribute reaches the prompt.
+    """
+    return APPLIES_MARK if applies_to_user(hit) else NOT_APPLIES_MARK
+
+
+def applies_to_user(hit):
+    """True iff the hit is marked [APPLIES TO YOU] in the prompt."""
+    return hit["authority"] == AUTHORITY_CURRENT
+
+
+def build_prompt(query, hits, mode, citation_format=CITATION_FORMAT):
+    """(system, user). Chunks appear in exactly the order of hits, each header
+    marked with whether it applies to the asking user. The header label is the
+    chunk_id, or under citation_format "numbered" the 1-based rank."""
+    def label(i, h):
+        return str(i) if citation_format == "numbered" else h["chunk_id"]
+    blocks = "\n\n".join(f"[{label(i, h)}] {applicability_mark(h)}\n{h['chunk_body']}"
+                         for i, h in enumerate(hits, 1))
     user = f"Chunks:\n\n{blocks}\n\nQuestion: {query}\n"
     if mode == ANSWER_CONDITIONALLY:
         if conditional_framing(hits) == "applicability":
             user += applicability_instruction(hits)
         else:
             user += staleness_instruction(hits)
-    user += "\nAnswer (cite every claim as [chunk_id]):"
-    return SYSTEM_PROMPT, user
+    user += ANSWER_CUES[citation_format]
+    return SYSTEM_PROMPTS[citation_format], user
+
+
+# A bracket group of chunk numbers: [2], [1, 3], [1; 3].
+NUMBER_GROUP_RE = re.compile(r"\[\s*(\d+(?:\s*[,;]\s*\d+)*)\s*\]")
+
+
+def numbers_to_chunk_ids(text, chunk_ids):
+    """Rewrite numbered citations as chunk_id citations: [n] -> [chunk_ids[n-1]].
+    A number outside 1..len(chunk_ids) becomes [out-of-range::n], which is not
+    in the prompt, so the guard strips it as an invalid citation."""
+    def one(n):
+        n = int(n)
+        return chunk_ids[n - 1] if 1 <= n <= len(chunk_ids) else f"out-of-range::{n}"
+    return NUMBER_GROUP_RE.sub(
+        lambda m: "[" + ", ".join(one(n) for n in re.split(r"\s*[,;]\s*", m.group(1))) + "]",
+        text)
 
 
 # -------------------------------------------------------------------- answer
@@ -374,7 +466,7 @@ def validate_citations(text, allowed_ids):
     return clean, invalid, orphaned
 
 
-def answer_query(query, profile, k=5):
+def answer_query(query, profile, k=5, citation_format=None):
     """{mode, answer_text, raw_answer_text, citations, invalid_citations,
     had_invalid_citation, orphaned_claims, flagged, hits, relevance}.
 
@@ -384,28 +476,41 @@ def answer_query(query, profile, k=5):
     lists the removed chunk_ids. citations are the chunk_ids from hits that
     the answer cites (empty for abstain). flagged is True when stripping left
     a claim with no citation at all; orphaned_claims lists those claims as the
-    model wrote them.
+    model wrote them. applicability maps each chunk_id that went into the
+    prompt to True ([APPLIES TO YOU]) or False ([DOES NOT APPLY TO YOU]);
+    it is empty for abstain, where no prompt is built. model_answer_text is
+    the model's text as returned; under citation_format "numbered" it holds
+    [n] citations, and raw_answer_text is the same text with each number
+    mapped back to its chunk_id (numbers_to_chunk_ids).
     """
+    citation_format = citation_format or CITATION_FORMAT
+    if citation_format not in CITATION_FORMATS:
+        raise RuntimeError(f"unknown citation_format {citation_format!r}")
     mode, hits, relevance = provenance_answer(query, profile, k)
     result = {"mode": mode, "answer_text": None, "raw_answer_text": None,
+              "model_answer_text": None, "citation_format": citation_format,
               "citations": [], "invalid_citations": [], "had_invalid_citation": False,
-              "orphaned_claims": [], "flagged": False,
+              "orphaned_claims": [], "flagged": False, "applicability": {},
               "hits": hits, "relevance": relevance}
     if mode == ABSTAIN:
         result["answer_text"] = result["raw_answer_text"] = REFUSAL
+        result["model_answer_text"] = REFUSAL
         return result
     assert mode in (ANSWER, ANSWER_CONDITIONALLY), mode
     provider, model, call = resolve_provider()
     chunk_ids = [h["chunk_id"] for h in hits]
-    system, user = build_prompt(query, hits, mode)
+    system, user = build_prompt(query, hits, mode, citation_format)
     text, cache_hit = cached_call(provider, model, call, query, profile["user_id"],
-                                  chunk_ids, system, user)
-    raw = text.strip()
+                                  chunk_ids, system, user, citation_format)
+    model_text = text.strip()
+    raw = (numbers_to_chunk_ids(model_text, chunk_ids) if citation_format == "numbered"
+           else model_text)
     clean, invalid, orphaned = validate_citations(raw, chunk_ids)
-    result.update(answer_text=clean, raw_answer_text=raw,
+    result.update(answer_text=clean, raw_answer_text=raw, model_answer_text=model_text,
                   citations=extract_citations(clean, chunk_ids),
                   invalid_citations=invalid, had_invalid_citation=bool(invalid),
                   orphaned_claims=orphaned, flagged=bool(orphaned),
+                  applicability={h["chunk_id"]: applies_to_user(h) for h in hits},
                   provider=provider, model=model, cache_hit=cache_hit)
     return result
 

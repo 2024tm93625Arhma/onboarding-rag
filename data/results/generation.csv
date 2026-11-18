@@ -1,5 +1,5 @@
-group,n_queries,n_answered,n_gold,citation_accuracy,n_cited,cited_chunk_retrieved,fabricated_citation_rate,uncited_claim_rate,n_abstain,abstain_compliance
-overall,108,70,43,0.9070,70,0.9000,0.1000,0.0000,38,1.0000
-mode=answer,60,60,39,0.9231,60,0.8833,0.1167,0.0000,0,
-mode=answer_conditionally,10,10,4,0.7500,10,1.0000,0.0000,0.0000,0,
-mode=abstain,38,0,0,,0,,,,38,1.0000
+group,n_queries,n_answered,n_gold,citation_accuracy,n_cited,cited_chunk_retrieved,fabricated_citation_rate,uncited_claim_rate,n_abstain,abstain_compliance,n_inapplicable_in_prompt,inapplicable_in_prompt_rate,n_inapplicable_cited,inapplicable_citation_rate,inapplicable_cited_stripped
+overall,108,70,43,0.9070,70,0.9571,0.0429,0.0000,38,1.0000,11,0.1571,0,0.0000,0
+mode=answer,60,60,39,0.9231,60,0.9500,0.0500,0.0000,0,,9,0.1500,0,0.0000,0
+mode=answer_conditionally,10,10,4,0.7500,10,1.0000,0.0000,0.0000,0,,2,0.2000,0,0.0000,0
+mode=abstain,38,0,0,,0,,,,38,1.0000,0,,0,,0

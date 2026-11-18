@@ -34,11 +34,29 @@ Metrics (mechanical; no LLM judge):
                          citations and whose answer text is exactly the fixed
                          refusal. Denominator: n_abstain.
 
+Applicability metrics. Each chunk in the prompt is marked [APPLIES TO YOU] or
+[DOES NOT APPLY TO YOU] (answer_query's "applicability"):
+
+- inapplicable_in_prompt_rate: share of non-abstained queries where at least
+                         one chunk marked as not applying reached the prompt.
+                         Denominator: n_answered. Read this first: where it is
+                         0, inapplicable_citation_rate is 0 trivially.
+- inapplicable_citation_rate: share of non-abstained queries where at least
+                         one surviving (post-guard) citation is a chunk marked
+                         as not applying. Denominator: n_answered.
+- inapplicable_cited_stripped: number of citations (not queries) to chunks
+                         marked as not applying that the citation guard
+                         stripped. The guard strips only chunk_ids that were
+                         not in the prompt, and only prompt chunks carry a
+                         marking, so this is 0 by construction; it is reported
+                         to make that explicit.
+
 A metric is blank where its denominator is 0.
 
-Writes data/results/generation.csv (one row overall, one per answer mode)
-and data/results/generation_by_category.csv (one row per category), and
-prints both.
+Writes data/results/generation.csv (one row overall, one per answer mode),
+data/results/generation_by_category.csv (one row per category) and
+data/results/generation_per_query.csv (one row per query), and prints the
+first two.
 
 Usage: python scripts/evaluate_generation.py
 """
@@ -52,11 +70,16 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from evaluate import (  # noqa: E402
     RESULTS_DIR, load_profiles, load_queries, print_table, write_csv)
-from generate import REFUSAL, answer_query  # noqa: E402
+from generate import CITATION_FORMAT, REFUSAL, answer_query  # noqa: E402
 from retrievers import ABSTAIN, ANSWER, ANSWER_CONDITIONALLY  # noqa: E402
 
-GENERATION_OUT = RESULTS_DIR / "generation.csv"
-GENERATION_BY_CATEGORY_OUT = RESULTS_DIR / "generation_by_category.csv"
+# Under the default citation format the outputs are generation*.csv; under
+# any other format (CITATION_FORMAT=numbered) they are generation_<format>*.csv,
+# so the default results are never overwritten.
+_SUFFIX = "" if CITATION_FORMAT == "chunk_id" else f"_{CITATION_FORMAT}"
+GENERATION_OUT = RESULTS_DIR / f"generation{_SUFFIX}.csv"
+GENERATION_BY_CATEGORY_OUT = RESULTS_DIR / f"generation{_SUFFIX}_by_category.csv"
+GENERATION_PER_QUERY_OUT = RESULTS_DIR / f"generation{_SUFFIX}_per_query.csv"
 K = 5
 MODES = [ANSWER, ANSWER_CONDITIONALLY, ABSTAIN]
 
@@ -65,7 +88,22 @@ CHUNK_ID = re.compile(r"[A-Za-z0-9][\w.-]*::[\w.-]*\w")
 METRIC_COLS = ["n_queries", "n_answered", "n_gold", "citation_accuracy",
                "n_cited", "cited_chunk_retrieved", "fabricated_citation_rate",
                "uncited_claim_rate",
-               "n_abstain", "abstain_compliance"]
+               "n_abstain", "abstain_compliance",
+               "n_inapplicable_in_prompt", "inapplicable_in_prompt_rate",
+               "n_inapplicable_cited", "inapplicable_citation_rate",
+               "inapplicable_cited_stripped"]
+
+PER_QUERY_COLS = ["query_id", "category", "mode", "cited_chunk_ids", "cited_applies",
+                  "prompt_chunk_applies", "invalid_citations", "fabricated"]
+
+
+def _join(items):
+    return ";".join(items)
+
+
+def _applies_list(ids, applicability):
+    """'id=True;id=False' for ids; '?' marks an id with no marking (not in prompt)."""
+    return _join(f"{c}={applicability.get(c, '?')}" for c in ids)
 
 
 def cited_ids(text):
@@ -78,6 +116,8 @@ def score_query(q, result):
     cited = cited_ids(result["raw_answer_text"])
     abstained = result["mode"] == ABSTAIN
     gold = q["gold_chunk_id"]
+    applicability = result["applicability"]
+    surviving = result["citations"]
     return {
         "query_id": q["query_id"], "category": q["category"], "mode": result["mode"],
         "abstained": abstained,
@@ -92,6 +132,12 @@ def score_query(q, result):
         "abstain_ok": abstained and not cited and not result["citations"]
                       and result["raw_answer_text"] == REFUSAL,
         "cache_hit": result.get("cache_hit"),
+        "applicability": applicability,
+        "surviving_cited": surviving,
+        "inapplicable_in_prompt": any(not a for a in applicability.values()),
+        "inapplicable_cited": any(applicability.get(c) is False for c in surviving),
+        "n_inapplicable_stripped": sum(1 for c in result["invalid_citations"]
+                                       if applicability.get(c) is False),
     }
 
 
@@ -115,13 +161,19 @@ def aggregate(rows):
         "uncited_claim_rate": rate(answered, lambda r: not r["cited"]),
         "n_abstain": len(abstained),
         "abstain_compliance": rate(abstained, lambda r: r["abstain_ok"]),
+        "n_inapplicable_in_prompt": sum(1 for r in answered if r["inapplicable_in_prompt"]),
+        "inapplicable_in_prompt_rate": rate(answered, lambda r: r["inapplicable_in_prompt"]),
+        "n_inapplicable_cited": sum(1 for r in answered if r["inapplicable_cited"]),
+        "inapplicable_citation_rate": rate(answered, lambda r: r["inapplicable_cited"]),
+        "inapplicable_cited_stripped": sum(r["n_inapplicable_stripped"] for r in answered),
     }
 
 
 def main():
     queries = load_queries()
     profiles = load_profiles()
-    print(f"running answer_query over {len(queries)} queries...", file=sys.stderr)
+    print(f"running answer_query over {len(queries)} queries "
+          f"(citation format: {CITATION_FORMAT})...", file=sys.stderr)
     rows = []
     for i, q in enumerate(queries, 1):
         try:
@@ -148,6 +200,15 @@ def main():
     cat_cols = ["category", *METRIC_COLS]
     write_csv(GENERATION_OUT, overall, cols)
     write_csv(GENERATION_BY_CATEGORY_OUT, by_category, cat_cols)
+    per_query = [{
+        "query_id": r["query_id"], "category": r["category"], "mode": r["mode"],
+        "cited_chunk_ids": _join(r["surviving_cited"]),
+        "cited_applies": _applies_list(r["surviving_cited"], r["applicability"]),
+        "prompt_chunk_applies": _applies_list(r["applicability"], r["applicability"]),
+        "invalid_citations": _join(r["invalid_citations"]),
+        "fabricated": r["had_invalid_citation"],
+    } for r in rows]
+    write_csv(GENERATION_PER_QUERY_OUT, per_query, PER_QUERY_COLS)
     print_table(f"Generation ({GENERATION_OUT.relative_to(ROOT)})", overall, cols)
     print_table(f"Generation by category ({GENERATION_BY_CATEGORY_OUT.relative_to(ROOT)})",
                 by_category, cat_cols)
