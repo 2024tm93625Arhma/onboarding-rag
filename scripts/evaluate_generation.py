@@ -53,10 +53,11 @@ Applicability metrics. Each chunk in the prompt is marked [APPLIES TO YOU] or
 
 A metric is blank where its denominator is 0.
 
-Writes data/results/generation.csv (one row overall, one per answer mode),
-data/results/generation_by_category.csv (one row per category) and
-data/results/generation_per_query.csv (one row per query), and prints the
-first two.
+Writes data/results/generation<_fmt>.csv (one row overall, one per answer
+mode), generation<_fmt>_by_category.csv (one row per category) and
+generation<_fmt>_per_query.csv (one row per query), and prints the first two.
+<_fmt> is "_numbered" under the default citation format and empty under
+CITATION_FORMAT=chunk_id.
 
 Usage: python scripts/evaluate_generation.py
 """
@@ -73,9 +74,10 @@ from evaluate import (  # noqa: E402
 from generate import CITATION_FORMAT, REFUSAL, answer_query  # noqa: E402
 from retrievers import ABSTAIN, ANSWER, ANSWER_CONDITIONALLY  # noqa: E402
 
-# Under the default citation format the outputs are generation*.csv; under
-# any other format (CITATION_FORMAT=numbered) they are generation_<format>*.csv,
-# so the default results are never overwritten.
+# Output names follow the citation format, not the default: CITATION_FORMAT=
+# chunk_id writes generation*.csv (the name predates the numbered format) and
+# any other format (numbered, the default) writes generation_<format>*.csv, so
+# both sides of the A/B stay on disk and neither overwrites the other.
 _SUFFIX = "" if CITATION_FORMAT == "chunk_id" else f"_{CITATION_FORMAT}"
 GENERATION_OUT = RESULTS_DIR / f"generation{_SUFFIX}.csv"
 GENERATION_BY_CATEGORY_OUT = RESULTS_DIR / f"generation{_SUFFIX}_by_category.csv"

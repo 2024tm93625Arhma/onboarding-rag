@@ -36,9 +36,7 @@ Providers (stdlib HTTP only, no SDK dependencies), chosen by LLM_PROVIDER:
 All calls use temperature 0.
 
 Citation format, chosen by CITATION_FORMAT (env var of the same name):
-- chunk_id (default): each chunk is headed [<chunk_id>] and the model cites
-  chunk_ids.
-- numbered: each chunk is headed [1], [2], ... in rank order (the marking is
+- numbered (default): each chunk is headed [1], [2], ... in rank order (the marking is
   kept) and the model cites by number. answer_query maps every bracketed
   number back to its chunk_id before anything else sees the text, so
   raw_answer_text, the guard and all metrics work on chunk_ids exactly as
@@ -46,6 +44,11 @@ Citation format, chosen by CITATION_FORMAT (env var of the same name):
   token out-of-range::<n>, which is not in the prompt, so the guard strips it
   as an invalid citation and the evaluator counts it as fabricated.
   model_answer_text keeps the model's numbered text.
+- chunk_id: each chunk is headed [<chunk_id>] and the model cites chunk_ids.
+  Still selectable (CITATION_FORMAT=chunk_id) to reproduce the A/B.
+numbered became the default after the A/B on llama3 (notes/handover.md): it
+matched or beat chunk_id on every generation metric, and cut fabricated
+citations from 4.3% to 0%.
 
 Citation guard: after the model returns, every cited chunk_id is checked
 against the chunk_ids passed in the prompt. Any not in that set is stripped
@@ -89,7 +92,7 @@ MAX_TOKENS = 1024
 TIMEOUT = 300  # seconds per HTTP call
 
 CITATION_FORMATS = ("chunk_id", "numbered")
-CITATION_FORMAT = os.environ.get("CITATION_FORMAT", "chunk_id").strip().lower()
+CITATION_FORMAT = os.environ.get("CITATION_FORMAT", "numbered").strip().lower()
 if CITATION_FORMAT not in CITATION_FORMATS:
     raise RuntimeError(f"unknown CITATION_FORMAT {CITATION_FORMAT!r}; expected one of: "
                        + ", ".join(CITATION_FORMATS))

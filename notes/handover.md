@@ -1,6 +1,6 @@
 # Handover
 
-Last updated: 2026-10-16
+Last updated: 2026-11-19
 
 ## Done
 
@@ -100,6 +100,66 @@ Last updated: 2026-10-16
   of it. Fabrication is 0% in user_dependent, cross_doc_conflict and
   leakage_probe, and 26.3% in ordinary.
 
+- **Applicability in the prompt.** Each chunk header is now marked
+  [APPLIES TO YOU] / [DOES NOT APPLY TO YOU] (from authority; no profile
+  attribute reaches the prompt) and the system prompt says to answer only
+  from applicable chunks. Pre-fix answers were rescored from cache by
+  `scripts/score_preapplicability.py`. Inapplicable chunk cited: **1 of 11
+  -> 0 of 11** (the 11 answered queries where an inapplicable chunk reached
+  the prompt; 1.4% -> 0% of all 70 answers). **11 opportunities is too few
+  to demonstrate the fix** - one event going to zero is consistent with
+  noise. Report it as "no regression, and the one observed case is gone",
+  not as an effect.
+
+  The one pre-fix case, q008 (version_conflict, mode answer): "What are
+  the password requirements?", asked by u004 (Finance, G4, Bengaluru,
+  full_time, joined 2025-02-10). Cited `it-password-rules-v1::s01p0`
+  (rank 3). v1 has no applies_if and is superseded by v2 (effective
+  2025-09-01, also unconditional), so it governs nobody, u004 included
+  (authority 0.3). Pre-fix, the model gave v2's 14-character minimum
+  correctly but co-cited v1 alongside v2 on the passphrase line (identical
+  in both versions), then added a contradictory note that 12 characters is
+  not mentioned. Post-fix (both formats) it cites only v2 and drops the
+  note. A harmless co-citation, not a wrong value reaching the user - say
+  so rather than present it as a near-miss.
+
+- **Citation-format A/B, three-way** (llama3 / Ollama, same 108 queries,
+  same retrieval; `generation_preapplicability.csv`, `generation.csv`,
+  `generation_numbered.csv`):
+
+  | metric                     | chunk_id pre-fix | chunk_id post-fix | numbered |
+  |----------------------------|------------------|-------------------|----------|
+  | citation_accuracy          | 0.9070           | 0.9070            | 0.9070   |
+  | cited_chunk_retrieved      | 0.9000           | 0.9571            | 1.0000   |
+  | fabricated_citation_rate   | 10.0% (7/70)     | 4.3% (3/70)       | 0.0%     |
+  | uncited_claim_rate         | 0                | 0                 | 0        |
+  | abstain_compliance         | 1.0000           | 1.0000            | 1.0000   |
+  | inapplicable cited (of 11) | 1                | 0                 | 0        |
+
+  Numbered matches or beats chunk_id on every metric and loses nothing, so
+  it is now the default `CITATION_FORMAT`. The finding: fabrication went
+  10% -> 4.3% -> 0%. Be careful with attribution: the first step came with
+  the applicability change (a prompt change, not a format change), so the
+  clean format effect is post-fix chunk_id vs numbered, 3/70 -> 0/70
+  (q006, q067, q088 under chunk_id). Small numbers, one model; frame it as
+  consistent with the "verbatim ::sNNpN is hard for an 8B model"
+  hypothesis, not proof of it. Citation accuracy is identical across all
+  three, so numbered removes invented IDs without changing which chunk
+  gets cited.
+
+  `CITATION_FORMAT=chunk_id` still selects the old format. Output names
+  follow the format, not the default: chunk_id writes `generation*.csv`,
+  numbered writes `generation_numbered*.csv`. Both are committed and both
+  reproduce byte-for-byte from `data/generation_cache/` with no network
+  (checked 2026-11-19 with OLLAMA_HOST pointed at a dead port).
+
+- **Reproducibility caveat: Ollama timeouts.** On CPU-only Ollama a single
+  llama3 call can exceed the 300 s per-call limit (`TIMEOUT` in
+  `src/generate.py`) partway through a run, which aborts the run. Every
+  completed response is already in the disk cache, so re-running the same
+  command resumes where it stopped and repeats no calls. A fresh
+  reproduction may need several restarts; that is expected, not a bug.
+
 ## Next
 
 Items 0-4 are done. Experimental work is complete; what remains is writing
@@ -112,10 +172,7 @@ and the optional demonstration layer.
    ~35 data points: reportable, not significant. Say so.
 3. **FastAPI and Copilot Studio.** Demonstration layer, not a research
    claim. Cut first if time is short.
-4. **Optional, cheap, and genuinely novel:** A/B the citation format.
-   Same queries, same retrieval, chunk_ids versus numbered references.
-   "Fabrication fell from 10% to X% by changing the citation format" would
-   be a real finding.
+4. ~~A/B the citation format.~~ Done; see the three-way table above.
 5. **Housekeeping.** `ablations.csv` still uses the old
    `invalid_evidence_rate` column name; re-running `run_ablations.py`
    picks up ier@1/ier@5. And `resolve_provider()` runs before the cache
