@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I get a letter confirming my employment?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "hr-employment-letter-howto::s00p0",
+    "hr-employment-letter-howto::s01p0",
+    "hr-employment-letter-howto::s03p0",
+    "hr-employment-letter-howto::s02p0",
+    "hr-employment-letter-howto::s04p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\nYou may need a letter confirming your employment for a visa application, a\nloan, a rental agreement or a similar purpose. People Operations issues these\nletters on company letterhead.\n\n[2] [APPLIES TO YOU]\n- **Employment verification letter:** confirms your role, department and\n  date of joining.\n- **Salary certificate:** also states your current annual compensation.\n- **Address proof letter:** confirms your address as recorded in the HR\n  system.\n- **Visa support letter:** for business or personal travel, addressed to the\n  relevant embassy.\n\n[3] [APPLIES TO YOU]\nMake sure your name, address and job title in the HR system are correct.\nLetters are generated from those records and cannot be edited by hand.\n\n[4] [APPLIES TO YOU]\n1. Open the employee portal and go to *HR Services* > *Letters*.\n2. Choose the letter type.\n3. Enter the purpose and, if required, the name and address of the\n   organisation the letter should be addressed to.\n4. Submit the request. You receive the signed letter as a PDF by email.\n\n[5] [APPLIES TO YOU]\nIf an organisation needs a physical copy with a wet signature, say so in the\npurpose field and collect it from the HR desk at your office.\n\nQuestion: How do I get a letter confirming my employment?\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "According to [4], you can get a letter confirming your employment by:\n\n1. Opening the employee portal and going to *HR Services* > *Letters*.\n2. Choosing the letter type.\n3. Entering the purpose and, if required, the name and address of the organisation the letter should be addressed to.\n4. Submitting the request. You receive the signed letter as a PDF by email."
+}

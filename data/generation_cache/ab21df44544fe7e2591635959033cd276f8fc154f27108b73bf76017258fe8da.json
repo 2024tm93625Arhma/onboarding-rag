@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I connect to my desktop from home?",
+  "profile_id": "u006",
+  "chunk_ids": [
+    "it-remote-desktop-gateway-howto::s00p0",
+    "it-remote-desktop-gateway-howto::s02p0",
+    "it-remote-working-guide::s04p0",
+    "it-remote-desktop-gateway-howto::s03p0",
+    "it-remote-working-guide::s03p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\nWhen you are away from the office, you work by connecting to your office\ndesktop PC through the Remote Desktop Gateway. Your files, applications and\nnetwork drives stay on the office PC; your home computer only shows its\nscreen.\n\n[2] [APPLIES TO YOU]\n1. On your home computer, open *Remote Desktop Connection*.\n2. Click *Show Options* and enter your desktop's computer name. It is on the\n   asset sticker on the front of the PC, for example `BLR-DT-0217`.\n3. On the *Advanced* tab, click *Settings* and enter the gateway address\n   `rdgw.corp.local`.\n4. Click *Connect*. When asked, enter your Windows username and password,\n   followed by the six-digit code shown on your RSA token.\n\n[3] [APPLIES TO YOU]\nA stable broadband connection is enough for everyday work, including video\ncalls. If your Wi-Fi is unreliable, connect the laptop to your router with a\ncable or move closer to the router. The company does not provide home\nbroadband.\n\n[4] [APPLIES TO YOU]\n- Use a wired connection if you can; Wi-Fi makes the screen slow to update.\n- Printing from home is not supported. Save the file and print it in the\n  office.\n- Do not copy company files to your home computer.\n\n[5] [APPLIES TO YOU]\nYou may use your own monitor, keyboard and mouse with your company laptop. Do\nnot connect personal storage devices such as USB drives or external hard\ndisks; they are blocked by device management. Do not use a personal computer\nfor company work.\n\nQuestion: How do I connect to my desktop from home?\n\nThe source of this answer, it-remote-desktop-gateway-howto, took effect on 2019-09-16 and may be out of date.\nAnswer the question, then end with one line starting 'Condition:' that says the answer is based on it-remote-desktop-gateway-howto, effective 2019-09-16, and may be out of date. Do not claim the document is current or the latest version.\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "To connect to your desktop from home, follow these steps: On your home computer, open *Remote Desktop Connection* [2]. Click *Show Options* and enter your desktop's computer name [2]. On the *Advanced* tab, click *Settings* and enter the gateway address `rdgw.corp.local` [2]. Click *Connect*. When asked, enter your Windows username and password, followed by the six-digit code shown on your RSA token [2].\n\nCondition: This answer is based on it-remote-desktop-gateway-howto, effective 2019-09-16, and may be out of date."
+}

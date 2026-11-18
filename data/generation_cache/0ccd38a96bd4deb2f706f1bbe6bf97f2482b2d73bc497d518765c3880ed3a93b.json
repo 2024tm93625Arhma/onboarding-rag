@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I change the bank account my salary goes to?",
+  "profile_id": "u003",
+  "chunk_ids": [
+    "hr-bank-details-howto::s02p0",
+    "hr-bank-details-howto::s01p0",
+    "hr-bank-details-howto::s00p0",
+    "hr-bank-details-howto::s03p0",
+    "hr-bank-details-howto::s05p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\n1. Open the HR system from the employee portal.\n2. Go to *My Profile* > *Bank Details* and select *Request Change*.\n3. Enter the new account details exactly as they appear on your bank\n   document.\n4. Upload the cancelled cheque or bank statement.\n5. Submit the request. The Payroll team verifies it and you receive a\n   notification when it is approved.\n\n[2] [APPLIES TO YOU]\n- The account must be a savings or salary account in your own name. Joint\n  accounts are accepted only if you are the primary holder.\n- Have a cancelled cheque or a bank statement showing your name, account\n  number and branch code ready as a PDF or clear photo.\n\n[3] [APPLIES TO YOU]\nYour salary, expense reimbursements and any bonuses are paid into the bank\naccount recorded in the HR system. Follow these steps to change it.\n\n[4] [APPLIES TO YOU]\nIf the change is approved before the payroll cut-off, your next salary goes to\nthe new account. Otherwise it takes effect from the following salary run. Keep\nyour old account open until you see a payment arrive in the new one.\n\n[5] [APPLIES TO YOU]\nIf a payment bounces or goes to the wrong account, raise an urgent ticket with\nPayroll through the HR helpdesk.\n\nQuestion: How do I change the bank account my salary goes to?\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "To change the bank account your salary goes to, follow these steps: [3]\n\n1. Open the HR system from the employee portal.\n2. Go to *My Profile* > *Bank Details* and select *Request Change*.\n3. Enter the new account details exactly as they appear on your bank document.\n4. Upload the cancelled cheque or bank statement.\n5. Submit the request. The Payroll team verifies it and you receive a notification when it is approved. [1]\n\nNote: The change will take effect from the following salary run if approved after the payroll cut-off, or from the next salary run if approved before the cut-off. [4]"
+}

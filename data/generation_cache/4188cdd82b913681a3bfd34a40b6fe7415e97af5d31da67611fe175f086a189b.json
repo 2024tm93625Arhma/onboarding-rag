@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I apply for a corporate card?",
+  "profile_id": "u001",
+  "chunk_ids": [
+    "fin-corporate-card-howto::s02p0",
+    "fin-corporate-card-howto::s01p0",
+    "fin-corporate-card-howto::s03p0",
+    "fin-corporate-card-howto::s00p0",
+    "fin-corporate-card-howto::s07p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\n1. Raise a request in the expense tool under *Cards* > *Apply*.\n2. Your department head approves it.\n3. Finance orders the card from the bank. It is posted to your office and\n   usually arrives within 10 working days.\n4. Activate it using the bank's instructions and set a PIN.\n\nYour spending limit is set on the approval and shown in the expense tool.\n\n[2] [APPLIES TO YOU]\nEmployees who travel for work or regularly buy small items for their team.\nYour department head decides who needs a card.\n\n[3] [APPLIES TO YOU]\n- Use it only for business costs. Personal spending is not allowed, even if\n  you plan to pay it back.\n- Keep every itemised receipt.\n- Do not withdraw cash unless your approval allows it.\n- Do not share the card or its number with anyone, including colleagues.\n\n[4] [APPLIES TO YOU]\nA corporate card lets you pay for business costs without using your own money.\nThe company pays the card bill directly. You still account for every\ntransaction in the expense tool.\n\n[5] [APPLIES TO YOU]\nTell Finance before your last working day. Clear all outstanding\ntransactions, then cut the card in half and hand it to your manager.\n\nQuestion: How do I apply for a corporate card?\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "According to [1], you can apply for a corporate card by raising a request in the expense tool under *Cards* > *Apply*."
+}

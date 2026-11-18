@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "Where do I download my payslip?",
+  "profile_id": "u001",
+  "chunk_ids": [
+    "hr-payslip-download-howto::s01p0",
+    "hr-payslip-download-howto::s00p0",
+    "hr-payslip-download-howto::s02p0",
+    "hr-onboarding-faq::s06p0",
+    "fin-procure-to-pay-guide::s13p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\n1. Sign in to the employee portal and open the HR system.\n2. Go to *Pay* > *Payslips*.\n3. Choose the month you need from the list.\n4. Select *Download PDF*. The file is password-protected; the password hint is\n   shown on the download screen.\n\n[2] [APPLIES TO YOU]\nPayslips are published in the HR system after each salary run.\n\n[3] [APPLIES TO YOU]\nIf a payslip is missing or a figure looks incorrect, raise a ticket with the\nPayroll team through the HR helpdesk and attach the payslip. Expense\nreimbursements appear as a separate line; for when approved claims are paid,\nsee the Expense Claims policy.\n\n[4] [APPLIES TO YOU]\nSalaries are paid monthly. Your payslip is available in the HR system; see\n*How to Download Your Payslip*.\n\n[5] [APPLIES TO YOU]\nRaise a Finance ticket on the employee portal and choose *Procurement* for\nquestions about quotes, requisitions or suppliers, or *Accounts Payable* for\ninvoices and payments.\n\nQuestion: Where do I download my payslip?\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "According to [1], you can download your payslip by signing in to the employee portal, opening the HR system, going to *Pay* > *Payslips*, choosing the month you need from the list, and selecting *Download PDF*."
+}

@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How do I connect to the office Wi-Fi?",
+  "profile_id": "u002",
+  "chunk_ids": [
+    "it-wifi-setup-howto::s03p0",
+    "it-laptop-first-login-howto::s02p0",
+    "it-wifi-setup-howto::s00p0",
+    "it-wifi-setup-howto::s02p0",
+    "it-wifi-setup-howto::s01p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\nRaise a ticket in the IT service portal with your office, floor and the\nnetwork name you tried.\n\n[2] [APPLIES TO YOU]\nTurn on the laptop and connect to the network. In the office, the laptop\njoins the CORP Wi-Fi by itself. At home, choose your own Wi-Fi network. Sign\nin with your company email address and the temporary password.\n\n[3] [APPLIES TO YOU]\nEvery office has two wireless networks.\n\n- **CORP:** for company laptops only. Gives full access to internal systems\n  without the VPN.\n- **GUEST:** for visitors and personal phones. Internet access only.\n\n[4] [APPLIES TO YOU]\nSelect GUEST and accept the terms on the sign-in page. The guest password is\ndisplayed at reception.\n\n[5] [APPLIES TO YOU]\nCompany laptops join CORP automatically using a device certificate. If the\nlaptop does not connect, restart it while in the office so it can renew the\ncertificate.\n\nQuestion: How do I connect to the office Wi-Fi?\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "According to [2], to connect to the office Wi-Fi, turn on the laptop and connect to the network. In the office, the laptop joins the CORP Wi-Fi by itself."
+}

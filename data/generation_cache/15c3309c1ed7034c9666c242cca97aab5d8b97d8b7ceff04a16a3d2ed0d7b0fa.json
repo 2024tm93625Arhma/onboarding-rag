@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "What are the password requirements?",
+  "profile_id": "u004",
+  "chunk_ids": [
+    "it-password-rules-v2::s01p0",
+    "it-password-rules-v2::s04p0",
+    "it-password-rules-v1::s01p0",
+    "it-password-manager-howto::s00p0",
+    "it-password-rules-v2::s05p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\n- Minimum length: **14 characters**.\n- Must include at least one letter and one number.\n- Must not contain your name, username or the company name.\n- Must not match any of your last five passwords.\n\nPassphrases made of several unrelated words are encouraged.\n\n[2] [APPLIES TO YOU]\nMulti-factor authentication is required on all company accounts in addition to\nthe password.\n\n[3] [DOES NOT APPLY TO YOU]\n- Minimum length: **12 characters**.\n- Must include at least one letter and one number.\n- Must not contain your name, username or the company name.\n- Must not match any of your last five passwords.\n\nPassphrases made of several unrelated words are encouraged.\n\n[4] [APPLIES TO YOU]\nEvery employee has a licence for the company password manager. Use it to\nstore every work password you cannot sign in to with single sign-on. The\nrules that passwords must meet are set out in the Password Rules policy; this\npage only explains how to use the tool.\n\n[5] [APPLIES TO YOU]\nThis policy applies to all employees. It replaces v1 in full.\n\nQuestion: What are the password requirements?\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "According to [1], the password requirements are:\n\n* Minimum length: **14 characters**\n* Must include at least one letter and one number\n* Must not contain your name, username or the company name\n* Must not match any of your last five passwords\n\nAdditionally, [2] states that multi-factor authentication is required on all company accounts in addition to the password."
+}
