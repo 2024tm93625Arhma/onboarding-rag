@@ -1,0 +1,20 @@
+{
+  "provider": "ollama",
+  "model": "llama3",
+  "query": "How many annual leave days can employee u001 carry forward to the next leave year, and are there any eligibility or use-by conditions?",
+  "profile_id": "u001",
+  "chunk_ids": [
+    "hr-leave-policy-v1::s02p0",
+    "hr-leave-policy-v1::s03p0",
+    "hr-leave-policy-v1::s01p0",
+    "hr-leave-policy-v1::s00p0",
+    "hr-onboarding-faq::s01p0"
+  ],
+  "temperature": 0,
+  "citation_format": "numbered",
+  "prompt": {
+    "system": "You are an onboarding assistant answering an employee's question from company policy documents.\nRules:\n1. Answer ONLY from the chunks provided below. Do not use outside knowledge.\n2. Cite every claim with the number of the chunk it comes from, in square brackets, e.g. [2]. Use only chunk numbers that appear below.\n3. If the chunks do not contain the answer, say that you cannot answer from the provided documents, and do not guess.\n4. Be concise.\n5. Each chunk header is marked [APPLIES TO YOU] or [DOES NOT APPLY TO YOU]. Answer from the chunks marked [APPLIES TO YOU]. Chunks marked [DOES NOT APPLY TO YOU] are shown only for context and must not be used as the answer. Do not present values from a version that does not apply as an alternative or option for the user.",
+    "user": "Chunks:\n\n[1] [APPLIES TO YOU]\nEmployees may carry forward up to **12 unused leave days** into the next\ncalendar year. Carried-forward days must be used by 31 March of that year,\nor they expire.\n\n[2] [APPLIES TO YOU]\nThis policy applies to employees who joined before 1 April 2025.\n\n[3] [APPLIES TO YOU]\nFull-time employees earn 24 days of paid annual leave per calendar year,\naccrued monthly at 2 days per month.\n\n[4] [APPLIES TO YOU]\nThis policy sets out how annual leave is earned, used and carried forward.\n\n[5] [APPLIES TO YOU]\nEntitlement and carry-forward rules are set out in the Annual Leave Policy.\nCheck which version applies to you: it depends on your join date.\n\nQuestion: How many annual leave days can employee u001 carry forward to the next leave year, and are there any eligibility or use-by conditions?\n\nAnswer (cite every claim as [chunk number]):"
+  },
+  "response": "According to [1], employees may carry forward up to 12 unused leave days into the next calendar year. Carried-forward days must be used by 31 March of that year, or they expire."
+}

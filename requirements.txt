@@ -7,3 +7,6 @@ scikit-learn
 pyyaml
 fastapi
 uvicorn
+mcp>=2
+httpx
+

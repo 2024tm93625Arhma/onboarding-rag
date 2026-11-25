@@ -1,0 +1,328 @@
+﻿{
+    "openapi":  "3.1.0",
+    "info":  {
+                 "title":  "Onboarding RAG",
+                 "description":  "Provenance-aware onboarding Q\u0026A.\n\n**user_id is supplied by the caller and is NOT authenticated.** Scope filtering is enforced against the profile named here, so in a real deployment the identity must come from the enterprise identity provider, not the request body. This is a deliberate scope boundary of the dissertation, not an oversight.",
+                 "version":  "0.1.0"
+             },
+    "paths":  {
+                  "/ask":  {
+                               "post":  {
+                                            "summary":  "Answer a question as a given user",
+                                            "description":  "Runs generate.answer_query(question, profile, k) unchanged and returns the answer mode, the cited answer, and the ranked hits the model saw.\n\n**user_id is supplied by the caller and is NOT authenticated.** Scope filtering is enforced against the profile named here, so in a real deployment the identity must come from the enterprise identity provider, not the request body. This is a deliberate scope boundary of the dissertation, not an oversight.\n\n404 if user_id is unknown; 503 if an LLM call is needed and LLM_PROVIDER is not configured or the provider fails.",
+                                            "operationId":  "ask_ask_post",
+                                            "requestBody":  {
+                                                                "content":  {
+                                                                                "application/json":  {
+                                                                                                         "schema":  {
+                                                                                                                        "$ref":  "#/components/schemas/AskRequest"
+                                                                                                                    }
+                                                                                                     }
+                                                                            },
+                                                                "required":  true
+                                                            },
+                                            "responses":  {
+                                                              "200":  {
+                                                                          "description":  "Successful Response",
+                                                                          "content":  {
+                                                                                          "application/json":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/AskResponse"
+                                                                                                                              }
+                                                                                                               }
+                                                                                      }
+                                                                      },
+                                                              "422":  {
+                                                                          "description":  "Validation Error",
+                                                                          "content":  {
+                                                                                          "application/json":  {
+                                                                                                                   "schema":  {
+                                                                                                                                  "$ref":  "#/components/schemas/HTTPValidationError"
+                                                                                                                              }
+                                                                                                               }
+                                                                                      }
+                                                                      }
+                                                          }
+                                        }
+                           },
+                  "/profiles":  {
+                                    "get":  {
+                                                "summary":  "User profiles available to ask as",
+                                                "operationId":  "profiles_profiles_get",
+                                                "responses":  {
+                                                                  "200":  {
+                                                                              "description":  "Successful Response",
+                                                                              "content":  {
+                                                                                              "application/json":  {
+                                                                                                                       "schema":  {
+                                                                                                                                      "items":  {
+                                                                                                                                                    "$ref":  "#/components/schemas/Profile"
+                                                                                                                                                },
+                                                                                                                                      "type":  "array",
+                                                                                                                                      "title":  "Response Profiles Profiles Get"
+                                                                                                                                  }
+                                                                                                                   }
+                                                                                          }
+                                                                          }
+                                                              }
+                                            }
+                                },
+                  "/health":  {
+                                  "get":  {
+                                              "summary":  "Liveness, LLM provider and chunk count",
+                                              "operationId":  "health_health_get",
+                                              "responses":  {
+                                                                "200":  {
+                                                                            "description":  "Successful Response",
+                                                                            "content":  {
+                                                                                            "application/json":  {
+                                                                                                                     "schema":  {
+
+                                                                                                                                }
+                                                                                                                 }
+                                                                                        }
+                                                                        }
+                                                            }
+                                          }
+                              }
+              },
+    "components":  {
+                       "schemas":  {
+                                       "AskRequest":  {
+                                                          "properties":  {
+                                                                             "question":  {
+                                                                                              "type":  "string",
+                                                                                              "minLength":  1,
+                                                                                              "title":  "Question"
+                                                                                          },
+                                                                             "user_id":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "User Id",
+                                                                                             "description":  "Caller-supplied, NOT authenticated."
+                                                                                         },
+                                                                             "k":  {
+                                                                                       "type":  "integer",
+                                                                                       "maximum":  20.0,
+                                                                                       "minimum":  1.0,
+                                                                                       "title":  "K",
+                                                                                       "default":  5
+                                                                                   }
+                                                                         },
+                                                          "type":  "object",
+                                                          "required":  [
+                                                                           "question",
+                                                                           "user_id"
+                                                                       ],
+                                                          "title":  "AskRequest"
+                                                      },
+                                       "AskResponse":  {
+                                                           "properties":  {
+                                                                              "mode":  {
+                                                                                           "type":  "string",
+                                                                                           "title":  "Mode"
+                                                                                       },
+                                                                              "answer":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Answer"
+                                                                                         },
+                                                                              "citations":  {
+                                                                                                "items":  {
+                                                                                                              "type":  "string"
+                                                                                                          },
+                                                                                                "type":  "array",
+                                                                                                "title":  "Citations"
+                                                                                            },
+                                                                              "invalid_citations":  {
+                                                                                                        "items":  {
+                                                                                                                      "type":  "string"
+                                                                                                                  },
+                                                                                                        "type":  "array",
+                                                                                                        "title":  "Invalid Citations"
+                                                                                                    },
+                                                                              "flagged":  {
+                                                                                              "type":  "boolean",
+                                                                                              "title":  "Flagged"
+                                                                                          },
+                                                                              "hits":  {
+                                                                                           "items":  {
+                                                                                                         "$ref":  "#/components/schemas/Hit"
+                                                                                                     },
+                                                                                           "type":  "array",
+                                                                                           "title":  "Hits"
+                                                                                       },
+                                                                              "latency_ms":  {
+                                                                                                 "type":  "number",
+                                                                                                 "title":  "Latency Ms"
+                                                                                             }
+                                                                          },
+                                                           "type":  "object",
+                                                           "required":  [
+                                                                            "mode",
+                                                                            "answer",
+                                                                            "citations",
+                                                                            "invalid_citations",
+                                                                            "flagged",
+                                                                            "hits",
+                                                                            "latency_ms"
+                                                                        ],
+                                                           "title":  "AskResponse"
+                                                       },
+                                       "HTTPValidationError":  {
+                                                                   "properties":  {
+                                                                                      "detail":  {
+                                                                                                     "items":  {
+                                                                                                                   "$ref":  "#/components/schemas/ValidationError"
+                                                                                                               },
+                                                                                                     "type":  "array",
+                                                                                                     "title":  "Detail"
+                                                                                                 }
+                                                                                  },
+                                                                   "type":  "object",
+                                                                   "title":  "HTTPValidationError"
+                                                               },
+                                       "Hit":  {
+                                                   "properties":  {
+                                                                      "chunk_id":  {
+                                                                                       "type":  "string",
+                                                                                       "title":  "Chunk Id"
+                                                                                   },
+                                                                      "doc_id":  {
+                                                                                     "type":  "string",
+                                                                                     "title":  "Doc Id"
+                                                                                 },
+                                                                      "title":  {
+                                                                                    "type":  "string",
+                                                                                    "title":  "Title"
+                                                                                },
+                                                                      "version":  {
+                                                                                      "anyOf":  [
+                                                                                                    {
+                                                                                                        "type":  "string"
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "type":  "integer"
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "type":  "null"
+                                                                                                    }
+                                                                                                ],
+                                                                                      "title":  "Version"
+                                                                                  },
+                                                                      "effective_date":  {
+                                                                                             "anyOf":  [
+                                                                                                           {
+                                                                                                               "type":  "string"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "type":  "null"
+                                                                                                           }
+                                                                                                       ],
+                                                                                             "title":  "Effective Date"
+                                                                                         },
+                                                                      "authority":  {
+                                                                                        "type":  "number",
+                                                                                        "title":  "Authority"
+                                                                                    },
+                                                                      "score":  {
+                                                                                    "type":  "number",
+                                                                                    "title":  "Score"
+                                                                                }
+                                                                  },
+                                                   "type":  "object",
+                                                   "required":  [
+                                                                    "chunk_id",
+                                                                    "doc_id",
+                                                                    "title",
+                                                                    "version",
+                                                                    "effective_date",
+                                                                    "authority",
+                                                                    "score"
+                                                                ],
+                                                   "title":  "Hit"
+                                               },
+                                       "Profile":  {
+                                                       "properties":  {
+                                                                          "user_id":  {
+                                                                                          "type":  "string",
+                                                                                          "title":  "User Id"
+                                                                                      },
+                                                                          "department":  {
+                                                                                             "type":  "string",
+                                                                                             "title":  "Department"
+                                                                                         },
+                                                                          "grade":  {
+                                                                                        "type":  "string",
+                                                                                        "title":  "Grade"
+                                                                                    },
+                                                                          "location":  {
+                                                                                           "type":  "string",
+                                                                                           "title":  "Location"
+                                                                                       },
+                                                                          "employment_type":  {
+                                                                                                  "type":  "string",
+                                                                                                  "title":  "Employment Type"
+                                                                                              },
+                                                                          "join_date":  {
+                                                                                            "type":  "string",
+                                                                                            "title":  "Join Date"
+                                                                                        }
+                                                                      },
+                                                       "type":  "object",
+                                                       "required":  [
+                                                                        "user_id",
+                                                                        "department",
+                                                                        "grade",
+                                                                        "location",
+                                                                        "employment_type",
+                                                                        "join_date"
+                                                                    ],
+                                                       "title":  "Profile"
+                                                   },
+                                       "ValidationError":  {
+                                                               "properties":  {
+                                                                                  "loc":  {
+                                                                                              "items":  {
+                                                                                                            "anyOf":  [
+                                                                                                                          {
+                                                                                                                              "type":  "string"
+                                                                                                                          },
+                                                                                                                          {
+                                                                                                                              "type":  "integer"
+                                                                                                                          }
+                                                                                                                      ]
+                                                                                                        },
+                                                                                              "type":  "array",
+                                                                                              "title":  "Location"
+                                                                                          },
+                                                                                  "msg":  {
+                                                                                              "type":  "string",
+                                                                                              "title":  "Message"
+                                                                                          },
+                                                                                  "type":  {
+                                                                                               "type":  "string",
+                                                                                               "title":  "Error Type"
+                                                                                           },
+                                                                                  "input":  {
+                                                                                                "title":  "Input"
+                                                                                            },
+                                                                                  "ctx":  {
+                                                                                              "type":  "object",
+                                                                                              "title":  "Context"
+                                                                                          }
+                                                                              },
+                                                               "type":  "object",
+                                                               "required":  [
+                                                                                "loc",
+                                                                                "msg",
+                                                                                "type"
+                                                                            ],
+                                                               "title":  "ValidationError"
+                                                           }
+                                   }
+                   },
+    "servers":  [
+                    {
+                        "url":  "https://hzfr5xnk-8000.inc1.devtunnels.ms"
+                    }
+                ]
+}
