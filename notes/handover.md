@@ -201,3 +201,47 @@ and the optional demonstration layer.
   base retriever, ALPHA, BETA, GAMMA or DELTA invalidates it. Refit with
   `scripts/calibrate_relevance_floor.py` on the dev split only, and report
   on test.
+
+## Assistant integration (25 Nov)
+
+- **Copilot Studio: blocked, not available on a student tenant.** The BITS
+  tenant (wilp.bits-pilani.ac.in) opens Copilot Studio but has no licence or
+  credits: agents fail at the first turn with `EnforcementUsageCredits`, and
+  agent creation reports "User license not found". Both are admin-only. The
+  Nagarro account could not sign in at all. Pursuing this needs a licence
+  requested through the supervisor, and almost certainly hosting the service
+  somewhere reachable rather than tunnelling to a laptop.
+
+- **Only Copilot-harness agents are offered on that tenant**, so there are no
+  Topics and no `Send HTTP request` node, and the REST API tool type (which
+  accepts an OpenAPI spec) is standard-harness only. Tools are limited to
+  connectors, MCP and workflows.
+
+- **`fastapi-mcp` 0.4.0 does not work with the 2.x MCP SDK.** It calls
+  `Server(name, description)`, but 2.x renamed `FastMCP` to `MCPServer` and
+  changed that signature, so the app fails at import with
+  `TypeError: Server.__init__() takes 2 positional arguments but 3 were given`.
+  Uninstalled; do not reintroduce it without pinning `mcp<2`.
+
+- **`mcp_server.py` is the working route.** A standalone MCP server written
+  against the 2.x API, exposing `ask_policy_question(question, user_id)` and
+  `list_employee_profiles()` as thin wrappers over `POST /ask` and
+  `GET /profiles`. The FastAPI service is unchanged. Registered for VS Code in
+  `.vscode/mcp.json`; the API must be running on port 8000 first.
+
+- **The version flip was demonstrated live in GitHub Copilot agent mode.**
+  Same question, same corpus: u001 returned 12 days citing
+  `hr-leave-policy-v1::s02p0`, u002 returned 5 days citing
+  `hr-leave-policy-v2::s02p0`, and the agent named the governing version for
+  each employee.
+
+- **Finding: provenance survives retrieval but not necessarily the assistant
+  layer.** On the first turn Copilot's orchestrator paraphrased the tool's
+  answer and dropped the citation entirely. It preserved citations only when
+  explicitly asked to quote the tool output verbatim. An orchestrator above
+  the retrieval layer can discard provenance unless constrained, which is an
+  integration risk the dissertation does not currently discuss.
+
+- Dev tunnels (`devtunnel host -p 8000 --allow-anonymous`) worked for exposing
+  the service publicly and are the route to use if a licensed tenant is ever
+  available. Not needed for local MCP clients.
